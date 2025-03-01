@@ -1,0 +1,9 @@
+---
+title: EIP-7702 
+---
+
+[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) is a new transaction type that allows EOAs to set persistent runtime bytecode in their account. This enables Ethereum accounts to delegate execution authority to a trusted smart contract while maintaining full control of their assets. At its core, EIP-7702 acts as a secure connector that allows EOAs to tap into smart contract functionality without changing their fundamental security model. This creates a foundation for building sophisticated account features while preserving the simplicity and security of traditional Ethereum accounts.
+
+During an EIP-7702 transaction, a "delegation designator" of the form `0xef0100 || delegate_address` is set in the `code` field of the signing EOA. Subsequently, all code-executing operations called on the EOA will load the runtime bytecode of the contract deployed at `delegate_address` and execute in the context of the EOA.
+
+The delegation process itself is straightforward: users first authorize a specific smart contract by signing an EIP-7702 authorization. This authorization is then submitted to the network through an EIP-7702 transaction, which establishes the delegation relationship. Once delegated, the account can utilize all the functionality of the authorized smart contract while maintaining its sovereignty. Users can revoke this delegation at any time by submitting a transaction that clears the delegation, effectively removing the smart contract's ability to act on behalf of the account.

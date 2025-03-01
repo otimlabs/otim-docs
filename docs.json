@@ -4,73 +4,153 @@
   "name": "Otim Documentation",
   "colors": {
     "primary": "#BAFF26",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "light": "#BAFF26",
+    "dark": "#BAFF26"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
             "group": "Get Started",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "docs/introduction",
+              "docs/use-cases"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Concepts",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "docs/concepts/delegation",
+              "docs/concepts/actions-instructions",
+              "docs/concepts/fee-structure"
+            ]
+          },
+          {
+            "group": "Developers",
+            "pages": [
+              "docs/developers/deployment-addresses/overview",
+              {
+                "group": "System Architecture",
+                "pages": [
+                  "docs/developers/system-architecture/overview",
+                  {
+                    "group": "Protocol",
+                    "pages": [
+                      "docs/developers/system-architecture/protocol/overview",
+                      {
+                        "group": "Core Contracts",
+                        "pages": [
+                          "docs/developers/system-architecture/protocol/core-contracts/overview",
+                          "docs/developers/system-architecture/protocol/core-contracts/otim-delegate",
+                          "docs/developers/system-architecture/protocol/core-contracts/instruction-storage",
+                          "docs/developers/system-architecture/protocol/core-contracts/action-manager",
+                          "docs/developers/system-architecture/protocol/core-contracts/treasury"
+                        ]
+                      },
+                      {
+                        "group": "Action Contracts",
+                        "pages": [
+                          "docs/developers/system-architecture/protocol/action-contracts/overview",
+                          "docs/developers/system-architecture/protocol/action-contracts/structure",
+                          "docs/developers/system-architecture/protocol/action-contracts/current-actions"
+                        ]
+                      },
+                      {
+                        "group": "Instruction Flows",
+                        "pages": [
+                          "docs/developers/system-architecture/protocol/instruction-flows/overview",
+                          "docs/developers/system-architecture/protocol/instruction-flows/activation",
+                          "docs/developers/system-architecture/protocol/instruction-flows/execution",
+                          "docs/developers/system-architecture/protocol/instruction-flows/deactivation"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Off-chain",
+                    "pages": [
+                      "docs/developers/system-architecture/off-chain/overview",
+                      "docs/developers/system-architecture/off-chain/api",
+                      "docs/developers/system-architecture/off-chain/executor",
+                      "docs/developers/system-architecture/off-chain/additional-services"
+                    ]
+                  },
+                  {
+                    "group": "App",
+                    "pages": [
+                      "docs/developers/system-architecture/app/overview"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Guides",
+                "pages": [
+                  "docs/developers/guides/overview",
+                  {
+                    "group": "Custom Actions",
+                    "pages": [
+                      "docs/developers/guides/custom-actions/overview",
+                      "docs/developers/guides/custom-actions/time-intervals",
+                      "docs/developers/guides/custom-actions/conditional",
+                      "docs/developers/guides/custom-actions/build-actions-with-us"
+                    ]
+                  },
+                  {
+                    "group": "Custom Interactions",
+                    "pages": [
+                      "docs/developers/guides/custom-interactions/overview",
+                      "docs/developers/guides/custom-interactions/request-instructions",
+                      "docs/developers/guides/custom-interactions/request-trades",
+                      "docs/developers/guides/custom-interactions/build-apps-with-us"
+                    ]
+                  }
+                ]
+              },
+              "docs/developers/smart-contract-reference",
+              "docs/developers/deployment-addresses"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "docs/resources/glossary",
+              {
+                "group": "Appendix",
+                "pages": [
+                  "docs/resources/appendix/eip-7702"
+                ]
+              },
+              "docs/resources/faq",
+              "docs/resources/security-and-audits"
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
-          }
-        ]
+        "tab": "API Reference (soonTM)",
+        "hidden": true
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "GitHub",
+          "href": "https://github.com/otimlabs",
+          "icon": "github"
         },
         {
           "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
+          "href": "https://t.me/otimlabs",
+          "icon": "telegram"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "X",
+          "href": "https://x.com/otimlabs",
+          "icon": "x-twitter"
         }
       ]
     }

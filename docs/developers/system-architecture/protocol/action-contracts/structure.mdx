@@ -1,0 +1,17 @@
+---
+title: Structure
+---
+
+Each Action contract must implement the `IAction` interface. This interface defines two external functions: `validate` and `execute`.
+
+### `validate`
+
+The `validate` function contains feature-specific validation conditions that are only checked at activation time. These conditions are intended to check that:
+1. the Action arguments are well-formed
+2. the Instruction scheduling parameters conform to the rules of the Action
+
+For example, during the first execution of a `Transfer` Instruction, Otim checks that the user hasn't accidentally set the target account to `address(0)`. On subsequent executions, Otim doesn't need to check this because the Action arguments cannot change from execution to execution.
+
+### `execute`
+
+The `execute` function contains the actual feature-specific logic and is called during each execution. This function is designed to be lightweight and reusable considering Instructions are designed to be executed many times. The Action validation step is always completed before this function is called, so the Action arguments supplied to `execute` can be assumed to be well-formed.

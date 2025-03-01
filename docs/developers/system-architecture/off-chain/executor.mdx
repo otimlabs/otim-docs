@@ -1,0 +1,9 @@
+---
+title: Executor
+---
+
+The Executor is an off-chain agent that is designed to execute Instructions as soon as their conditions are valid on-chain.
+
+All conditions that need to be met for an Instruction to successfully execute on-chain are strictly defined in the Otim protocol. This means that if the Executor submits an Instruction too early, the transaction will simply revert. The Executor's incentives are clear: 
+1. **don't** waste gas trying to submit invalid Instructions 
+2. **do** execute Instructions when they become valid in order to collect a fee
