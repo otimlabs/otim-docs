@@ -1,0 +1,62 @@
+---
+title: "Use Cases"
+sidebarTitle: "Use Cases"
+---
+
+Many modern, pull-based execution use cases share similar triggers and actions but serve distinct purposes. Otim's generalized architecture enables seamless execution of complex actions on-chain whenever instructed. Our most popular use cases revolve around automating actions on behalf of users——offering security and simplicity akin to traditional credit card payments.
+
+Below, we highlight some of the most common ways Otim is used today. While this is not an exhaustive list, it should give you an idea of what Otim is capable of!
+
+Have a unique use case in mind? [Build it](/docs/developers/guides/custom-actions) with Otim!
+
+# Payments
+
+## Recurring Transfers
+
+Subscriptions, loan auto-payments, and similar fintech functions are really just recurring transfers where a user authorizes a vendor to withdraw a specified amount at set intervals.
+
+If you need to automate scheduled transfers to a particular address, create an Otim Instruction! Choose your time interval, configure the Transfer Action (selecting the asset and amount), and activate!
+
+## Invoicing
+
+Modern commerce relies on authorization and capture, functioning like an automated invoice. When you scan a card or tap your phone, the business sends an authorization request to your bank, ensuring funds are available—essentially pre-approving an invoice. Once confirmed, the business captures the payment, transferring funds in real-time. This replaces traditional invoicing, making payments faster and more efficient.
+
+Blockchains naturally verify reserves for the authorization step, while Otim trustlessly manages invoice forwarding, approval, and payment capture. Configure an Otim Instruction with any Action (e.g., transfer, deposit), assign a recipient, and submit. The Instruction will be forwarded for approval, streamlining payments.
+
+# Operations
+
+## Gas Refueling
+
+Today, many blockchain protocols rely on off-chain actors to maintain functionality——bridges need relayers, rollups need sequencers, intents need solvers, etc. Making sure these actors have sufficient gas is critical for protocol uptime, yet today’s approach often involves costly manual intervention via hardware wallets.
+
+Otim eliminates the need for custom monitoring infrastructure and private key storage. Use your treasury or an auxiliary account to activate an Otim Instruction with the Refuel Action, specifying the account, threshold, and top-up amount.
+
+## Fund Sweeping
+
+Fund sweeping consolidates assets efficiently. Two primary approaches include:
+
+1. Transferring tokens from multiple addresses to a single address (e.g., consolidating user deposit addresses).
+
+2. Moving excess balances into higher-yielding DeFi derivatives at set intervals.
+
+Use Otim to automate fund sweeping by configuring the Sweep Action.
+
+# DeFi
+
+## Limit Orders
+
+Limit orders allow traders to specify the exact price at which they want to buy or sell assets, offering control and risk management in both DeFi and traditional markets. Unlike market orders, which execute immediately, limit orders only trigger when a specified price is reached.
+
+With Otim, you no longer need to rely on DEX interfaces to support limit orders. Simply activate the LimitOrder Action directly from your account——selecting your preferred exchange, trusted price oracle, and target price.
+
+## Leverage Management
+
+Managing leverage is crucial in DeFi to avoid liquidation risks in volatile markets. Various derivatives such as perpetual swaps, options, futures, and lending require continuous oversight to maintain optimal leverage ratios.
+
+Rather than manually monitoring your Aave position daily, automate leverage adjustments with Otim. Set predefined risk thresholds, and Otim will automatically increase or decrease leverage to maintain your desired exposure——all within your account.
+
+## Asset Rebalancing
+
+Effective treasury management optimizes liquidity and mitigates risk by ensuring balanced asset allocations. Many DeFi protocols and automation agents require specific asset ratios to execute transactions efficiently across multiple chains.
+
+With Otim’s Rebalance Action, you can maintain your desired asset ratios without ever moving funds out of your treasury. Whether rolling EigenLayer rewards into stETH or maintaining a 4:1 ETH to USDC ratio up to 10 ETH, Otim automates rebalancing seamlessly.

@@ -1,0 +1,6 @@
+---
+title: "ActionManager"
+sidebarTitle: "ActionManager"
+---
+
+This is an Otim-operated contract for managing which Actions can be executed through the protocol. Only Actions that are added to this contract can be executed by Otim users. This layer of security is meant to prevent users from accidentally executing buggy or malicious Action contracts. If a bug or exploit is found in one of the active Action contracts, Otim can easily remove the contract from `ActionManager` and deploy a new one. `ActionManager` also includes a kill-switch for the entire protocol in case a bug or exploit is found in Otim's core contracts.

@@ -1,0 +1,8 @@
+---
+title: "OtimDelegate"
+sidebarTitle: "OtimDelegate"
+---
+
+This is the main `otim-protocol` smart contract. This is the contract that users will delegate their EOAs to in order to enable Otim's features (also known as the "delegate contract"). It is this contract that actually executes within the context of the user's account. While the user is delegated to this contract, the runtime bytecode _is_ the user's account.
+
+`OtimDelegate` contains general Instruction validation and execution logic, as well as deactivation logic. Once a user is delegated to this contract, they can construct and sign Instructions to be executed on their behalf.

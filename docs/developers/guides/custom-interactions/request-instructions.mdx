@@ -1,0 +1,34 @@
+---
+title: "Request Instructions"
+sidebarTitle: "Request Instructions"
+---
+
+For this example, let's say you're Netflix 🎥 and you want to support `USDC` subscription payments. Let's walk through how you could integrate Otim to support crypto subscriptions.
+
+First, update your frontend to allow users to connect their Otim-delegated account. For users that don't have an Otim-delegated account, direct them to the Otim onboarding page. For users that already have an Otim-delegated account, direct them to a page that prompts them to visit their Otim dashboard and approve your Instruction request.
+
+Next, we'll use Otim's API to request the user to subscribe to Netflix. Under the hood, we'll be requesting that users execute the `TransferERC20` Action on a monthly basis. Let's break this down:
+
+* set `Instruction.interval` to one month in seconds
+
+* set `Instruction.action` to the address of the `TransferERC20` Action
+
+* set `Instruction.arguments` to encoded calldata specifying:
+
+  * the token address of `USDC`
+
+  * the address of the Netflix treasury account
+
+  * the amount of `USDC` the user must pay each month
+
+When you send the request via Otim's API, the user will:
+
+1. get notified on their Otim dashboard
+
+2. review the request to make sure they agree to the terms
+
+3. sign the request to activate the Instruction
+
+Hurray!
+
+Next, there are multiple ways to make sure the user keeps this subscription active so that you don't provide services without payment. One way to do this is to have your app subscribe to the on-chain event `InstructionExecuted(bytes32 indexed instructionId, uint256 executionCount)`. You simply listen for this event to be emitted from the user's account with the correct `instructionId`. As long as it's emitted on-schedule, you can continue to provide services.

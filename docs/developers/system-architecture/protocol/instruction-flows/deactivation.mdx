@@ -1,0 +1,8 @@
+---
+title: "Deactivation"
+sidebarTitle: "Deactivation"
+---
+
+While each Instruction's execution dynamics are strictly defined on-chain, a user may decide to deactivate an Instruction before its natural completion. For example, say Alice wants to automate her rent payments so she creates a simple `Transfer` Instruction that automatically sends $1000 USDC to her landlord every month for the remainder of her lease. A few months down the line, Alice decides to break her lease and move into a new apartment. In this case, Alice should deactivate her `Transfer` Instruction before its natural end to stop paying her former landlord.
+
+![Core Contracts Deactivation flow diagram](/images/core-contracts-deactivation.png)

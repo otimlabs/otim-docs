@@ -1,0 +1,40 @@
+---
+title: "At Time Intervals"
+sidebarTitle: "At Time Intervals"
+---
+
+For this example let's say you're terrible with remembering birthdays 😬 so you want to set up automatic on-chain reminders. Let's write a smart contract that will emit an event to remind you:
+
+```solidity BirthdayReminder.sol
+// SPDX-License-Identifier: MIT OR Apache-2.0
+pragma solidity ^0.8.26;
+
+contract BirthdayReminder {
+
+    event HappyBirthday(string name, uint8 month, uint8 day);
+
+    function remind(string calldata name, uint8 month, uint8 day) external {
+        emit HappyBirthday(name, month, day);
+    }
+}
+```
+
+Now, let's say you want to remind yourself about your friend Alice's birthday. Simply construct an Instruction that uses the `Call` Action to call your `BirthdayReminder` contract one week before Alice's birthday every year. Let's break this down:
+
+* set `Instruction.start` to a Unix timestamp that's about one week before Alice's next birthday
+
+* set `Instruction.interval` to one year in seconds
+
+* set `Instruction.action` to the address of the `Call` Action
+
+* set `Instruction.arguments` to encoded calldata specifying:
+
+  * the address of your `BirthdayReminder` contract
+
+  * the function selector for `remind`
+
+  * the encoded arguments `name = "Alice"`, `month = 1`, and `day = 1`
+
+These steps might look intimidating, but never fear, the Otim App will walk you through this process and abstract away these low-level details.
+
+Now, activate this Instruction and you'll never forget Alice's birthday again!

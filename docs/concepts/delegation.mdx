@@ -1,0 +1,18 @@
+---
+title: "Delegation"
+sidebarTitle: "Delegation"
+---
+
+TODO: Add general diagram of how delegation works
+
+EIP-7702 "delegation" is the process that allows users to enable Otim's smart features for their Externally Owned Accounts (EOAs). Users can easily delegate to Otim by following the onboarding flow in the App. During this process, users can decide to upgrade their EOA on a specific blockchain or for all EVM blockchains that implement EIP-7702.
+
+## What does this mean?
+
+In this context, to "delegate" means to authorize a smart contract to act on your behalf. After you delegate to Otim, your EOA can be called as if it were the Otim core smart contract. This enables all sorts of automation functionality since Otim can now interact with your EOA programmatically.
+
+## How does it work?
+
+At a high level, you can delegate to Otim by signing a specific delegation message and sending this signed message to Otim. Once Otim receives and parses the signed message, it will send a transaction on-chain to perform the delegation. The Otim App's onboarding flow is designed to walk you through this process and explain more details along the way.
+
+For a more detailed explanation checkout the [Glossary](/docs/resources/glossary) page.
