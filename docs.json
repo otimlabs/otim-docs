@@ -3,8 +3,8 @@
   "theme": "mint",
   "name": "Otim Documentation",
   "colors": {
-    "primary": "#BAFF26",
-    "light": "#BAFF26",
+    "primary": "#8DF107",
+    "light": "#8DF107",
     "dark": "#BAFF26"
   },
   "favicon": "/favicon.svg",
@@ -155,15 +155,10 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Manifesto",
+        "href": "https://otim.com/manifesto"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    ]
   },
   "footer": {
     "socials": {
