@@ -2,11 +2,11 @@
 title: When a Condition is Met
 ---
 
-For this example, let's say you stumble upon a mysterious Oracle contract :crystal_ball: that displays a new random number every day. You're unsure about the Oracle's origin or purpose but for some reason you desperately want to know whenever it displays your favorite number. We've got you!
+For this example, let's say you stumble upon a mysterious Oracle contract 🔮 that displays a new random number every day. You're unsure about the Oracle's origin or purpose but for some reason you desperately want to know whenever it displays your favorite number. We've got you!
 
 Let's write a custom smart contract that checks the Oracle's magic number and emits an event if it matches your favorite number:
 
-```solidity
+```solidity MagicNumberChecker.sol
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.26;
 
@@ -36,10 +36,14 @@ contract MagicNumberChecker {
 
 Now, let's construct an Instruction to call this contract whenever on-chain conditions will allow:
 
-- set `Instruction.interval` to `0` so the Instruction executes as soon as your favorite number shows up
-- set `Instruction.action` to the address of the `Call` Action
-- set `Instruction.arguments` to encoded calldata specifying:
-  - the address of your `MagicNumberChecker` contract
-  - the function selector for `checkMagicNumber`
+* set `Instruction.interval` to `0` so the Instruction executes as soon as your favorite number shows up
+
+* set `Instruction.action` to the address of the `Call` Action
+
+* set `Instruction.arguments` to encoded calldata specifying:
+
+  * the address of your `MagicNumberChecker` contract
+
+  * the function selector for `checkMagicNumber`
 
 Now, activate this Instruction and you'll never miss your favorite number!

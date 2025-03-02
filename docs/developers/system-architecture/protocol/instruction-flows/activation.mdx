@@ -2,8 +2,6 @@
 title: Activation
 ---
 
-![Core Contracts Activation flow diagram](/img/core-contracts-activation.png)
-
-An Instruction's first execution (a.k.a. activation) is special because certain validity conditions are checked at this time that don't need to be checked for subsequent executions. Since Instructions are immutable and designed to be executed more than once, we can get a lot out of the way during activation.
+![Core Contracts Activation flow diagram](/img/core-contracts-activation.png)An Instruction's first execution (a.k.a. activation) is special because certain validity conditions are checked at this time that don't need to be checked for subsequent executions. Since Instructions are immutable and designed to be executed more than once, we can get a lot out of the way during activation.
 
 For example, the user's signature is only validated during activation. The scheduling and validity of subsequent executions depend entirely on the Instruction scheduling parameters, the application logic of the Action contract, and the Action arguments. Because of this users get recurring executions with just one signature!
