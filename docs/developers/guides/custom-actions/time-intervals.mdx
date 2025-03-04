@@ -21,13 +21,13 @@ contract BirthdayReminder {
 
 Now, let's say you want to remind yourself about your friend Alice's birthday. Simply construct an Instruction that uses the `Call` Action to call your `BirthdayReminder` contract one week before Alice's birthday every year. Let's break this down:
 
-* set `Instruction.start` to a Unix timestamp that's about one week before Alice's next birthday
-
-* set `Instruction.interval` to one year in seconds
-
 * set `Instruction.action` to the address of the `Call` Action
 
 * set `Instruction.arguments` to encoded calldata specifying:
+
+  * set `Schedule.startAt` to a Unix timestamp that's about one week before Alice's next birthday
+
+  * set `Schedule.interval` to one year in seconds
 
   * the address of your `BirthdayReminder` contract
 

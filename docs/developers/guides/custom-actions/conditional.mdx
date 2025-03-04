@@ -37,11 +37,11 @@ contract MagicNumberChecker {
 
 Now, let's construct an Instruction to call this contract whenever on-chain conditions will allow:
 
-* set `Instruction.interval` to `0` so the Instruction executes as soon as your favorite number shows up
-
 * set `Instruction.action` to the address of the `Call` Action
 
 * set `Instruction.arguments` to encoded calldata specifying:
+
+  * set `Schedule.interval` to `0` so the Instruction executes as soon as your favorite number shows up
 
   * the address of your `MagicNumberChecker` contract
 
