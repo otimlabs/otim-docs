@@ -9,11 +9,11 @@ First, update your frontend to allow users to connect their Otim-delegated accou
 
 Next, we'll use Otim's API to request the user to subscribe to Netflix. Under the hood, we'll be requesting that users execute the `TransferERC20` Action on a monthly basis. Let's break this down:
 
-* set `Instruction.interval` to one month in seconds
-
 * set `Instruction.action` to the address of the `TransferERC20` Action
 
 * set `Instruction.arguments` to encoded calldata specifying:
+
+  * set `Schedule.interval` to one month in seconds
 
   * the token address of `USDC`
 
