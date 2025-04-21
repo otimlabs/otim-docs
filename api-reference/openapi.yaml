@@ -24,11 +24,11 @@ paths:
                 siwe:
                   type: string
                   description: SIWE message
-                  example: "Hello world"
+                  example: "Welcome to Otim! By signing in, you..."
                 signature:
                   type: string
                   description: Signature of the SIWE message
-                  example: "0x1234..."
+                  example: "0x..."
       responses:
         '200':
           description: Successful authentication
@@ -73,8 +73,10 @@ paths:
                         chainId:
                           type: integer
                           format: int64
+                          example: 11155111
                         chainName:
                           type: string
+                          example: "Sepolia"
   /config/delegate/address/{chainId}:
     get:
       description: Get delegate address for a specific chain
@@ -84,8 +86,8 @@ paths:
           required: true
           schema:
             type: integer
-            description: Chain ID
             format: int64
+            description: Chain ID
       responses:
         '200':
           description: Delegate address retrieved successfully
@@ -107,8 +109,8 @@ paths:
           required: true
           schema:
             type: integer
-            description: Chain ID
             format: int64
+            description: Chain ID
       responses:
         '200':
           description: Instruction storage address retrieved successfully
@@ -131,8 +133,8 @@ paths:
           required: true
           schema:
             type: integer
-            description: Chain ID
             format: int64
+            description: Chain ID
       responses:
         '200':
           description: Token list retrieved successfully
@@ -145,8 +147,7 @@ paths:
                     type: array
                     items:
                       type: string
-                    example: ["<token symbol>", "<token symbol>"]
-
+                    example: ["USDC", "USDT"]
   /delegation/new:
     post:
       description: Create a new delegation to Otim
@@ -171,7 +172,6 @@ paths:
       responses:
         '201':
           description: Delegation created successfully
-
   /delegation/status:
     get:
       description: Get Otim delegation status
@@ -191,8 +191,8 @@ paths:
                   example: "0x..."
                 chainId:
                   type: integer
-                  description: Chain ID
                   format: int64
+                  description: Chain ID
       responses:
         '200':
           description: Delegation status retrieved successfully
@@ -204,10 +204,9 @@ paths:
                   delegationStatus:
                     type: string
                     example: "Delegated"
-
   /instruction/build:
     post:
-      description: Build a new instruction
+      description: Build an Otim instruction
       security:
         - bearerAuth: []
       requestBody:
@@ -215,7 +214,34 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BuildInstructionRequest'
+              type: object
+              required:
+                - address
+                - chainId
+                - salt
+                - maxExecutions
+                - action
+                - actionArguments
+              properties:
+                address:
+                  type: string
+                  format: address
+                  description: Address of the user
+                  example: "0x..."
+                chainId:
+                  type: integer
+                  format: uint64
+                  description: Chain ID
+                salt:
+                  type: integer
+                  format: uint64
+                  description: Salt to ensure instruction is unique
+                maxExecutions:
+                  type: integer
+                  format: uint64
+                  description: Maximum number of times this instruction can be executed
+                actionArguments:
+                  $ref: '#/components/schemas/ActionArguments'
       responses:
         '200':
           description: Instruction built successfully
@@ -363,34 +389,231 @@ paths:
 
 components:
   schemas:
+    TokenERC20:
+      type: string
+      description: Available tokens to use
+      enum:
+        - USDC
+        - USDT
+      example: "USDC"
+    TokenFee:
+      type: string
+      description: Available fee tokens to use
+      enum:
+        - ETH
+        - USDC
+      example: "ETH"
+    OtimFee:
+      type: object
+      required:
+        - value
+        - token
+      properties:
+        value:
+          type: integer
+          format: uint256
+          description: Fee value in token decimals
+          example: 1000000000000000000
+        token:
+          $ref: '#/components/schemas/TokenFee'
+    IntervalSchedule:
+      type: object
+      required:
+        - startAt
+        - startBy
+        - interval
+        - timeout
+      properties:
+        startAt:
+          type: integer
+          format: uint256
+          description: Unix timestamp to activate the action
+        startBy:
+          type: integer
+          format: uint256
+          description: Unix timestamp by which the action must be activated
+        interval:
+          type: integer
+          format: uint256
+          description: Interval between action executions (in seconds)
+        timeout:
+          type: integer
+          format: uint256
+          description: Timeout after which the execution is not valid (in seconds)
+    ActionArguments:
+      type: object
+      oneOf:
+        - title: RefuelERC20
+          type: object
+          required:
+            - refuelERC20
+          properties:
+            refuelERC20:
+              type: object
+              required:
+                - token
+                - target
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                token:
+                  $ref: '#/components/schemas/TokenERC20'
+                target:
+                  type: string
+                  format: address
+                  description: Address of the refuel recipient
+                  example: "0x..."
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: Balance threshold that triggers refuel
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: Target balance after refuel
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: Refuel
+          type: object
+          required:
+            - refuel
+          properties:
+            refuel:
+              type: object
+              required:
+                - target
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: Address of the refuel recipient
+                  example: "0x..."
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: Balance threshold that triggers refuel
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: Target balance after refuel
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: TransferERC20
+          type: object
+          required:
+            - transferERC20
+          properties:
+            transferERC20:
+              type: object
+              required:
+                - token
+                - target
+                - value
+                - schedule
+                - fee
+              properties:
+                token:
+                  $ref: '#/components/schemas/TokenERC20'
+                target:
+                  type: string
+                  format: address
+                  description: Address of the transfer recipient
+                  example: "0x..."
+                value:
+                  type: integer
+                  format: uint256
+                  description: Amount to transfer
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: Transfer
+          type: object
+          required:
+            - transfer
+          properties:
+            transfer:
+              type: object
+              required:
+                - target
+                - value
+                - schedule
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: Address of the transfer recipient
+                  example: "0x..."
+                value:
+                  type: integer
+                  format: uint256
+                  description: Amount to transfer
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+      discriminator:
+        propertyName: type
+        mapping:
+          refuelERC20: '#/components/schemas/ActionArguments/oneOf/0'
+          refuel: '#/components/schemas/ActionArguments/oneOf/1'
+          transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
+          transfer: '#/components/schemas/ActionArguments/oneOf/3'
     BuildInstructionRequest:
       type: object
+      required:
+        - address
+        - chainId
+        - salt
+        - maxExecutions
+        - action
+        - actionArguments
       properties:
+        address:
+          type: string
+          format: address
+          description: Address of the user
+          example: "0x..."
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
         salt:
           type: integer
           format: uint64
+          description: Salt to ensure instruction is unique
         maxExecutions:
           type: integer
           format: uint64
+          description: Maximum number of times this instruction can be executed
         actionArguments:
-          type: object
-        # Additional properties based on the action type
-
+          $ref: '#/components/schemas/ActionArguments'
     BuildInstructionResponse:
       type: object
       properties:
         salt:
           type: integer
           format: uint64
+          description: Salt to ensure instruction is unique
         maxExecutions:
           type: integer
           format: uint64
+          description: Maximum number of times this instruction can be executed
         action:
           type: string
           format: address
+          description: Action contract address
+          example: "0x..."
         arguments:
           type: string
           format: bytes
+          description: Arguments to execute on the action contract
+          example: "0x..."
 
     GetInstructionDetailsResponse:
       type: object

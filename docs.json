@@ -148,7 +148,7 @@
                 ]
               },
               {
-                "group": "Config",
+                "group": "Configuration",
                 "pages": [
                   "api-reference/config/chains",
                   "api-reference/config/delegate-address-by-chainid",
@@ -161,6 +161,13 @@
                 "pages": [
                   "api-reference/delegation/new",
                   "api-reference/delegation/status"
+                ]
+              },
+              {
+                "group": "Instruction",
+                "pages": [
+                  "api-reference/instruction/build",
+                  "api-reference/instruction/new"
                 ]
               }
             ]
