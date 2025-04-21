@@ -148,12 +148,19 @@
                 ]
               },
               {
-                "group": "Configuration",
+                "group": "Config",
                 "pages": [
                   "api-reference/config/chains",
                   "api-reference/config/delegate-address-by-chainid",
                   "api-reference/config/instruction-storage-address-by-chainid",
                   "api-reference/config/tokens-by-chainid"
+                ]
+              },
+              {
+                "group": "Delegation",
+                "pages": [
+                  "api-reference/delegation/new",
+                  "api-reference/delegation/status"
                 ]
               }
             ]

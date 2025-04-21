@@ -84,6 +84,7 @@ paths:
           required: true
           schema:
             type: integer
+            description: Chain ID
             format: int64
       responses:
         '200':
@@ -106,6 +107,7 @@ paths:
           required: true
           schema:
             type: integer
+            description: Chain ID
             format: int64
       responses:
         '200':
@@ -129,6 +131,7 @@ paths:
           required: true
           schema:
             type: integer
+            description: Chain ID
             format: int64
       responses:
         '200':
@@ -146,44 +149,50 @@ paths:
 
   /delegation/new:
     post:
-      description: Create a new delegation
-      security:
-        - bearerAuth: []
+      description: Create a new delegation to Otim
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - signedAuthorization
+                - signerAddress
               properties:
-                chainId:
-                  type: integer
-                  format: int64
-                signerAddress:
-                  type: string
                 signedAuthorization:
                   type: string
+                  description: "Signed RLP-encoded [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) authorization: `keccak(MAGIC || rlp([chain_id, address, nonce]))`"
+                  example: "0x..."
+                signerAddress:
+                  type: string
+                  description: Address of the signer who signed the `signedAuthorization`
+                  example: "0x..."
       responses:
         '201':
           description: Delegation created successfully
 
   /delegation/status:
     get:
-      description: Get delegation status
-      security:
-        - bearerAuth: []
+      description: Get Otim delegation status
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - address
+                - chainId
               properties:
-                chainId:
-                  type: integer
-                  format: int64
                 address:
                   type: string
+                  description: Address to check delegation status
+                  example: "0x..."
+                chainId:
+                  type: integer
+                  description: Chain ID
+                  format: int64
       responses:
         '200':
           description: Delegation status retrieved successfully
@@ -194,7 +203,7 @@ paths:
                 properties:
                   delegationStatus:
                     type: string
-                    enum: [UNDELEGATED, PENDING, DELEGATED]
+                    example: "Delegated"
 
   /instruction/build:
     post:
