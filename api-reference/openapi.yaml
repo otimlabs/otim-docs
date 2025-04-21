@@ -214,34 +214,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-                - chainId
-                - salt
-                - maxExecutions
-                - action
-                - actionArguments
-              properties:
-                address:
-                  type: string
-                  format: address
-                  description: Address of the user
-                  example: "0x..."
-                chainId:
-                  type: integer
-                  format: uint64
-                  description: Chain ID
-                salt:
-                  type: integer
-                  format: uint64
-                  description: Salt to ensure instruction is unique
-                maxExecutions:
-                  type: integer
-                  format: uint64
-                  description: Maximum number of times this instruction can be executed
-                actionArguments:
-                  $ref: '#/components/schemas/ActionArguments'
+              $ref: '#/components/schemas/BuildInstructionRequest'
       responses:
         '200':
           description: Instruction built successfully
@@ -249,10 +222,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BuildInstructionResponse'
-
   /instruction/new:
     post:
-      description: Activate a new instruction
+      description: Activate a built Otim instruction
       security:
         - bearerAuth: []
       requestBody:
@@ -272,27 +244,7 @@ paths:
                   instructionId:
                     type: string
                     format: bytes32
-
-  /instruction/deactivate:
-    post:
-      description: Deactivate an instruction
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                instructionId:
-                  type: string
-                  format: bytes32
-                deactivationSignature:
-                  type: string
-      responses:
-        '200':
-          description: Instruction deactivated successfully
+                    example: "0x..."
 
   /instruction/details:
     get:
@@ -371,6 +323,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DurationInstructionSummary'
+
+  /instruction/deactivate:
+    post:
+      description: Deactivate an instruction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instructionId:
+                  type: string
+                  format: bytes32
+                deactivationSignature:
+                  type: string
+      responses:
+        '200':
+          description: Instruction deactivated successfully
 
   /transactions:
     get:
@@ -564,6 +537,23 @@ components:
           refuel: '#/components/schemas/ActionArguments/oneOf/1'
           transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
           transfer: '#/components/schemas/ActionArguments/oneOf/3'
+    PrimitiveSignature:
+      type: object
+      properties:
+        yParity:
+          type: number
+          description: Y parity of the signature
+          enum: [0, 1]
+        r:
+          type: string
+          format: bytes
+          description: R of the signature
+          example: "0x..."
+        s:
+          type: string
+          format: bytes
+          description: S of the signature
+          example: "0x..."
     BuildInstructionRequest:
       type: object
       required:
@@ -614,6 +604,54 @@ components:
           format: bytes
           description: Arguments to execute on the action contract
           example: "0x..."
+    NewInstructionRequest:
+      type: object
+      required:
+        - address
+        - chainId
+        - salt
+        - maxExecutions
+        - action
+        - arguments
+        - activationSignature
+      properties:
+        address:
+          type: string
+          format: address
+          description: Address of the user
+          example: "0x..."
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+        salt:
+          type: integer
+          format: uint64
+          description: Salt to ensure instruction is unique
+        maxExecutions:
+          type: integer
+          format: uint64
+          description: Maximum number of times this instruction can be executed
+        action:
+          type: string
+          format: address
+          description: Action contract address
+          example: "0x..."
+        arguments:
+          type: string
+          format: bytes
+          description: Arguments to execute on the action contract
+          example: "0x..."
+        activationSignature:
+          description: User signature over the activation hash
+          $ref: '#/components/schemas/PrimitiveSignature'
+        nickname:
+          type: string
+          description: Nickname for the instruction
+          example: "My cool instruction"
+
+
+
 
     GetInstructionDetailsResponse:
       type: object
