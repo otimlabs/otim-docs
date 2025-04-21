@@ -15,7 +15,7 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 <Card
   title="Plant Store Endpoints"
   icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.yaml"
 >
   View the OpenAPI specification file
 </Card>
@@ -24,10 +24,7 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 
 All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```yaml
+security:
+  - bearerAuth: []
 ```

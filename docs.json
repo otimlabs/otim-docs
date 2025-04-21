@@ -138,12 +138,10 @@
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Auth",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/auth/login",
+              "api-reference/auth/logout"
             ]
           }
         ]
