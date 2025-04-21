@@ -54,7 +54,489 @@ paths:
               schema:
                 type: object
                 properties: {}
+  /config/chains:
+    get:
+      description: Get list of supported chains
+      responses:
+        '200':
+          description: Chain list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chains:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chainId:
+                          type: integer
+                          format: int64
+                        chainName:
+                          type: string
+  /config/delegate/address/{chainId}:
+    get:
+      description: Get delegate address for a specific chain
+      parameters:
+        - name: chainId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Delegate address retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  otimDelegateAddress:
+                    type: string
+                    description: Ethereum address in hex format
+                    example: "0x..."
+  /config/instruction_storage/address/{chainId}:
+    get:
+      description: Get instruction storage address for a specific chain
+      parameters:
+        - name: chainId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Instruction storage address retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  instructionStorageAddress:
+                    type: string
+                    description: Ethereum address in hex format
+                    example: "0x..."
+
+  /config/tokens/{chainId}:
+    get:
+      description: Get list of supported tokens for a specific chain
+      parameters:
+        - name: chainId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Token list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tokens:
+                    type: array
+                    items:
+                      type: string
+                    example: ["<token symbol>", "<token symbol>"]
+
+  /delegation/new:
+    post:
+      description: Create a new delegation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: integer
+                  format: int64
+                signerAddress:
+                  type: string
+                signedAuthorization:
+                  type: string
+      responses:
+        '201':
+          description: Delegation created successfully
+
+  /delegation/status:
+    get:
+      description: Get delegation status
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: integer
+                  format: int64
+                address:
+                  type: string
+      responses:
+        '200':
+          description: Delegation status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delegationStatus:
+                    type: string
+                    enum: [UNDELEGATED, PENDING, DELEGATED]
+
+  /instruction/build:
+    post:
+      description: Build a new instruction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildInstructionRequest'
+      responses:
+        '200':
+          description: Instruction built successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildInstructionResponse'
+
+  /instruction/new:
+    post:
+      description: Activate a new instruction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewInstructionRequest'
+      responses:
+        '201':
+          description: Instruction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  instructionId:
+                    type: string
+                    format: bytes32
+
+  /instruction/deactivate:
+    post:
+      description: Deactivate an instruction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instructionId:
+                  type: string
+                  format: bytes32
+                deactivationSignature:
+                  type: string
+      responses:
+        '200':
+          description: Instruction deactivated successfully
+
+  /instruction/details:
+    get:
+      description: Get instruction details
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instructionId:
+                  type: string
+                  format: bytes32
+      responses:
+        '200':
+          description: Instruction details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetInstructionDetailsResponse'
+
+  /instructions/all:
+    get:
+      description: Get all instructions for a user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Instructions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstructionDTO'
+
+  /instructions/chain:
+    get:
+      description: Get instructions for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chainId:
+                  type: integer
+                  format: int64
+      responses:
+        '200':
+          description: Chain instructions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstructionDTO'
+
+  /instructions/summary:
+    get:
+      description: Get instruction execution summaries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Instruction summaries retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DurationInstructionSummary'
+
+  /transactions:
+    get:
+      description: Get transactions for a user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionDTO'
+
 components:
+  schemas:
+    BuildInstructionRequest:
+      type: object
+      properties:
+        salt:
+          type: integer
+          format: uint64
+        maxExecutions:
+          type: integer
+          format: uint64
+        actionArguments:
+          type: object
+        # Additional properties based on the action type
+
+    BuildInstructionResponse:
+      type: object
+      properties:
+        salt:
+          type: integer
+          format: uint64
+        maxExecutions:
+          type: integer
+          format: uint64
+        action:
+          type: string
+          format: address
+        arguments:
+          type: string
+          format: bytes
+
+    GetInstructionDetailsResponse:
+      type: object
+      properties:
+        actionName:
+          type: string
+        salt:
+          type: integer
+          format: uint64
+        maxExecutions:
+          type: integer
+          format: uint64
+        action:
+          type: string
+          format: address
+        actionArguments:
+          type: object
+        # Additional properties based on the action type
+        nickname:
+          type: string
+          nullable: true
+
+    Instruction:
+      type: object
+      properties:
+        salt:
+          type: integer
+          format: uint64
+        maxExecutions:
+          type: integer
+          format: uint64
+        action:
+          type: string
+        arguments:
+          type: string
+
+    InstructionDTO:
+      type: object
+      properties:
+        createdAtUnix:
+          type: integer
+          format: int64
+        updatedAtUnix:
+          type: integer
+          format: int64
+        address:
+          type: string
+        chainId:
+          type: integer
+          format: int64
+        instruction:
+          $ref: '#/components/schemas/Instruction'
+        instructionId:
+          type: string
+          format: bytes32
+        activationSignature:
+          type: object
+          properties:
+            signature:
+              type: string
+            message:
+              type: string
+        deactivationSignature:
+          type: object
+          nullable: true
+          properties:
+            signature:
+              type: string
+            message:
+              type: string
+        executionStatus:
+          type: string
+          enum: [ACTIVE, INACTIVE, COMPLETED]
+        executionCounter:
+          type: integer
+          format: uint64
+        lastExecutedUnix:
+          type: integer
+          format: int64
+        nextExecutionUnix:
+          type: integer
+          format: int64
+        nickname:
+          type: string
+          nullable: true
+
+    DurationInstructionSummary:
+      type: object
+      properties:
+        instructionId:
+          type: string
+          format: bytes32
+        chainId:
+          type: integer
+          format: int64
+        executionCount:
+          type: integer
+          format: uint64
+        wasActivatedDuring:
+          type: boolean
+        lateCount:
+          type: integer
+          format: uint64
+        onTimeCount:
+          type: integer
+          format: uint64
+
+    TransactionDTO:
+      type: object
+      properties:
+        createdAtUnix:
+          type: integer
+          format: int64
+        updatedAtUnix:
+          type: integer
+          format: int64
+        transactionHash:
+          type: string
+          format: bytes32
+        chainId:
+          type: integer
+          format: int64
+        address:
+          type: string
+        instructionId:
+          type: string
+          format: bytes32
+        startedAtUnix:
+          type: integer
+          format: int64
+        finishedAtUnix:
+          type: integer
+          format: int64
+        startedAtBlock:
+          type: integer
+          format: uint64
+        finishedAtBlock:
+          type: integer
+          format: uint64
+          nullable: true
+        blockHash:
+          type: string
+          format: bytes32
+          nullable: true
+        activation:
+          type: boolean
+        deactivation:
+          type: boolean
+        errorMessage:
+          type: string
+          nullable: true
+        transactionStatus:
+          type: string
+          enum: [PENDING, CONFIRMED, FAILED]
+
   securitySchemes:
     bearerAuth:
       type: http

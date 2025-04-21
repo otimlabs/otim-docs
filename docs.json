@@ -132,16 +132,30 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Using the API",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Auth",
+            "group": "Otim API",
             "pages": [
-              "api-reference/auth/login",
-              "api-reference/auth/logout"
+              {
+                "group": "Authentication",
+                "pages": [
+                  "api-reference/auth/login",
+                  "api-reference/auth/logout"
+                ]
+              },
+              {
+                "group": "Configuration",
+                "pages": [
+                  "api-reference/config/chains",
+                  "api-reference/config/delegate-address-by-chainid",
+                  "api-reference/config/instruction-storage-address-by-chainid",
+                  "api-reference/config/tokens-by-chainid"
+                ]
+              }
             ]
           }
         ]
