@@ -167,7 +167,8 @@
                 "group": "Instruction",
                 "pages": [
                   "api-reference/instruction/build",
-                  "api-reference/instruction/new"
+                  "api-reference/instruction/new",
+                  "api-reference/instruction/details"
                 ]
               }
             ]

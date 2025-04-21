@@ -245,10 +245,9 @@ paths:
                     type: string
                     format: bytes32
                     example: "0x..."
-
   /instruction/details:
     get:
-      description: Get instruction details
+      description: Get details about an instruction by its ID
       security:
         - bearerAuth: []
       requestBody:
@@ -258,9 +257,20 @@ paths:
             schema:
               type: object
               properties:
+                address:
+                  type: string
+                  format: address
+                  description: Address of the user
+                  example: "0x..."
+                chainId:
+                  type: integer
+                  format: int64
+                  description: Chain ID of the instruction
                 instructionId:
                   type: string
                   format: bytes32
+                  description: Instruction ID
+                  example: "0x..."
       responses:
         '200':
           description: Instruction details retrieved successfully
@@ -649,30 +659,35 @@ components:
           type: string
           description: Nickname for the instruction
           example: "My cool instruction"
-
-
-
-
     GetInstructionDetailsResponse:
       type: object
       properties:
         actionName:
           type: string
+          description: Name of the action
+          example: "Refuel"
         salt:
           type: integer
           format: uint64
+          description: Salt to ensure instruction is unique
         maxExecutions:
           type: integer
           format: uint64
+          description: Maximum number of times this instruction can be executed
         action:
           type: string
           format: address
-        actionArguments:
-          type: object
-        # Additional properties based on the action type
+          description: Action contract address
+          example: "0x..."
+        arguments:
+          type: string
+          format: bytes
+          description: Arguments to execute on the action contract
+          example: "0x..."
         nickname:
           type: string
-          nullable: true
+          description: Nickname for the instruction
+          example: "My cool instruction"
 
     Instruction:
       type: object
