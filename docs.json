@@ -164,11 +164,12 @@
                 ]
               },
               {
-                "group": "Instruction",
+                "group": "Instructions",
                 "pages": [
-                  "api-reference/instruction/build",
-                  "api-reference/instruction/new",
-                  "api-reference/instruction/details"
+                  "api-reference/instructions/instruction-build",
+                  "api-reference/instructions/instruction-new",
+                  "api-reference/instructions/instruction-details",
+                  "api-reference/instructions/instructions-all"
                 ]
               }
             ]

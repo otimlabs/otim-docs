@@ -278,12 +278,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetInstructionDetailsResponse'
-
   /instructions/all:
     get:
-      description: Get all instructions for a user
+      description: Get all instructions and their details for a user
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - address
+              properties:
+                address:
+                  type: string
+                  format: address
+                  description: Address of the user
+                  example: "0x..."
       responses:
         '200':
           description: Instructions retrieved successfully
@@ -292,7 +305,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/InstructionDTO'
+                  $ref: '#/components/schemas/StoredInstruction'
 
   /instructions/chain:
     get:
@@ -317,7 +330,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/InstructionDTO'
+                  $ref: '#/components/schemas/StoredInstruction'
 
   /instructions/summary:
     get:
@@ -564,6 +577,44 @@ components:
           format: bytes
           description: S of the signature
           example: "0x..."
+    StoredSignature:
+      type: object
+      properties:
+        v:
+          type: number
+          description: V of the signature
+          enum: [27, 28]
+        r:
+          type: string
+          format: bytes
+          description: R of the signature
+          example: "0x..."
+        s:
+          type: string
+          format: bytes
+          description: S of the signature
+          example: "0x..."
+    Instruction:
+      type: object
+      properties:
+        salt:
+          type: integer
+          format: uint64
+          description: Salt to ensure instruction is unique
+        maxExecutions:
+          type: integer
+          format: uint64
+          description: Maximum number of times this instruction can be executed
+        action:
+          type: string
+          format: address
+          description: Action contract address
+          example: "0x..."
+        arguments:
+          type: string
+          format: bytes
+          description: Arguments to execute on the action contract
+          example: "0x..."
     BuildInstructionRequest:
       type: object
       required:
@@ -688,70 +739,58 @@ components:
           type: string
           description: Nickname for the instruction
           example: "My cool instruction"
-
-    Instruction:
-      type: object
-      properties:
-        salt:
-          type: integer
-          format: uint64
-        maxExecutions:
-          type: integer
-          format: uint64
-        action:
-          type: string
-        arguments:
-          type: string
-
-    InstructionDTO:
+    StoredInstruction:
       type: object
       properties:
         createdAtUnix:
           type: integer
           format: int64
+          description: Unix timestamp of when the instruction was created
         updatedAtUnix:
           type: integer
           format: int64
+          description: Unix timestamp of when the instruction was last updated
         address:
           type: string
+          description: Address of the user
+          example: "0x..."
         chainId:
           type: integer
           format: int64
+          description: Chain ID for the instruction
         instruction:
           $ref: '#/components/schemas/Instruction'
         instructionId:
           type: string
           format: bytes32
+          description: Unique identifier for the instruction
+          example: "0x..."
         activationSignature:
-          type: object
-          properties:
-            signature:
-              type: string
-            message:
-              type: string
+          $ref: '#/components/schemas/StoredSignature'
         deactivationSignature:
           type: object
           nullable: true
-          properties:
-            signature:
-              type: string
-            message:
-              type: string
+          $ref: '#/components/schemas/StoredSignature'
         executionStatus:
           type: string
-          enum: [ACTIVE, INACTIVE, COMPLETED]
+          enum: [PendingActivation, Active, PendingDeactivation, Deactivated, Completed, Errored]
         executionCounter:
           type: integer
           format: uint64
+          description: Number of times the instruction has been executed
         lastExecutedUnix:
           type: integer
           format: int64
+          description: Unix timestamp of when the instruction was last executed
         nextExecutionUnix:
           type: integer
           format: int64
+          description: Unix timestamp of when the instruction will be executed next (`lastExecutedUnix + interval`)
         nickname:
           type: string
           nullable: true
+          description: Nickname for the instruction
+          example: "My cool instruction"
 
     DurationInstructionSummary:
       type: object
