@@ -102,7 +102,7 @@ paths:
                     example: "0x..."
   /config/instruction_storage/address/{chainId}:
     get:
-      description: Get instruction storage address for a specific chain
+      description: Get instruction Storage address for a specific chain
       parameters:
         - name: chainId
           in: path
@@ -113,7 +113,7 @@ paths:
             description: Chain ID
       responses:
         '200':
-          description: Instruction storage address retrieved successfully
+          description: Instruction Storage address retrieved successfully
           content:
             application/json:
               schema:

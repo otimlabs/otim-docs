@@ -134,11 +134,11 @@
           {
             "group": "Using the API",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/getting-started"
             ]
           },
           {
-            "group": "Otim API",
+            "group": "Otim APIs",
             "pages": [
               {
                 "group": "Authentication",
