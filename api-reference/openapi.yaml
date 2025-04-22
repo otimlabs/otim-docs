@@ -390,12 +390,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetInstructionSummariesResponse'
-
   /transactions:
     get:
       description: Get transactions for a user
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetTransactionsRequest'
       responses:
         '200':
           description: Transactions retrieved successfully
@@ -404,7 +409,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TransactionDTO'
+                  $ref: '#/components/schemas/StoredTransaction'
 
 components:
   schemas:
@@ -814,6 +819,66 @@ components:
           nullable: true
           description: Nickname for the instruction
           example: "My cool instruction"
+    StoredTransaction:
+      type: object
+      properties:
+        createdAtUnix:
+          type: integer
+          format: int64
+          description: Unix timestamp of when the document was created
+        updatedAtUnix:
+          type: integer
+          format: int64
+          description: Unix timestamp of when the document was last updated
+        transactionHash:
+          type: string
+          format: bytes32
+          description: Hash of the transaction
+          example: "0x..."
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID of the transaction
+        address:
+          type: string
+          format: address
+          description: Address of the user
+          example: "0x..."
+        instructionId:
+          type: string
+          format: bytes32
+          description: Instruction ID of the Instruction submitted in the transaction
+          example: "0x..."
+        startedAtUnix:
+          type: integer
+          format: int64
+          description: Unix timestamp of when the transaction was started
+        finishedAtUnix:
+          type: integer
+          format: int64
+          description: Unix timestamp of when the transaction finished
+        startedAtBlock:
+          type: integer
+          format: uint64
+          description: Block number when the transaction was started
+        finishedAtBlock:
+          type: integer
+          format: uint64
+          description: Block number when the transaction finished
+        blockHash:
+          type: string
+          format: bytes32
+          description: Hash of the block the transaction was included in
+          example: "0x..."
+        activation:
+          type: boolean
+          description: True if the transaction was an Instruction activation
+        deactivation:
+          type: boolean
+          description: True if the transaction was an Instruction deactivation
+        transactionStatus:
+          type: string
+          enum: [Pending, InFlight, Success, Error]
     GetInstructionSummariesRequest:
       type: object
       required:
@@ -906,58 +971,39 @@ components:
         ]
       ]
       description: "List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`"
-    
-    
-    
-    
-
-    TransactionDTO:
+    GetTransactionsRequest:
       type: object
       properties:
-        createdAtUnix:
-          type: integer
-          format: int64
-        updatedAtUnix:
-          type: integer
-          format: int64
-        transactionHash:
-          type: string
-          format: bytes32
-        chainId:
-          type: integer
-          format: int64
         address:
           type: string
-        instructionId:
+          format: address
+          description: Address of the user
+          example: "0x..."
+        instructionIds:
+          type: array
+          items:
+            type: string
+            format: bytes32
+          example: ["0x...", "0x..."]
+        from:
           type: string
-          format: bytes32
-        startedAtUnix:
+          format: date-time
+          example: "2021-01-01T00:00:00Z"
+        to:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00Z"
+        skip:
           type: integer
           format: int64
-        finishedAtUnix:
+          nullable: true
+        take:
           type: integer
           format: int64
-        startedAtBlock:
-          type: integer
-          format: uint64
-        finishedAtBlock:
-          type: integer
-          format: uint64
           nullable: true
-        blockHash:
+        sort:
           type: string
-          format: bytes32
-          nullable: true
-        activation:
-          type: boolean
-        deactivation:
-          type: boolean
-        errorMessage:
-          type: string
-          nullable: true
-        transactionStatus:
-          type: string
-          enum: [PENDING, CONFIRMED, FAILED]
+          enum: [Ascending, Descending]
 
   securitySchemes:
     bearerAuth:
