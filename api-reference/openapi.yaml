@@ -245,6 +245,39 @@ paths:
                     type: string
                     format: bytes32
                     example: "0x..."
+  /instruction/deactivate:
+    post:
+      description: Deactivate an instruction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  format: address
+                  description: Address of the user
+                  example: "0x..."
+                chainId:
+                  type: integer
+                  format: int64
+                  description: Chain ID of the instruction
+                deactivation:
+                  type: string
+                  format: bytes32
+                  description: Instruction ID of the instruction to deactivate
+                  example: "0x..."
+                deactivationSignature:
+                  type: string
+                  description: User signature over the deactivation hash
+                  $ref: '#/components/schemas/PrimitiveSignature'
+      responses:
+        '200':
+          description: Instruction deactivated successfully
   /instruction/details:
     get:
       description: Get details about an instruction by its ID
@@ -339,7 +372,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StoredInstruction'
-
   /instructions/summary:
     get:
       description: Get instruction execution summaries for a list of instructions
@@ -358,27 +390,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetInstructionSummariesResponse'
-
-  /instruction/deactivate:
-    post:
-      description: Deactivate an instruction
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                instructionId:
-                  type: string
-                  format: bytes32
-                deactivationSignature:
-                  type: string
-      responses:
-        '200':
-          description: Instruction deactivated successfully
 
   /transactions:
     get:
