@@ -169,7 +169,8 @@
                   "api-reference/instructions/instruction-build",
                   "api-reference/instructions/instruction-new",
                   "api-reference/instructions/instruction-details",
-                  "api-reference/instructions/instructions-all"
+                  "api-reference/instructions/instructions-all",
+                  "api-reference/instructions/instructions-chain"
                 ]
               }
             ]

@@ -306,10 +306,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StoredInstruction'
-
   /instructions/chain:
     get:
-      description: Get instructions for a specific chain
+      description: Get instructions for a user specific chain by user
       security:
         - bearerAuth: []
       requestBody:
@@ -318,10 +317,19 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - address
+                - chainId
               properties:
+                address:
+                  type: string
+                  format: address
+                  description: Address of the user
+                  example: "0x..."
                 chainId:
                   type: integer
                   format: int64
+                  description: Chain ID to get instructions for
       responses:
         '200':
           description: Chain instructions retrieved successfully
