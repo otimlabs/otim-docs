@@ -342,18 +342,22 @@ paths:
 
   /instructions/summary:
     get:
-      description: Get instruction execution summaries
+      description: Get instruction execution summaries for a list of instructions
       security:
         - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetInstructionSummariesRequest'
       responses:
         '200':
           description: Instruction summaries retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DurationInstructionSummary'
+                $ref: '#/components/schemas/GetInstructionSummariesResponse'
 
   /instruction/deactivate:
     post:
@@ -799,27 +803,102 @@ components:
           nullable: true
           description: Nickname for the instruction
           example: "My cool instruction"
-
-    DurationInstructionSummary:
+    GetInstructionSummariesRequest:
       type: object
+      required:
+        - address
+        - instructionIds
+        - from
+        - to
+        - skip
+        - take
+        - sort
+        - timeScale
       properties:
-        instructionId:
+        address:
           type: string
-          format: bytes32
-        chainId:
+          format: address
+          description: Address of the user
+          example: "0x..."
+        instructionIds:
+          type: array
+          items:
+            type: string
+            format: bytes32
+          example: ["0x...", "0x..."]
+        from:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00Z"
+        to:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00Z"
+        skip:
           type: integer
           format: int64
-        executionCount:
+        take:
           type: integer
-          format: uint64
-        wasActivatedDuring:
-          type: boolean
-        lateCount:
-          type: integer
-          format: uint64
-        onTimeCount:
-          type: integer
-          format: uint64
+          format: int64
+        sort:
+          type: string
+          enum: [Ascending, Descending]
+        timeScale:
+          type: string
+          description: The time scale to group summaries by
+          enum: [seconds, minutes, hours, days]
+    GetInstructionSummariesResponse:
+      type: array
+      example: [
+        [
+          {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "date": "2024-03-20",
+            "address": "0x1234...",
+            "chain_id": 1,
+            "instruction_id": "0xabcd..."
+          },
+          [
+            {
+              "id": "550e8400-e29b-41d4-a716-446655440001",
+              "day_summary_id": "550e8400-e29b-41d4-a716-446655440000",
+              "activation": true,
+              "block_latency": 1,
+              "execution_time_unix": 1710936000
+            },
+            {
+              "id": "550e8400-e29b-41d4-a716-446655440002",
+              "day_summary_id": "550e8400-e29b-41d4-a716-446655440000",
+              "activation": false,
+              "block_latency": 2,
+              "execution_time_unix": 1710939600
+            }
+          ]
+        ],
+        [
+          {
+            "id": "550e8400-e29b-41d4-a716-446655440003",
+            "date": "2024-03-21",
+            "address": "0x1234...",
+            "chain_id": 1,
+            "instruction_id": "0xabcd..."
+          },
+          [
+            {
+              "id": "550e8400-e29b-41d4-a716-446655440004",
+              "day_summary_id": "550e8400-e29b-41d4-a716-446655440003",
+              "activation": false,
+              "block_latency": 1,
+              "execution_time_unix": 1711022400
+            }
+          ]
+        ]
+      ]
+      description: "List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`"
+    
+    
+    
+    
 
     TransactionDTO:
       type: object
