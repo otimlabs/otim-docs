@@ -24,7 +24,7 @@ paths:
                 siwe:
                   type: string
                   description: SIWE message
-                  example: "Welcome to Otim! By signing in, you..."
+                  example: "Welcome to Otim! By signing in, you accept the Otim Terms and Conditions (https://otim.com/tac). This request will not trigger a blockchain transaction or cost any gas fees."
                 signature:
                   type: string
                   description: Signature of the SIWE message
@@ -76,10 +76,10 @@ paths:
                           example: 11155111
                         chainName:
                           type: string
-                          example: "Sepolia"
+                          example: "sepolia"
   /config/delegate/address/{chainId}:
     get:
-      description: Get delegate address for a specific chain
+      description: Get delegate address for a specific chain in the supported chains list
       parameters:
         - name: chainId
           in: path
@@ -98,11 +98,11 @@ paths:
                 properties:
                   otimDelegateAddress:
                     type: string
-                    description: Ethereum address in hex format
-                    example: "0x..."
+                    description: EVM address in hex format
+                    example: "0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0"
   /config/instruction_storage/address/{chainId}:
     get:
-      description: Get instruction Storage address for a specific chain
+      description: Get instruction Storage address for a specific chain in the supported chains list
       parameters:
         - name: chainId
           in: path
@@ -121,12 +121,12 @@ paths:
                 properties:
                   instructionStorageAddress:
                     type: string
-                    description: Ethereum address in hex format
-                    example: "0x..."
+                    description: EVM address in hex format
+                    example: "0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3"
 
   /config/tokens/{chainId}:
     get:
-      description: Get list of supported tokens for a specific chain
+      description: Get list of supported tokens for a specific chain in the supported chains list
       parameters:
         - name: chainId
           in: path
@@ -146,8 +146,26 @@ paths:
                   tokens:
                     type: array
                     items:
-                      type: string
-                    example: ["USDC", "USDT"]
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                          description: EVM address in hex format
+                          example: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"
+                        symbol:
+                          type: string
+                          description: Token symbol
+                          example: "USDC"
+                    example: [
+                      {
+                        "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                        "symbol": "USDC"
+                      },
+                      {
+                        "address": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH"
+                      }
+                    ]
   /delegation/new:
     post:
       description: Create a new delegation to Otim
@@ -168,7 +186,7 @@ paths:
                 signerAddress:
                   type: string
                   description: Address of the signer who signed the `signedAuthorization`
-                  example: "0x..."
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
       responses:
         '201':
           description: Delegation created successfully
@@ -188,11 +206,12 @@ paths:
                 address:
                   type: string
                   description: Address to check delegation status
-                  example: "0x..."
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 chainId:
                   type: integer
                   format: int64
                   description: Chain ID
+                  example: 11155111
       responses:
         '200':
           description: Delegation status retrieved successfully
@@ -203,6 +222,8 @@ paths:
                 properties:
                   delegationStatus:
                     type: string
+                    description: |
+                      Options: `Undelegated`, `Pending`, `Delegated`, `Expired`, `Errored`
                     example: "Delegated"
   /instruction/build:
     post:
