@@ -437,9 +437,6 @@ components:
     TokenERC20:
       type: string
       description: Available tokens to use
-      enum:
-        - USDC
-        - USDT
       example: "USDC"
     TokenFee:
       type: string
@@ -473,18 +470,22 @@ components:
           type: integer
           format: uint256
           description: Unix timestamp to activate the action
+          example: 1716150000
         startBy:
           type: integer
           format: uint256
           description: Unix timestamp by which the action must be activated
+          example: 1716150000
         interval:
           type: integer
           format: uint256
           description: Interval between action executions (in seconds)
+          example: 3600
         timeout:
           type: integer
           format: uint256
           description: Timeout after which the execution is not valid (in seconds)
+          example: 3600
     ActionArguments:
       type: object
       oneOf:
@@ -508,15 +509,17 @@ components:
                   type: string
                   format: address
                   description: Address of the refuel recipient
-                  example: "0x..."
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Balance threshold that triggers refuel
+                  description: Balance threshold that triggers refuel (in token decimals)
+                  example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel
+                  description: Target balance after refuel (in token decimals)
+                  example: 5000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: Refuel
@@ -536,15 +539,17 @@ components:
                   type: string
                   format: address
                   description: Address of the refuel recipient
-                  example: "0x..."
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Balance threshold that triggers refuel
+                  description: Balance threshold that triggers refuel (in wei)
+                  example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel
+                  description: Target balance after refuel (in wei)
+                  example: 5000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: TransferERC20
@@ -567,11 +572,11 @@ components:
                   type: string
                   format: address
                   description: Address of the transfer recipient
-                  example: "0x..."
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 value:
                   type: integer
                   format: uint256
-                  description: Amount to transfer
+                  description: Amount to transfer (in token decimals)
                 schedule:
                   $ref: '#/components/schemas/IntervalSchedule'
                 fee:
@@ -593,11 +598,12 @@ components:
                   type: string
                   format: address
                   description: Address of the transfer recipient
-                  example: "0x..."
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 value:
                   type: integer
                   format: uint256
-                  description: Amount to transfer
+                  description: Amount to transfer (in wei)
+                  example: 1000000000000000000
                 schedule:
                   $ref: '#/components/schemas/IntervalSchedule'
                 fee:
@@ -650,20 +656,22 @@ components:
           type: integer
           format: uint64
           description: Salt to ensure instruction is unique
+          example: 1234567890
         maxExecutions:
           type: integer
           format: uint64
-          description: Maximum number of times this instruction can be executed
+          description: Maximum number of times this instruction can be executed (`0` for unlimited)
+          example: 10
         action:
           type: string
           format: address
           description: Action contract address
-          example: "0x..."
+          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x..."
+          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
     BuildInstructionRequest:
       type: object
       required:
@@ -678,42 +686,26 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0x..."
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
         chainId:
           type: integer
           format: uint64
           description: Chain ID
+          example: 11155111
         salt:
           type: integer
           format: uint64
           description: Salt to ensure instruction is unique
+          example: 1234567890
         maxExecutions:
           type: integer
           format: uint64
-          description: Maximum number of times this instruction can be executed
+          description: Maximum number of times this instruction can be executed (`0` for unlimited)
+          example: 10
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
     BuildInstructionResponse:
-      type: object
-      properties:
-        salt:
-          type: integer
-          format: uint64
-          description: Salt to ensure instruction is unique
-        maxExecutions:
-          type: integer
-          format: uint64
-          description: Maximum number of times this instruction can be executed
-        action:
-          type: string
-          format: address
-          description: Action contract address
-          example: "0x..."
-        arguments:
-          type: string
-          format: bytes
-          description: Arguments to execute on the action contract
-          example: "0x..."
+      $ref: '#/components/schemas/Instruction'
     NewInstructionRequest:
       type: object
       required:
@@ -741,7 +733,7 @@ components:
         maxExecutions:
           type: integer
           format: uint64
-          description: Maximum number of times this instruction can be executed
+          description: Maximum number of times this instruction can be executed (`0` for unlimited)
         action:
           type: string
           format: address
@@ -773,7 +765,7 @@ components:
         maxExecutions:
           type: integer
           format: uint64
-          description: Maximum number of times this instruction can be executed
+          description: Maximum number of times this instruction can be executed (`0` for unlimited)
         action:
           type: string
           format: address
