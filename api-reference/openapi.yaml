@@ -16,31 +16,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - siwe
-                - signature
-              properties:
-                siwe:
-                  type: string
-                  description: SIWE message
-                  example: "Welcome to Otim! By signing in, you accept the Otim Terms and Conditions (https://otim.com/tac). This request will not trigger a blockchain transaction or cost any gas fees."
-                signature:
-                  type: string
-                  description: Signature of the SIWE message
-                  example: "0x..."
+              $ref: '#/components/schemas/AuthLoginRequest'
       responses:
         '200':
           description: Successful authentication
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  authorization:
-                    type: string
-                    description: JWT token for API authentication
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                $ref: '#/components/schemas/AuthLoginResponse'
   /auth/logout:
     post:
       description: Log out a user
@@ -94,12 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  otimDelegateAddress:
-                    type: string
-                    description: EVM address in hex format
-                    example: "0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0"
+                $ref: '#/components/schemas/GetDelegateAddressResponse'
   /config/instruction_storage/address/{chainId}:
     get:
       description: Get instruction Storage address for a specific chain in the supported chains list
@@ -117,12 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  instructionStorageAddress:
-                    type: string
-                    description: EVM address in hex format
-                    example: "0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3"
+                $ref: '#/components/schemas/GetInstructionStorageAddressResponse'
   /config/tokens/{chainId}:
     get:
       description: Get list of supported tokens for a specific chain in the supported chains list
@@ -173,57 +146,28 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - signedAuthorization
-                - signerAddress
-              properties:
-                signedAuthorization:
-                  type: string
-                  description: "Signed RLP-encoded [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) authorization: `keccak(MAGIC || rlp([chain_id, address, nonce]))`"
-                  example: "0x..."
-                signerAddress:
-                  type: string
-                  description: Address of the signer who signed the `signedAuthorization`
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+              $ref: '#/components/schemas/NewDelegationRequest'
       responses:
         '201':
           description: Delegation created successfully
   /delegation/status:
     get:
       description: Get Otim delegation status
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-                - chainId
-              properties:
-                address:
-                  type: string
-                  description: Address to check delegation status
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                chainId:
-                  type: integer
-                  format: int64
-                  description: Chain ID
-                  example: 11155111
+              $ref: '#/components/schemas/GetDelegationStatusRequest'
       responses:
         '200':
           description: Delegation status retrieved successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  delegationStatus:
-                    type: string
-                    enum: ["Undelegated", "Pending", "Delegated", "Expired", "Errored"]
-                    description: Status of the delegation
-                    example: "Delegated"
+                $ref: '#/components/schemas/GetDelegationStatusResponse'
   /instruction/build:
     post:
       description: Build an Otim instruction
@@ -259,12 +203,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  instructionId:
-                    type: string
-                    format: bytes32
-                    example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+                $ref: '#/components/schemas/NewInstructionResponse'
   /instruction/deactivate:
     post:
       description: Deactivate an instruction
@@ -275,31 +214,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-                - chainId
-                - deactivation
-                - deactivationSignature
-              properties:
-                address:
-                  type: string
-                  format: address
-                  description: Address of the user
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                chainId:
-                  type: integer
-                  format: int64
-                  description: Chain ID of the instruction
-                  example: 11155111
-                deactivation:
-                  type: string
-                  format: bytes32
-                  description: Instruction ID of the instruction to deactivate
-                  example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-                deactivationSignature:
-                  description: User signature over the deactivation hash
-                  $ref: '#/components/schemas/PrimitiveSignature'
+              $ref: '#/components/schemas/DeactivationRequest'
       responses:
         '200':
           description: Instruction deactivated successfully
@@ -313,27 +228,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-                - chainId
-                - instructionId
-              properties:
-                address:
-                  type: string
-                  format: address
-                  description: Address of the user
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                chainId:
-                  type: integer
-                  format: int64
-                  description: Chain ID of the instruction
-                  example: 11155111
-                instructionId:
-                  type: string
-                  format: bytes32
-                  description: Instruction ID
-                  example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+              $ref: '#/components/schemas/GetInstructionDetailsRequest'
       responses:
         '200':
           description: Instruction details retrieved successfully
@@ -351,15 +246,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-              properties:
-                address:
-                  type: string
-                  format: address
-                  description: Address of the user
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+              $ref: '#/components/schemas/GetAllInstructionsRequest'
       responses:
         '200':
           description: Instructions retrieved successfully
@@ -379,21 +266,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-                - chainId
-              properties:
-                address:
-                  type: string
-                  format: address
-                  description: Address of the user
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                chainId:
-                  type: integer
-                  format: int64
-                  description: Chain ID to get instructions for
-                  example: 11155111
+              $ref: '#/components/schemas/GetChainInstructionsRequest'
       responses:
         '200':
           description: Chain instructions retrieved successfully
@@ -1091,6 +964,55 @@ components:
         ]
       ]
       description: "List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`"
+    AuthLoginResponse:
+      type: object
+      required:
+        - authorization
+      properties:
+        authorization:
+          type: string
+          description: "JWT token for API authentication"
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    GetDelegateAddressResponse:
+      type: object
+      required:
+        - otimDelegateAddress
+      properties:
+        otimDelegateAddress:
+          type: string
+          format: address
+          description: "Address of the OtimDelegate contract"
+          example: "0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0"
+    GetInstructionStorageAddressResponse:
+      type: object
+      required:
+        - instructionStorageAddress
+      properties:
+        instructionStorageAddress:
+          type: string
+          format: address
+          description: "Address of the InstructionStorage contract"
+          example: "0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3"
+    GetDelegationStatusResponse:
+      type: object
+      required:
+        - delegationStatus
+      properties:
+        delegationStatus:
+          type: string
+          enum: ["Undelegated", "Pending", "Delegated", "Expired", "Errored"]
+          description: "Status of the delegation"
+          example: "Delegated"
+    NewInstructionResponse:
+      type: object
+      required:
+        - instructionId
+      properties:
+        instructionId:
+          type: string
+          format: bytes32
+          description: "Unique identifier for the created instruction"
+          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
     GetTransactionsRequest:
       type: object
       properties:
@@ -1125,9 +1047,152 @@ components:
           type: string
           enum: ["Ascending", "Descending"]
           example: "Ascending"
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT token for API authentication 
+    AuthLoginRequest:
+      type: object
+      required:
+        - siwe
+        - signature
+      properties:
+        siwe:
+          type: string
+          description: "SIWE message as a String"
+          example: "Welcome to Otim! By signing in, you accept the Otim Terms and Conditions (https://otim.com/tac). This request will not trigger a blockchain transaction or cost any gas fees."
+        signature:
+          $ref: '#/components/schemas/PrimitiveSignature'
+    GetDelegateAddressRequest:
+      type: object
+      required:
+        - chainId
+      properties:
+        chainId:
+          type: integer
+          format: int64
+          description: "Chain ID to get OtimDelegate address for"
+          example: 11155111
+    NewDelegationRequest:
+      type: object
+      required:
+        - signedAuthorization
+        - signerAddress
+      properties:
+        signedAuthorization:
+          type: string
+          description: "RLP encoded alloy::eips::eip7702::SignedAuthorization as a String"
+          example: "0x..."
+        signerAddress:
+          type: string
+          format: address
+          description: "Signer address to be able to verify signature correctness"
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+    GetDelegationStatusRequest:
+      type: object
+      required:
+        - address
+        - chainId
+      properties:
+        address:
+          type: string
+          format: address
+          description: "Address of the user"
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+        chainId:
+          type: integer
+          format: int64
+          description: "Chain ID of the delegation"
+          example: 11155111
+    DeactivationRequest:
+      type: object
+      required:
+        - address
+        - chainId
+        - deactivation
+        - deactivationSignature
+      properties:
+        address:
+          type: string
+          format: address
+          description: "Address of the user"
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+        chainId:
+          type: integer
+          format: int64
+          description: "Chain ID of the instruction"
+          example: 11155111
+        deactivation:
+          $ref: '#/components/schemas/InstructionDeactivation'
+        deactivationSignature:
+          $ref: '#/components/schemas/PrimitiveSignature'
+    GetInstructionDetailsRequest:
+      type: object
+      required:
+        - address
+        - chainId
+        - instructionId
+      properties:
+        address:
+          type: string
+          format: address
+          description: "Address of the user"
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+        chainId:
+          type: integer
+          format: int64
+          description: "Chain ID of the instruction"
+          example: 11155111
+        instructionId:
+          type: string
+          format: bytes32
+          description: "Instruction ID"
+          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+    GetChainInstructionsRequest:
+      type: object
+      required:
+        - address
+        - chainId
+      properties:
+        address:
+          type: string
+          format: address
+          description: "Address of the user"
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+        chainId:
+          type: integer
+          format: int64
+          description: "Chain ID to get instructions for"
+          example: 11155111
+    GetAllInstructionsRequest:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          type: string
+          format: address
+          description: "Address of the user"
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+    AdminRequest:
+      type: object
+      required:
+        - adminToken
+      properties:
+        adminToken:
+          type: string
+          description: "Admin token for privileged operations"
+          example: "admin_token_example"
+    InstructionDeactivation:
+      type: object
+      required:
+        - instructionId
+      properties:
+        instructionId:
+          type: string
+          format: bytes32
+          description: "ID of instruction to deactivate"
+          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: JWT token for API authentication
