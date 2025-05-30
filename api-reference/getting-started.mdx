@@ -1,0 +1,42 @@
+---
+title: 'Getting Started'
+---
+
+## Overview
+
+The Otim API makes it easy for developers to integrate Otim into their app and wallet experiences. This is best used by those who want to:
+- create an embedded smart action experience for their users, or
+- use Otim in a headless, programmatic way for themselves.
+
+## Content types
+
+The Otim API always accepts JSON in request bodies and returns JSON in response bodies. You will need to send the `content-type: application/json` header in requests.
+
+## Authentication
+
+Almost every API endpoint is authenticated using Bearer JWT tokens. To retrieve an account's JWT token, sign an Otim-formatted SIWE (reference for this soonTM) and call the [Log in](/api-reference/auth/login) endpoint with that SIWE and the signature over it.
+
+TODO: insert instructions about formatting the Otim SIWE
+
+## Fetch information about the Otim Platform
+
+<Card title="Configuration" icon="compass-drafting" href="/api-reference/config">
+  Fetch list of available chains, available tokens, and deployed contract addresses for each chain.
+</Card>
+
+## Delegating accounts to Otim
+
+<Card title="Delegation" icon="compass-drafting" href="/api-reference/delegation">
+  Delegate and view delegation statuses.
+</Card>
+
+## Construct and activate Otim Instructions
+
+<CardGroup col={2}>
+  <Card title="Instructions" icon="compass-drafting" href="/api-reference/instructions">
+    Build and activate new Instructions, view all active and past Instruction details.
+  </Card>
+  <Card title="Transactions" icon="compass-drafting" href="/api-reference/transactions">
+    View Otim Instruction execution details.
+  </Card>
+</CardGroup>
