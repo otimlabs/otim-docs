@@ -1189,10 +1189,9 @@ components:
           format: bytes32
           description: "ID of instruction to deactivate"
           example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-
-securitySchemes:
-  bearerAuth:
-    type: http
-    scheme: bearer
-    bearerFormat: JWT
-    description: JWT token for API authentication
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for API authentication
