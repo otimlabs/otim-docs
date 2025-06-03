@@ -73,14 +73,7 @@
                     "pages": [
                       "docs/developers/system-architecture/off-chain/overview",
                       "docs/developers/system-architecture/off-chain/api",
-                      "docs/developers/system-architecture/off-chain/executor",
-                      "docs/developers/system-architecture/off-chain/additional-services"
-                    ]
-                  },
-                  {
-                    "group": "App",
-                    "pages": [
-                      "docs/developers/system-architecture/app/overview"
+                      "docs/developers/system-architecture/off-chain/executor"
                     ]
                   }
                 ]
@@ -108,22 +101,22 @@
                   }
                 ]
               },
-              "docs/developers/smart-contract-reference",
-              "docs/developers/deployment-addresses"
+              "docs/developers/deployed-addresses"
             ]
           },
           {
             "group": "Resources",
             "pages": [
-              "docs/resources/glossary",
+              "docs/resources/changelog",
+              "docs/resources/security-and-audits",
               {
                 "group": "Appendix",
                 "pages": [
                   "docs/resources/appendix/eip-7702"
                 ]
               },
-              "docs/resources/faq",
-              "docs/resources/security-and-audits"
+              "docs/resources/glossary",
+              "docs/resources/faq"
             ]
           }
         ]
@@ -202,6 +195,11 @@
           "anchor": "X",
           "href": "https://x.com/otimlabs",
           "icon": "x-twitter"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://otim.com/blog",
+          "icon": "book-open"
         }
       ]
     }
@@ -213,8 +211,8 @@
   "navbar": {
     "links": [
       {
-        "label": "Manifesto",
-        "href": "https://otim.com/manifesto"
+        "label": "App",
+        "href": "https://app.otim.com"
       }
     ]
   },
