@@ -144,8 +144,7 @@
                 "pages": [
                   "api-reference/config/chains",
                   "api-reference/config/delegate-address-by-chainid",
-                  "api-reference/config/instruction-storage-address-by-chainid",
-                  "api-reference/config/tokens-by-chainid"
+                  "api-reference/config/instruction-storage-address-by-chainid"
                 ]
               },
               {
@@ -159,6 +158,7 @@
                 "group": "Instructions",
                 "pages": [
                   "api-reference/instructions/instruction-build",
+                  "api-reference/instructions/instruction-estimate-max-priority-fee-per-gas-by-chainid",
                   "api-reference/instructions/instruction-new",
                   "api-reference/instructions/instruction-deactivate",
                   "api-reference/instructions/instruction-details",

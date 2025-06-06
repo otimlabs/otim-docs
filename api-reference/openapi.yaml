@@ -96,48 +96,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetInstructionStorageAddressResponse'
-  /config/tokens/{chainId}:
-    get:
-      description: Get list of supported tokens for a specific chain in the supported chains list
-      parameters:
-        - name: chainId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-            description: Chain ID
-      responses:
-        '200':
-          description: Token list retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  tokens:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address:
-                          type: string
-                          description: EVM address in hex format
-                          example: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"
-                        symbol:
-                          type: string
-                          description: Token symbol
-                          example: "USDC"
-                    example: [
-                      {
-                        "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
-                        "symbol": "USDC"
-                      },
-                      {
-                        "address": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH"
-                      }
-                    ]
   /delegation/new:
     post:
       description: Create a new delegation to Otim
