@@ -324,6 +324,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StoredTransaction'
+  /instruction/estimate/max_priority_fee_per_gas/{chainId}:
+    get:
+      description: Get max priority fee per gas estimates for a specified chain
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chainId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+            description: Chain ID to get estimates for
+      responses:
+        '200':
+          description: Priority fee estimates retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPriorityFeeEstimatesResponse'
 
 components:
   schemas:
@@ -668,35 +688,58 @@ components:
           example: "My cool instruction"
     GetInstructionDetailsResponse:
       type: object
+      required: [salt, maxExecutions, action, lastExecutedUnix, lastInstructedValue, totalInstructedValue]
       properties:
         actionName:
           type: string
+          enum: [RefuelERC20, Refuel, TransferERC20, Transfer]
           description: Name of the action
-          example: "Refuel"
+          example: "Transfer"
+          nullable: true
         salt:
           type: integer
-          format: uint64
-          description: Salt to ensure instruction is unique
-          example: 1234567890
+          format: uint256
+          description: Salt to ensure Instruction is unique
+          example: 1000000000
         maxExecutions:
           type: integer
-          format: uint64
-          description: Maximum number of times this instruction can be executed (`0` for unlimited)
-          example: 10
+          format: uint256
+          description: Maximum number of times the Instruction can be executed
+          example: 1
         action:
           type: string
           format: address
           description: Action contract address
           example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
-        arguments:
-          type: string
-          format: bytes
-          description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        actionArguments:
+          $ref: '#/components/schemas/ActionArguments'
+          nullable: true
         nickname:
           type: string
-          description: Nickname for the instruction
-          example: "My cool instruction"
+          description: Instruction nickname
+          example: "My Instruction"
+          nullable: true
+        lastExecutedUnix:
+          type: integer
+          format: int64
+          description: Unix timestamp of last execution
+          example: 1716150000
+        lastInstructedValue:
+          type: integer
+          format: uint256
+          description: Last instructed value
+          example: 1000000000
+        totalInstructedValue:
+          type: integer
+          format: uint256
+          description: Total instructed value
+          example: 1000000000
+        instructedTokenAddress:
+          type: string
+          format: address
+          description: Address of the instructed token
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          nullable: true
     StoredInstruction:
       type: object
       properties:
@@ -1013,8 +1056,8 @@ components:
       properties:
         siwe:
           type: string
-          description: "SIWE message as a String"
-          example: "Welcome to Otim! By signing in, you accept the Otim Terms and Conditions (https://otim.com/tac). This request will not trigger a blockchain transaction or cost any gas fees."
+          description: "SIWE message as a raw string"
+          example: "(see the Getting Started page)"
         signature:
           $ref: '#/components/schemas/PrimitiveSignature'
     GetDelegateAddressRequest:
@@ -1147,6 +1190,25 @@ components:
           format: bytes32
           description: "ID of instruction to deactivate"
           example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+    GetPriorityFeeEstimatesResponse:
+      type: object
+      required: [slowMaxPriorityFeeEstimate, normalMaxPriorityFeeEstimate, fastMaxPriorityFeeEstimate]
+      properties:
+        slowMaxPriorityFeeEstimate:
+          type: integer
+          format: uint128
+          description: Slow max priority fee estimate
+          example: 1000000000
+        normalMaxPriorityFeeEstimate:
+          type: integer
+          format: uint128
+          description: Normal max priority fee estimate
+          example: 2000000000
+        fastMaxPriorityFeeEstimate:
+          type: integer
+          format: uint128
+          description: Fast max priority fee estimate
+          example: 3000000000
   securitySchemes:
     bearerAuth:
       type: http
