@@ -14,29 +14,7 @@ The Otim API always accepts JSON in request bodies and returns JSON in response 
 
 ## Authentication
 
-Almost every API endpoint is authenticated using Bearer JWT tokens. To here's how to get the Otim-specific SIWE to sign:
-
-```typescript
-import { createSiweMessage } from 'viem/siwe';
-
-const walletAddress = ...;
-const chainId = ...;
-
-const siweMessage = createSiweMessage({
-    domain: 'otim.com',
-    address: walletAddress,
-    statement: 'By signing in, you agree to the Terms and Conditions (https://otim.com/tac) and Privacy Policy (https://otim.com/pp).',
-    uri: 'https://otim.com',
-    version: '1',
-    chainId: chainId,
-    nonce: Date.now().toString(),
-    issuedAt: new Date(),
-});
-
-console.log('siwe:', siweMessage);
-```
-
-Now that you have your SIWE message, sign it and head over to the [Log in](/api-reference/auth/login) page to enter both the message and signature to get your JWT token!
+Almost every API endpoint is authenticated using Bearer JWT tokens. Check out the [Log in](/api-reference/auth/login) page on how to authorize!
 
 ## Fetch information about the Otim Platform
 

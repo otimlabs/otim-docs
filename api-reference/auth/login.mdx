@@ -2,3 +2,51 @@
 title: 'Log in'
 openapi: 'POST /auth/login'
 ---
+
+<Warning>The "Try it" feature for this endpoint doesn't work because it doesn't double escapes newlines randomly for the `siwe` input. We recommend you try this in your terminal or a script.</Warning>
+
+Almost every API endpoint is authenticated using Bearer JWT tokens. In order to get the token, users sign an Otim-specific SIWE and submit the `signature` and `siwe` message to this endpoint.
+
+Here's an example of what you would run to get both the `siwe` and `signature` inputs:
+
+```typescript
+import { createSiweMessage } from 'viem/siwe';
+import { privateKeyToAccount } from 'viem/accounts';
+import { parseSignature } from 'viem';
+
+// 1. Use your private key to create an account
+const privateKey =
+  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+const account = privateKeyToAccount(privateKey);
+
+// 2. Get the wallet address
+const walletAddress = account.address;
+const chainId = 1;
+
+// 3. Create the SIWE message
+const siweMessage = createSiweMessage({
+  domain: 'otim.com',
+  address: walletAddress,
+  statement:
+    'By signing in, you agree to the Terms and Conditions (https://otim.com/tac) and Privacy Policy (https://otim.com/pp).',
+  uri: 'https://otim.com',
+  version: '1',
+  chainId: chainId,
+  nonce: Date.now().toString(),
+  issuedAt: new Date(),
+});
+
+console.log('siwe:', JSON.stringify(siweMessage));
+
+// 4. Sign the message and make API call
+account.signMessage({ message: siweMessage }).then(async signature => {
+  const siweVrs = parseSignature(signature);
+
+  console.log('signature:', {
+    yParity: siweVrs.yParity,
+    r: siweVrs.r,
+    s: siweVrs.s
+  });
+});
+
+```
