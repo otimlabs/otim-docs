@@ -1028,7 +1028,7 @@ components:
       properties:
         signedAuthorization:
           type: string
-          description: "RLP encoded alloy::eips::eip7702::SignedAuthorization as a String"
+          description: "RLP-encoded 7702 signed authorization"
           example: "0x..."
         signerAddress:
           type: string

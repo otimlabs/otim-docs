@@ -2,3 +2,9 @@
 title: 'Delegate to Otim'
 openapi: 'POST /delegation/new'
 ---
+
+The RLP-encoded 7702 authorization is in the following format: `keccak(MAGIC || rlp([chain_id, address, nonce]))`. An account would need to raw sign over the above hash and submit it as the `signedAuthorization` input.
+
+Here is a script to construct and sign the 7702 the authorization:
+
+<iframe src="https://replit.com/@otimlabs/Otim-Delegation-New-Walkthrough?embed=true" width="600" height="400"></iframe>
