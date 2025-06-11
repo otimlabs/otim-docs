@@ -311,22 +311,25 @@ components:
         - executionFee
       properties:
         token:
-          $ref: '#/components/schemas/TokenFee'
+          type: string
+          format: address
+          description: Address of the token used for fee payment
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
         maxBaseFeePerGas:
+          type: integer
+          format: uint256
+          description: Maximum base fee per gas (in wei, set to `0` to take network base fee at execution time)
+          example: 0
+        maxPriorityFeePerGas:
           type: integer
           format: uint256
           description: Maximum base fee per gas (in wei)
           example: 15000000000
-        maxPriorityFeePerGas:
-          type: integer
-          format: uint256
-          description: Maximum priority fee per gas (in wei)
-          example: 1000000000
         executionFee:
           type: integer
           format: uint256
-          description: Execution fee
-          example: 100000000000000
+          description: Execution fee (set to `0` since this field isn't being utilized yet)
+          example: 0
     IntervalSchedule:
       type: object
       required:
@@ -338,12 +341,12 @@ components:
         startAt:
           type: integer
           format: uint256
-          description: Unix timestamp to activate the action
+          description: Unix timestamp to activate the action (set to `0` for immediate start)
           example: 1716150000
         startBy:
           type: integer
           format: uint256
-          description: Unix timestamp by which the action must be activated
+          description: Unix timestamp by which the action must be activated (set to `0` for no deadline)
           example: 1716150000
         interval:
           type: integer
@@ -353,7 +356,7 @@ components:
         timeout:
           type: integer
           format: uint256
-          description: Timeout after which the execution is not valid (in seconds)
+          description: Timeout after which the execution is not valid (in seconds, set to `0` for no timeout)
           example: 3600
     ActionArguments:
       type: object
@@ -484,6 +487,72 @@ components:
                   $ref: '#/components/schemas/IntervalSchedule'
                 fee:
                   $ref: '#/components/schemas/OtimFee'
+        - title: SweepDepositAccount
+          type: object
+          required:
+            - sweepDepositAccount
+          properties:
+            sweepDepositAccount:
+              type: object
+              required:
+                - depositor
+                - recipient
+                - threshold
+                - fee
+              properties:
+                depositor:
+                  type: string
+                  format: address
+                  description: Address of the deposit account to sweep from
+                  example: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
+                  example: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: Minimum balance to be swept (in wei)
+                  example: 1
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepDepositAccountERC20
+          type: object
+          required:
+            - sweepDepositAccountERC20
+          properties:
+            sweepDepositAccountERC20:
+              type: object
+              required:
+                - token
+                - depositor
+                - recipient
+                - threshold
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: Address of the ERC20 token contract
+                  example: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+                depositor:
+                  type: string
+                  format: address
+                  description: Address of the deposit account to sweep from
+                  example: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: Minimum balance to be swept (in token decimals)
+                  example: 1
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
       discriminator:
         propertyName: type
         mapping:
@@ -491,6 +560,8 @@ components:
           refuel: '#/components/schemas/ActionArguments/oneOf/1'
           transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
           transfer: '#/components/schemas/ActionArguments/oneOf/3'
+          sweepDepositAccount: '#/components/schemas/ActionArguments/oneOf/4'
+          sweepDepositAccountERC20: '#/components/schemas/ActionArguments/oneOf/5'
     PrimitiveSignature:
       type: object
       properties:
@@ -553,7 +624,7 @@ components:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a797200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
     BuildInstructionRequest:
       type: object
       required:
@@ -1007,7 +1078,14 @@ components:
         siwe:
           type: string
           description: "SIWE message as a raw string"
-          example: "(see the Getting Started page)"
+          example: >-
+            By signing in, you agree to the Terms and Conditions (https://otim.com/tac) and Privacy Policy (https://otim.com/pp).
+            
+            URI: https://otim.com
+            Version: 1.0.0
+            Chain ID: 1
+            Nonce: 1728633600000
+            Issued At: 2025-02-07T16:00:00.000Z
         signature:
           $ref: '#/components/schemas/PrimitiveSignature'
     GetDelegateAddressRequest:
@@ -1121,15 +1199,6 @@ components:
           format: address
           description: "Address of the user"
           example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-    AdminRequest:
-      type: object
-      required:
-        - adminToken
-      properties:
-        adminToken:
-          type: string
-          description: "Admin token for privileged operations"
-          example: "admin_token_example"
     InstructionDeactivation:
       type: object
       required:
