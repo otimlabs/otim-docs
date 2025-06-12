@@ -2,3 +2,11 @@
 title: 'Activate an instruction'
 openapi: 'POST /instruction/new'
 ---
+
+After building your Instruction, you need to:
+1. sign 712 typed hash associated with your chosen Action (check out TODO)
+2. submit the signature and your Instruction parameters from the build step when calling this endpoint
+
+Below is an example workflow of how to retrieve all parameters needed for activating an end-to-end USDT Sweep Instruction + showing you the designated deposit address to send USDT to:
+
+<iframe src="https://replit.com/@otimlabs/Otim-Instruction-New-Sweep-Walkthrough?embed=true" width="600" height="600"></iframe>
