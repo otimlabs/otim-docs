@@ -378,23 +378,23 @@ components:
                 token:
                   type: string
                   format: address
-                  description: Address of the ERC20 token contract
+                  description: Address of the token to refuel
                   example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 target:
                   type: string
                   format: address
-                  description: Address of the refuel recipient
+                  description: Address of the target to refuel
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Balance threshold that triggers refuel (in token decimals)
+                  description: Threshold amount to trigger refuel
                   example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel (in token decimals)
-                  example: 5000000000000000000
+                  description: Target balance after refuel
+                  example: 2000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: Refuel
@@ -413,18 +413,18 @@ components:
                 target:
                   type: string
                   format: address
-                  description: Address of the refuel recipient
+                  description: Address of the target to refuel
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Balance threshold that triggers refuel (in wei)
+                  description: Threshold amount to trigger refuel
                   example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel (in wei)
-                  example: 5000000000000000000
+                  description: Target balance after refuel
+                  example: 2000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: TransferERC20
@@ -436,28 +436,25 @@ components:
               type: object
               required:
                 - token
-                - target
-                - value
-                - schedule
+                - recipient
+                - amount
                 - fee
               properties:
                 token:
                   type: string
                   format: address
-                  description: Address of the ERC20 token contract
+                  description: Address of the token to transfer
                   example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                target:
+                recipient:
                   type: string
                   format: address
-                  description: Address of the transfer recipient
+                  description: Address of the recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                value:
+                amount:
                   type: integer
                   format: uint256
-                  description: Amount to transfer (in token decimals)
-                  example: 10000000
-                schedule:
-                  $ref: '#/components/schemas/IntervalSchedule'
+                  description: Amount of token to transfer
+                  example: 1000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: Transfer
@@ -468,23 +465,20 @@ components:
             transfer:
               type: object
               required:
-                - target
-                - value
-                - schedule
+                - recipient
+                - amount
                 - fee
               properties:
-                target:
+                recipient:
                   type: string
                   format: address
-                  description: Address of the transfer recipient
+                  description: Address of the recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                value:
+                amount:
                   type: integer
                   format: uint256
-                  description: Amount to transfer (in wei)
+                  description: Amount to transfer
                   example: 1000000000000000000
-                schedule:
-                  $ref: '#/components/schemas/IntervalSchedule'
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: SweepDepositAccount
@@ -503,18 +497,18 @@ components:
                 depositor:
                   type: string
                   format: address
-                  description: Address of the deposit account to sweep from
-                  example: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+                  description: Address of the depositor
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 recipient:
                   type: string
                   format: address
                   description: Address of the recipient
-                  example: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Minimum balance to be swept (in wei)
-                  example: 1
+                  description: Threshold amount to trigger sweep
+                  example: 1000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: SweepDepositAccountERC20
@@ -534,23 +528,77 @@ components:
                 token:
                   type: string
                   format: address
-                  description: Address of the ERC20 token contract
-                  example: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+                  description: Address of the token to sweep
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 depositor:
                   type: string
                   format: address
-                  description: Address of the deposit account to sweep from
-                  example: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
+                  description: Address of the depositor
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 recipient:
                   type: string
                   format: address
                   description: Address of the recipient
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Minimum balance to be swept (in token decimals)
-                  example: 1
+                  description: Threshold amount to trigger sweep
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: UniswapV3ExactInput
+          type: object
+          required:
+            - uniswapV3ExactInput
+          properties:
+            uniswapV3ExactInput:
+              type: object
+              required:
+                - tokenIn
+                - tokenOut
+                - amountIn
+                - floorAmountOut
+                - meanPriceLookBack
+                - maxPriceDeviationBPS
+                - recipient
+                - fee
+              properties:
+                tokenIn:
+                  type: string
+                  format: address
+                  description: Address of the input token
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                tokenOut:
+                  type: string
+                  format: address
+                  description: Address of the output token
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                amountIn:
+                  type: integer
+                  format: uint256
+                  description: Amount of input token to swap
+                  example: 1000000000000000000
+                floorAmountOut:
+                  type: integer
+                  format: uint256
+                  description: Minimum amount of output token to receive
+                  example: 1000000000000000000
+                meanPriceLookBack:
+                  type: integer
+                  format: uint32
+                  description: Number of blocks to look back for mean price calculation
+                  example: 100
+                maxPriceDeviationBPS:
+                  type: integer
+                  format: uint32
+                  description: Maximum price deviation in basis points
+                  example: 100
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 fee:
                   $ref: '#/components/schemas/OtimFee'
       discriminator:
@@ -562,6 +610,7 @@ components:
           transfer: '#/components/schemas/ActionArguments/oneOf/3'
           sweepDepositAccount: '#/components/schemas/ActionArguments/oneOf/4'
           sweepDepositAccountERC20: '#/components/schemas/ActionArguments/oneOf/5'
+          uniswapV3ExactInput: '#/components/schemas/ActionArguments/oneOf/6'
     PrimitiveSignature:
       type: object
       properties:
@@ -713,28 +762,26 @@ components:
       properties:
         actionName:
           type: string
-          enum: [RefuelERC20, Refuel, TransferERC20, Transfer]
+          enum: [RefuelERC20, Refuel, Transfer, TransferERC20, SweepDepositAccount, SweepDepositAccountERC20, UniswapV3ExactInput]
           description: Name of the action
-          example: "Transfer"
-          nullable: true
+          example: "SweepDepositAccountERC20"
         salt:
-          type: integer
-          format: uint256
+          type: string
+          format: bytes
           description: Salt to ensure Instruction is unique
-          example: 1000000000
+          example: "0x1df631942ef919"
         maxExecutions:
-          type: integer
-          format: uint256
+          type: string
+          format: bytes
           description: Maximum number of times the Instruction can be executed
-          example: 1
+          example: "0x2"
         action:
           type: string
           format: address
           description: Action contract address
-          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
+          example: "0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95"
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
-          nullable: true
         nickname:
           type: string
           description: Instruction nickname
@@ -744,17 +791,17 @@ components:
           type: integer
           format: int64
           description: Unix timestamp of last execution
-          example: 1716150000
+          example: 0
         lastInstructedValue:
-          type: integer
-          format: uint256
+          type: string
+          format: bytes
           description: Last instructed value
-          example: 1000000000
+          example: "0x0"
         totalInstructedValue:
-          type: integer
-          format: uint256
+          type: string
+          format: bytes
           description: Total instructed value
-          example: 1000000000
+          example: "0x0"
         instructedTokenAddress:
           type: string
           format: address
