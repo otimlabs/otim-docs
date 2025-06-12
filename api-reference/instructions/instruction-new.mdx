@@ -4,7 +4,7 @@ openapi: 'POST /instruction/new'
 ---
 
 After building your Instruction, you need to:
-1. sign 712 typed hash associated with your chosen Action (check out TODO)
+1. sign 712 typed hash associated with your chosen Action (check out [How to Construct Instruction Activation and Deactivation EIP-712 Hashes](/docs/resources/appendix/instruction-712-hashes))
 2. submit the signature and your Instruction parameters from the build step when calling this endpoint
 
 Below is an example workflow of how to retrieve all parameters needed for activating an end-to-end USDT Sweep Instruction + showing you the designated deposit address to send USDT to:
