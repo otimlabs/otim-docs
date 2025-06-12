@@ -112,6 +112,8 @@
               {
                 "group": "Appendix",
                 "pages": [
+                  "docs/resources/appendix/instruction-712-hashes",
+                  "docs/resources/appendix/action-hash-abis",
                   "docs/resources/appendix/eip-7702"
                 ]
               },
@@ -144,8 +146,7 @@
                 "pages": [
                   "api-reference/config/chains",
                   "api-reference/config/delegate-address-by-chainid",
-                  "api-reference/config/instruction-storage-address-by-chainid",
-                  "api-reference/config/tokens-by-chainid"
+                  "api-reference/config/instruction-storage-address-by-chainid"
                 ]
               },
               {
@@ -160,6 +161,7 @@
                 "pages": [
                   "api-reference/instructions/instruction-build",
                   "api-reference/instructions/instruction-new",
+                  "api-reference/instructions/instruction-estimate-max-priority-fee-per-gas-by-chainid",
                   "api-reference/instructions/instruction-deactivate",
                   "api-reference/instructions/instruction-details",
                   "api-reference/instructions/instructions-all",

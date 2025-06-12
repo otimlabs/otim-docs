@@ -96,48 +96,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetInstructionStorageAddressResponse'
-  /config/tokens/{chainId}:
-    get:
-      description: Get list of supported tokens for a specific chain in the supported chains list
-      parameters:
-        - name: chainId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-            description: Chain ID
-      responses:
-        '200':
-          description: Token list retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  tokens:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address:
-                          type: string
-                          description: EVM address in hex format
-                          example: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"
-                        symbol:
-                          type: string
-                          description: Token symbol
-                          example: "USDC"
-                    example: [
-                      {
-                        "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
-                        "symbol": "USDC"
-                      },
-                      {
-                        "address": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH"
-                      }
-                    ]
   /delegation/new:
     post:
       description: Create a new delegation to Otim
@@ -286,59 +244,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - address
-                - instructionIds
-                - from
-                - to
-                - skip
-                - take
-                - sort
-                - timeScale
-              properties:
-                address:
-                  type: string
-                  format: address
-                  description: Address of the user
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                instructionIds:
-                  type: array
-                  items:
-                    type: string
-                    format: bytes32
-                  description: List of instruction IDs
-                  example: ["0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"]
-                from:
-                  type: string
-                  format: date-time
-                  description: Start date for summaries
-                  example: "2021-01-01T00:00:00Z"
-                to:
-                  type: string
-                  format: date-time
-                  description: End date for summaries
-                  example: "2021-01-01T00:00:00Z"
-                skip:
-                  type: integer
-                  format: int64
-                  description: Number of records to skip
-                  example: 0
-                take:
-                  type: integer
-                  format: int64
-                  description: Number of records to take
-                  example: 10
-                sort:
-                  type: string
-                  enum: ["Ascending", "Descending"]
-                  description: Sort order
-                  example: "Ascending"
-                timeScale:
-                  type: string
-                  enum: ["seconds", "minutes", "hours", "days"]
-                  description: The time scale to group summaries by
-                  example: "days"
+              $ref: '#/components/schemas/GetInstructionSummariesRequest'
       responses:
         '200':
           description: Instruction summaries retrieved successfully
@@ -366,13 +272,29 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StoredTransaction'
+  /instruction/estimate/max_priority_fee_per_gas/{chainId}:
+    get:
+      description: Get max priority fee per gas estimates for a specified chain
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: chainId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: uint64
+            description: Chain ID to get estimates for
+      responses:
+        '200':
+          description: Priority fee estimates retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPriorityFeeEstimatesResponse'
 
 components:
   schemas:
-    TokenERC20:
-      type: string
-      description: Available tokens to use
-      example: "USDC"
     TokenFee:
       type: string
       description: Available fee tokens to use
@@ -389,22 +311,25 @@ components:
         - executionFee
       properties:
         token:
-          $ref: '#/components/schemas/TokenFee'
+          type: string
+          format: address
+          description: Address of the token used for fee payment
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
         maxBaseFeePerGas:
+          type: integer
+          format: uint256
+          description: Maximum base fee per gas (in wei, set to `0` to take network base fee at execution time)
+          example: 0
+        maxPriorityFeePerGas:
           type: integer
           format: uint256
           description: Maximum base fee per gas (in wei)
           example: 15000000000
-        maxPriorityFeePerGas:
-          type: integer
-          format: uint256
-          description: Maximum priority fee per gas (in wei)
-          example: 1000000000
         executionFee:
           type: integer
           format: uint256
-          description: Execution fee
-          example: 100000000000000
+          description: Execution fee (set to `0` since this field isn't being utilized yet)
+          example: 0
     IntervalSchedule:
       type: object
       required:
@@ -416,12 +341,12 @@ components:
         startAt:
           type: integer
           format: uint256
-          description: Unix timestamp to activate the action
+          description: Unix timestamp to activate the action (set to `0` for immediate start)
           example: 1716150000
         startBy:
           type: integer
           format: uint256
-          description: Unix timestamp by which the action must be activated
+          description: Unix timestamp by which the action must be activated (set to `0` for no deadline)
           example: 1716150000
         interval:
           type: integer
@@ -431,7 +356,7 @@ components:
         timeout:
           type: integer
           format: uint256
-          description: Timeout after which the execution is not valid (in seconds)
+          description: Timeout after which the execution is not valid (in seconds, set to `0` for no timeout)
           example: 3600
     ActionArguments:
       type: object
@@ -451,22 +376,25 @@ components:
                 - fee
               properties:
                 token:
-                  $ref: '#/components/schemas/TokenERC20'
+                  type: string
+                  format: address
+                  description: Address of the token to refuel
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 target:
                   type: string
                   format: address
-                  description: Address of the refuel recipient
+                  description: Address of the target to refuel
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Balance threshold that triggers refuel (in token decimals)
+                  description: Threshold amount to trigger refuel
                   example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel (in token decimals)
-                  example: 5000000000000000000
+                  description: Target balance after refuel
+                  example: 2000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: Refuel
@@ -485,18 +413,18 @@ components:
                 target:
                   type: string
                   format: address
-                  description: Address of the refuel recipient
+                  description: Address of the target to refuel
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Balance threshold that triggers refuel (in wei)
+                  description: Threshold amount to trigger refuel
                   example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel (in wei)
-                  example: 5000000000000000000
+                  description: Target balance after refuel
+                  example: 2000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: TransferERC20
@@ -508,25 +436,25 @@ components:
               type: object
               required:
                 - token
-                - target
-                - value
-                - schedule
+                - recipient
+                - amount
                 - fee
               properties:
                 token:
-                  $ref: '#/components/schemas/TokenERC20'
-                target:
                   type: string
                   format: address
-                  description: Address of the transfer recipient
+                  description: Address of the token to transfer
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                value:
+                amount:
                   type: integer
                   format: uint256
-                  description: Amount to transfer (in token decimals)
-                  example: 10000000
-                schedule:
-                  $ref: '#/components/schemas/IntervalSchedule'
+                  description: Amount of token to transfer
+                  example: 1000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: Transfer
@@ -537,23 +465,140 @@ components:
             transfer:
               type: object
               required:
-                - target
-                - value
-                - schedule
+                - recipient
+                - amount
                 - fee
               properties:
-                target:
+                recipient:
                   type: string
                   format: address
-                  description: Address of the transfer recipient
+                  description: Address of the recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                value:
+                amount:
                   type: integer
                   format: uint256
-                  description: Amount to transfer (in wei)
+                  description: Amount to transfer
                   example: 1000000000000000000
-                schedule:
-                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepDepositAccount
+          type: object
+          required:
+            - sweepDepositAccount
+          properties:
+            sweepDepositAccount:
+              type: object
+              required:
+                - depositor
+                - recipient
+                - threshold
+                - fee
+              properties:
+                depositor:
+                  type: string
+                  format: address
+                  description: Address of the depositor
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: Threshold amount to trigger sweep
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepDepositAccountERC20
+          type: object
+          required:
+            - sweepDepositAccountERC20
+          properties:
+            sweepDepositAccountERC20:
+              type: object
+              required:
+                - token
+                - depositor
+                - recipient
+                - threshold
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: Address of the token to sweep
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                depositor:
+                  type: string
+                  format: address
+                  description: Address of the depositor
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: Threshold amount to trigger sweep
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: UniswapV3ExactInput
+          type: object
+          required:
+            - uniswapV3ExactInput
+          properties:
+            uniswapV3ExactInput:
+              type: object
+              required:
+                - tokenIn
+                - tokenOut
+                - amountIn
+                - floorAmountOut
+                - meanPriceLookBack
+                - maxPriceDeviationBPS
+                - recipient
+                - fee
+              properties:
+                tokenIn:
+                  type: string
+                  format: address
+                  description: Address of the input token
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                tokenOut:
+                  type: string
+                  format: address
+                  description: Address of the output token
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                amountIn:
+                  type: integer
+                  format: uint256
+                  description: Amount of input token to swap
+                  example: 1000000000000000000
+                floorAmountOut:
+                  type: integer
+                  format: uint256
+                  description: Minimum amount of output token to receive
+                  example: 1000000000000000000
+                meanPriceLookBack:
+                  type: integer
+                  format: uint32
+                  description: Number of blocks to look back for mean price calculation
+                  example: 100
+                maxPriceDeviationBPS:
+                  type: integer
+                  format: uint32
+                  description: Maximum price deviation in basis points
+                  example: 100
+                recipient:
+                  type: string
+                  format: address
+                  description: Address of the recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 fee:
                   $ref: '#/components/schemas/OtimFee'
       discriminator:
@@ -563,6 +608,9 @@ components:
           refuel: '#/components/schemas/ActionArguments/oneOf/1'
           transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
           transfer: '#/components/schemas/ActionArguments/oneOf/3'
+          sweepDepositAccount: '#/components/schemas/ActionArguments/oneOf/4'
+          sweepDepositAccountERC20: '#/components/schemas/ActionArguments/oneOf/5'
+          uniswapV3ExactInput: '#/components/schemas/ActionArguments/oneOf/6'
     PrimitiveSignature:
       type: object
       properties:
@@ -710,94 +758,132 @@ components:
           example: "My cool instruction"
     GetInstructionDetailsResponse:
       type: object
+      required: [salt, maxExecutions, action, lastExecutedUnix, lastInstructedValue, totalInstructedValue]
       properties:
         actionName:
           type: string
+          enum: [refuelERC20, refuel, transfer, transferERC20, sweepDepositAccount, sweepDepositAccountERC20, uniswapV3ExactInput]
           description: Name of the action
-          example: "Refuel"
+          example: "sweepDepositAccountERC20"
         salt:
-          type: integer
-          format: uint64
-          description: Salt to ensure instruction is unique
-          example: 1234567890
+          type: string
+          format: bytes
+          description: Salt to ensure Instruction is unique
+          example: "0x1df631942ef919"
         maxExecutions:
-          type: integer
-          format: uint64
-          description: Maximum number of times this instruction can be executed (`0` for unlimited)
-          example: 10
+          type: string
+          format: bytes
+          description: Maximum number of times the Instruction can be executed
+          example: "0x2"
         action:
           type: string
           format: address
           description: Action contract address
-          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
+          example: "0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95"
+        actionArguments:
+          $ref: '#/components/schemas/ActionArguments'
+          example: {
+            "sweepDepositAccountERC20": {
+              "token": "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0",
+              "depositor": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+              "recipient": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+              "threshold": "0x0",
+              "fee": {
+                "token": "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0",
+                "maxBaseFeePerGas": "0x0",
+                "maxPriorityFeePerGas": "0x124f80",
+                "executionFee": "0x186a0"
+              }
+            }
+          }
+        nickname:
+          type: string
+          description: Instruction nickname
+          example: "My Instruction"
+          nullable: true
+        lastExecutedUnix:
+          type: integer
+          format: int64
+          description: Unix timestamp of last execution
+          example: 0
+        lastInstructedValue:
+          type: string
+          format: bytes
+          description: Last instructed value
+          example: "0x0"
+        totalInstructedValue:
+          type: string
+          format: bytes
+          description: Total instructed value
+          example: "0x0"
+        instructedTokenAddress:
+          type: string
+          format: address
+          description: Address of the instructed token
+          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          nullable: true
+    StoredInstruction:
+      type: object
+      properties:
+        action:
+          type: string
+          format: address
+          description: Action contract address
+          example: "0x4AA3Bce8f633d68CfC066f7B7DB78443BCFe1B95"
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-        nickname:
+          example: "0x000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000124f8000000000000000000000000000000000000000000000000000000000000186a0"
+        executionState:
+          type: object
+          properties:
+            executionCounter:
+              type: integer
+              format: uint64
+              description: Number of times the instruction has been executed
+              example: 0
+            executionStatus:
+              type: string
+              enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
+              example: "Deactivated"
+            lastExecuted:
+              type: integer
+              format: int64
+              description: Unix timestamp of when the instruction was last executed
+              example: 0
+        instructedTokenAddress:
           type: string
-          description: Nickname for the instruction
-          example: "My cool instruction"
-    StoredInstruction:
-      type: object
-      properties:
-        createdAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the instruction was created
-          example: 1716150000
-        updatedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the instruction was last updated
-          example: 1716150000
-        address:
-          type: string
-          description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-        chainId:
-          type: integer
-          format: int64
-          description: Chain ID for the instruction
-          example: 11155111
-        instruction:
-          $ref: '#/components/schemas/Instruction'
+          format: address
+          description: Address of the instructed token
+          example: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0"
         instructionId:
           type: string
           format: bytes32
           description: Unique identifier for the instruction
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-        activationSignature:
-          $ref: '#/components/schemas/StoredSignature'
-        deactivationSignature:
-          type: object
-          nullable: true
-          $ref: '#/components/schemas/StoredSignature'
-        executionStatus:
+          example: "0xc73545bc9fa857226b7861a284760b99a0ada92f3ce17f5696fb044ae876da19"
+        lastInstructedValue:
           type: string
-          enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
-          example: "Active"
-        executionCounter:
+          description: Last instructed value
+          example: "0"
+        maxExecutions:
           type: integer
           format: uint64
-          description: Number of times the instruction has been executed
-          example: 1
-        lastExecutedUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the instruction was last executed
-          example: 1716150000
-        nextExecutionUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the instruction will be executed next (`lastExecutedUnix + interval`)
-          example: 1716153600
+          description: Maximum number of times this instruction can be executed
+          example: 2
         nickname:
           type: string
-          nullable: true
           description: Nickname for the instruction
-          example: "My cool instruction"
+          example: "test sweep 4"
+        salt:
+          type: integer
+          format: uint64
+          description: Salt to ensure instruction is unique
+          example: 8433467124545817
+        totalInstructedValue:
+          type: string
+          description: Total instructed value
+          example: "0"
     StoredTransaction:
       type: object
       properties:
@@ -872,11 +958,10 @@ components:
       type: object
       required:
         - address
+        - chainId
         - instructionIds
         - from
         - to
-        - skip
-        - take
         - sort
         - timeScale
       properties:
@@ -885,6 +970,11 @@ components:
           format: address
           description: Address of the user
           example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+        chainId:
+          type: integer
+          format: int64
+          description: "Chain ID"
+          example: 11155111
         instructionIds:
           type: array
           items:
@@ -894,11 +984,13 @@ components:
         from:
           type: string
           format: date-time
-          example: "2021-01-01T00:00:00Z"
+          description: Start date and time in ISO 8601 format
+          example: "2024-03-20T00:00:00Z"
         to:
           type: string
           format: date-time
-          example: "2021-01-01T00:00:00Z"
+          description: End date and time in ISO 8601 format
+          example: "2024-03-21T00:00:00Z"
         skip:
           type: integer
           format: int64
@@ -909,8 +1001,8 @@ components:
           example: 10
         sort:
           type: string
-          enum: ["Ascending", "Descending"]
-          example: "Ascending"
+          enum: ["asc", "dsc"]
+          example: "asc"
         timeScale:
           type: string
           description: The time scale to group summaries by
@@ -1055,8 +1147,15 @@ components:
       properties:
         siwe:
           type: string
-          description: "SIWE message as a String"
-          example: "Welcome to Otim! By signing in, you accept the Otim Terms and Conditions (https://otim.com/tac). This request will not trigger a blockchain transaction or cost any gas fees."
+          description: "SIWE message as a raw string"
+          example: >-
+            By signing in, you agree to the Terms and Conditions (https://otim.com/tac) and Privacy Policy (https://otim.com/pp).
+            
+            URI: https://otim.com
+            Version: 1.0.0
+            Chain ID: 1
+            Nonce: 1728633600000
+            Issued At: 2025-02-07T16:00:00.000Z
         signature:
           $ref: '#/components/schemas/PrimitiveSignature'
     GetDelegateAddressRequest:
@@ -1077,7 +1176,7 @@ components:
       properties:
         signedAuthorization:
           type: string
-          description: "RLP encoded alloy::eips::eip7702::SignedAuthorization as a String"
+          description: "RLP-encoded 7702 signed authorization"
           example: "0x..."
         signerAddress:
           type: string
@@ -1170,15 +1269,6 @@ components:
           format: address
           description: "Address of the user"
           example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-    AdminRequest:
-      type: object
-      required:
-        - adminToken
-      properties:
-        adminToken:
-          type: string
-          description: "Admin token for privileged operations"
-          example: "admin_token_example"
     InstructionDeactivation:
       type: object
       required:
@@ -1189,6 +1279,25 @@ components:
           format: bytes32
           description: "ID of instruction to deactivate"
           example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+    GetPriorityFeeEstimatesResponse:
+      type: object
+      required: [slowMaxPriorityFeeEstimate, normalMaxPriorityFeeEstimate, fastMaxPriorityFeeEstimate]
+      properties:
+        slowMaxPriorityFeeEstimate:
+          type: integer
+          format: uint128
+          description: Slow max priority fee estimate
+          example: 1000000000
+        normalMaxPriorityFeeEstimate:
+          type: integer
+          format: uint128
+          description: Normal max priority fee estimate
+          example: 2000000000
+        fastMaxPriorityFeeEstimate:
+          type: integer
+          format: uint128
+          description: Fast max priority fee estimate
+          example: 3000000000
   securitySchemes:
     bearerAuth:
       type: http

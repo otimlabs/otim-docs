@@ -1,0 +1,188 @@
+---
+title: "Action ABI Reference"
+sidebarTitle: "Action ABI Reference"
+---
+
+This document contains the ABI structures for all Actions, taken from their respective `hash` functions. Use these to properly encode Action arguments when forming EIP-712 hashes.
+
+## Refuel
+
+```typescript
+const refuelAbi = [
+  { name: 'target', type: 'address' },
+  { name: 'threshold', type: 'uint256' },
+  { name: 'endBalance', type: 'uint256' },
+  { name: 'gasLimit', type: 'uint256' },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+## RefuelERC20
+
+```typescript
+const refuelERC20Abi = [
+  { name: 'token', type: 'address' },
+  { name: 'target', type: 'address' },
+  { name: 'threshold', type: 'uint256' },
+  { name: 'endBalance', type: 'uint256' },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+## Transfer
+
+```typescript
+const transferAbi = [
+  { name: 'target', type: 'address' },
+  { name: 'value', type: 'uint256' },
+  { name: 'gasLimit', type: 'uint256' },
+  { 
+    name: 'schedule', 
+    type: 'tuple',
+    components: [
+      { name: 'startAt', type: 'uint256' },
+      { name: 'startBy', type: 'uint256' },
+      { name: 'interval', type: 'uint256' },
+      { name: 'timeout', type: 'uint256' }
+    ]
+  },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+## TransferERC20
+
+```typescript
+const transferERC20Abi = [
+  { name: 'token', type: 'address' },
+  { name: 'target', type: 'address' },
+  { name: 'value', type: 'uint256' },
+  { 
+    name: 'schedule', 
+    type: 'tuple',
+    components: [
+      { name: 'startAt', type: 'uint256' },
+      { name: 'startBy', type: 'uint256' },
+      { name: 'interval', type: 'uint256' },
+      { name: 'timeout', type: 'uint256' }
+    ]
+  },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+## SweepDepositAccount
+
+```typescript
+const sweepDepositAccountAbi = [
+  { name: 'depositor', type: 'address' },
+  { name: 'recipient', type: 'address' },
+  { name: 'threshold', type: 'uint256' },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+## SweepDepositAccountERC20
+
+```typescript
+const sweepDepositAccountERC20Abi = [
+  { name: 'token', type: 'address' },
+  { name: 'depositor', type: 'address' },
+  { name: 'recipient', type: 'address' },
+  { name: 'threshold', type: 'uint256' },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+## UniswapV3ExactInput
+
+```typescript
+const uniswapV3ExactInputAbi = [
+  { name: 'recipient', type: 'address' },
+  { name: 'tokenIn', type: 'address' },
+  { name: 'tokenOut', type: 'address' },
+  { name: 'feeTier', type: 'uint24' },
+  { name: 'amountIn', type: 'uint256' },
+  { name: 'floorAmountOut', type: 'uint256' },
+  { name: 'meanPriceLookBack', type: 'uint32' },
+  { name: 'maxPriceDeviationBPS', type: 'uint32' },
+  { 
+    name: 'schedule', 
+    type: 'tuple',
+    components: [
+      { name: 'startAt', type: 'uint256' },
+      { name: 'startBy', type: 'uint256' },
+      { name: 'interval', type: 'uint256' },
+      { name: 'timeout', type: 'uint256' }
+    ]
+  },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+These ABIs are taken directly from the `hash` function in each Action's contract found on [GitHub](https://github.com/otimlabs/otim-protocol/tree/main/src/actions). Use them to properly encode Action arguments when forming EIP-712 hashes. 
+
+See [How to Construct Instruction Activation and Deactivation EIP-712 Hashes](/docs/resources/appendix/instruction-712-hashes) for details on how to use these ABIs.

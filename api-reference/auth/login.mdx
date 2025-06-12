@@ -2,3 +2,11 @@
 title: 'Log in'
 openapi: 'POST /auth/login'
 ---
+
+<Warning>The "Try it" feature for this endpoint doesn't work because it doesn't double escapes newlines randomly for the `siwe` input. We recommend you try this in your terminal or a script.</Warning>
+
+Almost every API endpoint is authenticated using Bearer JWT tokens. In order to get the token, users sign an Otim-specific SIWE and submit the `signature` and `siwe` message to this endpoint.
+
+Here's a script to fetch both the `siwe` and `signature` inputs:
+
+<iframe src="https://replit.com/@otimlabs/Otim-Auth-Login-Walkthrough?v=1&embed=true" width="600" height="600"></iframe>

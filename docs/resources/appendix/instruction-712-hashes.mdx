@@ -1,0 +1,139 @@
+---
+title: "How to Construct Instruction Activation and Deactivation EIP-712 Hashes"
+sidebarTitle: "Instruction Activation and Deactivation EIP-712 Hashes"
+---
+
+This guide shows how to form EIP-712 hashes for instruction activation and deactivation in TypeScript. 
+
+As long as you have the Action ABI, you can form the activation hash like this:
+
+```typescript
+import { keccak256, encodeAbiParameters, encodePacked } from 'viem'
+
+// 1. Define the Instruction ABI (standardized for all Instructions)
+const instructionAbi = [
+  { name: 'salt', type: 'uint256' },
+  { name: 'maxExecutions', type: 'uint256' },
+  { name: 'action', type: 'address' },
+  { name: 'arguments', type: 'bytes' }
+] as const
+
+// 2. Form the domain separator (standardized for all Instructions)
+// This matches exactly what's in OtimDelegate.sol
+const domainSeparator = keccak256(encodeAbiParameters(
+  [
+    { name: 'name', type: 'string' },
+    { name: 'version', type: 'string' },
+    { name: 'chainId', type: 'uint256' },
+    { name: 'verifyingContract', type: 'address' },
+    { name: 'salt', type: 'bytes32' }
+  ],
+  [
+    'OtimDelegate',                       // OtimDelegate
+    '1',                                  // Version
+    chainId,                              // Current chain ID
+    delegateAddress,                      // OtimDelegate contract address
+    keccak256('ON_TIME_INSTRUCTED_MONEY') // Salt from contract
+  ]
+))
+
+// 3. Encode the Action arguments
+// Example for `sweepDepositAccountERC20` action
+// Get the ABI from action-hash-abis.mdx
+const actionAbi = [
+  { name: 'token', type: 'address' },
+  { name: 'depositor', type: 'address' },
+  { name: 'recipient', type: 'address' },
+  { name: 'threshold', type: 'uint256' },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+
+const actionArguments = encodeAbiParameters(
+  actionAbi,
+  [
+    tokenAddress,
+    depositorAddress,
+    recipientAddress,
+    threshold,
+    {
+      token: feeTokenAddress,
+      maxBaseFeePerGas: 0n,
+      maxPriorityFeePerGas: 1200000n,
+      executionFee: 0n
+    }
+  ]
+)
+
+// 4. Form the instruction hash
+const instructionHash = keccak256(encodeAbiParameters(
+  instructionAbi,
+  [
+    salt,                // Random salt
+    maxExecutions,       // Number of times this can be executed
+    actionAddress,       // Address of the action contract
+    actionArguments     // ABI-encoded action arguments
+  ]
+))
+
+// 5. Form the final EIP-712 hash
+const finalHash = keccak256(encodePacked(
+  ['bytes', 'bytes32', 'bytes32'],
+  ['\x19\x01', domainSeparator, instructionHash]
+))
+```
+
+For deactivation, it's even simpler since we just need the instruction ID:
+
+```typescript
+// Form the deactivation hash
+const instructionId = "..." // The Instruction ID of the Instruction you want to deactivate
+const deactivationHash = keccak256(encodePacked(
+  ['bytes', 'bytes32', 'bytes32'],
+  [
+    '\x19\x01',
+    domainSeparator,
+    keccak256(encodeAbiParameters(
+      [{ name: 'instructionId', type: 'bytes32' }],
+      [instructionId]
+    ))
+  ]
+))
+```
+
+That's it! The key is having the correct ABI structure, which matches what's defined in the [Instruction.sol contract](https://github.com/otimlabs/otim-protocol/blob/main/src/libraries/Instruction.sol).
+
+In order to swap out the `actionAbi` for the Action you want to activate, look at the `hash` function in the Action's contract ABI. For example, from the RefuelERC20 Action's ABI:
+
+```typescript
+// From the hash function in RefuelERC20 Action's ABI
+// We only need the input type of the hash function
+const refuelERC20Abi = [
+  { name: 'token', type: 'address' },
+  { name: 'target', type: 'address' },
+  { name: 'threshold', type: 'uint256' },
+  { name: 'endBalance', type: 'uint256' },
+  { 
+    name: 'fee', 
+    type: 'tuple',
+    components: [
+      { name: 'token', type: 'address' },
+      { name: 'maxBaseFeePerGas', type: 'uint256' },
+      { name: 'maxPriorityFeePerGas', type: 'uint256' },
+      { name: 'executionFee', type: 'uint256' }
+    ]
+  }
+] as const
+```
+
+This shows us exactly how to structure the arguments for that Action. The rest of the ABI (constructor, other functions, errors) isn't needed for forming the EIP-712 hash.
+
+For a complete reference of all Action ABIs, see [Action Hash ABIs](/docs/resources/appendix/action-hash-abis).
