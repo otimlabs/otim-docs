@@ -824,11 +824,11 @@ components:
           nullable: true
         last_error_code:
           type: integer
-          description: Error code from the last execution error
+          description: Code from the last execution error
           example: 0
         last_error_message:
           type: string
-          description: Error message from the last execution error
+          description: Message from the last execution error
           example: "Insufficient funds"
           nullable: true
     StoredInstruction:
