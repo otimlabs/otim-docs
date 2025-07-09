@@ -822,6 +822,15 @@ components:
           description: Address of the instructed token
           example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
           nullable: true
+        last_error_code:
+          type: integer
+          description: Code from the last execution error
+          example: 0
+        last_error_message:
+          type: string
+          description: Message from the last execution error
+          example: "Insufficient funds"
+          nullable: true
     StoredInstruction:
       type: object
       properties:
