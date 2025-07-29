@@ -1,0 +1,76 @@
+---
+title: "Instructions"
+description: "Description of your new file."
+---
+
+> **Note:** Your account must already be authenticated and delegated before building any instructions; otherwise, it will fail.
+
+## Build Transfer
+
+Transfer instructions enables native and ERC20 transfers using the Otim SDK. These instructions can be scheduled, configured with different option fees, and executed automatically when conditions are met.
+
+Transfer instructions support two types of transfers:
+
+- **Native ETH transfers** – Direct ETH transfers between addresses
+- **ERC20 token transfers** – Token transfers for any ERC20 compatible token
+
+## **Quick Start**
+
+Example 1: Native ETH Transfer
+
+```typescript
+// 1. get fee estimate
+const feeEstimate = await otimClient.config.getMaxPriorityFeeEstimate({
+  chainId: walletClient.chain.id,
+});
+const priorityFee = toHex(feeEstimate.normalMaxPriorityFeeEstimate);
+
+// 2. build instruction
+const transferBuild = await otimClient.instruction.build.transfer({
+  target: "0x742d35Cc6734C0532925a3b8D563C1f4C684B9Cf",
+  value: parseEther("0.001"), // 0.001 ETH
+  fee: {
+    token: "0x0000000000000000000000000000000000000000", // eth for fees
+    maxPriorityFeePerGas: priorityFee,
+  },
+});
+
+// 3. activate instruction
+const result = await otimClient.instruction.activate({
+  instruction: transferBuild.instruction,
+  actionType: transferBuild.actionType,
+  nickname: "eth transfer 0.001 to recipient",
+});
+
+console.log(`Native transfer activated: ${result.instructionId}`);
+```
+
+Example 2: ERC-20 Token Transfer
+
+```typescript
+// 1. get fee estimate
+const feeEstimate = await otimClient.config.getMaxPriorityFeeEstimate({
+  chainId: walletClient.chain.id,
+});
+const priorityFee = toHex(feeEstimate.normalMaxPriorityFeeEstimate);
+
+// 2. build instruction
+const transferBuild = await otimClient.instruction.build.transfer({
+  target: "0x...", // target wallet address
+  value: parseUnits("10", 18), // 10 tokens with 18 decimals
+  token: "0x...", // token contract address
+  fee: {
+    token: "0x0000000000000000000000000000000000000000", // eth for fees
+    maxPriorityFeePerGas: priorityFee,
+  },
+});
+
+// 3. activate instruction
+const result = await otimClient.instruction.activate({
+  instruction: transferBuild.instruction,
+  actionType: transferBuild.actionType,
+  nickname: "erc20 transfer 10 tokens to recipient",
+});
+
+console.log(`ERC-20 transfer activated: ${result.instructionId}`);
+```
