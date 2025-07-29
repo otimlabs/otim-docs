@@ -125,51 +125,20 @@
       {
         "tab": "SDK",
         "groups": [
-          "docs/sdk/getting-started",
           {
-            "group": "Otim APIs",
+            "group": "Getting Started",
             "pages": [
-              {
-                "group": "Authentication",
-                "pages": [
-                  "api-reference/auth/login",
-                  "api-reference/auth/logout"
-                ]
-              },
-              {
-                "group": "Configuration",
-                "pages": [
-                  "api-reference/config/chains",
-                  "api-reference/config/delegate-address-by-chainid",
-                  "api-reference/config/instruction-storage-address-by-chainid"
-                ]
-              },
-              {
-                "group": "Delegation",
-                "pages": [
-                  "api-reference/delegation/new",
-                  "api-reference/delegation/status"
-                ]
-              },
-              {
-                "group": "Instructions",
-                "pages": [
-                  "api-reference/instructions/instruction-build",
-                  "api-reference/instructions/instruction-new",
-                  "api-reference/instructions/instruction-estimate-max-priority-fee-per-gas-by-chainid",
-                  "api-reference/instructions/instruction-deactivate",
-                  "api-reference/instructions/instruction-details",
-                  "api-reference/instructions/instructions-all",
-                  "api-reference/instructions/instructions-chain",
-                  "api-reference/instructions/instructions-summary"
-                ]
-              },
-              {
-                "group": "Transactions",
-                "pages": [
-                  "api-reference/transactions/get"
-                ]
-              }
+              "sdk/overview",
+              "sdk/installation"
+            ]
+          },
+          {
+            "group": "Flows",
+            "pages": [
+              "sdk/flows/client-setup",
+              "sdk/flows/authentication",
+              "sdk/flows/delegation",
+              "sdk/flows/instructions"
             ]
           }
         ]
