@@ -1,0 +1,101 @@
+---
+title: "Installation"
+sidebarTitle: "Installation"
+---
+
+## **Prerequisites**
+
+- Node.js version 20.x or higher.
+
+## **Install**
+
+The Otim SDK is available on npm and can be installed with your favorite package manager.
+
+```bash
+# pnpm
+pnpm add @otim/sdk viem
+
+# npm
+npm install @otim/sdk viem
+
+# yarn
+yarn add @otim/sdk viem
+```
+
+`viem` is a peer dependency and is required for the SDK to function correctly.
+
+### **TypeScript Requirements**
+
+We support TypeScript v5.0\+ and require the following `tsconfig.json` settings:
+
+```typescript
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+It is highly recommended to set `strict: true` in your `tsconfig.json`. This is the single most impactful setting for ensuring type safety.
+
+## Basic Usage
+
+This example shows how to create and execute a transfer using the Otim SDK. The builder pattern creates an instruction that gets activated to execute the transfer on-chain.
+
+**Note:** `privateKeyToAccount` is just one option. You can also use embedded wallet solutions like Privy, Turnkey, or connect to wallet apps directly using a wallet connector in your app.
+
+```typescript
+import { createOtimClient } from "@otim/sdk";
+import { privateKeyToAccount } from "viem/accounts";
+import { sepolia } from "viem/chains";
+import { http, parseEther } from "viem";
+
+async function main() {
+  // initialize the client
+  const account = privateKeyToAccount("0x...");
+  const client = createOtimClient({
+    chain: sepolia,
+    transport: http(),
+    walletAccount: account,
+  });
+
+  // authenticate with siwe
+  const loginResponse = await client.auth.login({
+    address: account.address,
+    chainId: sepolia.id,
+  });
+
+  // add token to requests
+  await client.auth.setAuthorizationHeader(loginResponse.authorization);
+
+  // get gas fee estimate
+  const feeEstimate = await client.config.getMaxPriorityFeeEstimate({
+    chainId: sepolia.id,
+  });
+  const priorityFee = BigInt(feeEstimate.normalMaxPriorityFeeEstimate);
+
+  // build transfer instruction
+  const transferBuild = await client.instruction.build.transfer({
+    target: "0x742d35Cc6343C4532F1f4e8d7C0c65c0c7d3d2E8",
+    value: parseEther("0.1"),
+    fee: {
+      token: "0x0000000000000000000000000000000000000000", // eth for fees
+      maxPriorityFeePerGas: priorityFee,
+    },
+  });
+
+  // activate the instruction
+  const transferResult = await client.instruction.activate({
+    instruction: transferBuild.instruction,
+    actionType: transferBuild.actionType,
+    nickname: "eth transfer to recipient",
+  });
+
+  console.log(`Transfer activated: ${transferResult.instructionId}`);
+
+  // logout
+  await client.auth.logout();
+}
+
+main().catch(console.error);
+```

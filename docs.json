@@ -123,6 +123,27 @@
         ]
       },
       {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "sdk/overview",
+              "sdk/installation"
+            ]
+          },
+          {
+            "group": "Flows",
+            "pages": [
+              "sdk/flows/client-setup",
+              "sdk/flows/authentication",
+              "sdk/flows/delegation",
+              "sdk/flows/instructions"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {

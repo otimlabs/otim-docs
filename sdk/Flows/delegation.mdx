@@ -1,0 +1,138 @@
+---
+title: "Delegation"
+sidebarTitle: "Delegation"
+---
+
+Delegation allows your wallet to authorize Otim's smart contracts to execute transactions on your behalf. This enables features like automated trading, portfolio management, and other DeFi operations without requiring individual transaction signatures.
+
+> **Note**: All delegation methods require an authenticated Otim Client. Ensure you have completed the authentication flow before using these methods.
+
+## **Get Delegation Status Method**
+
+Check whether a wallet address is currently delegated to Otim.
+
+### **Quick Reference**
+
+```typescript
+// check delegation status for connected wallet
+const status = await otimClient.delegation.getDelegationStatus();
+
+// check delegation status for specific address and chain
+const status = await otimClient.delegation.getDelegationStatus({
+  address: "0x1234...",
+  chainId: 1,
+});
+
+console.log(`delegation status: ${status.delegationStatus}`);
+```
+
+### **Method Signature**
+
+```
+otimClient.delegation.getDelegationStatus(options?: DelegationStatusOptions): Promise<DelegationStatusResponse>
+```
+
+### **Parameters**
+
+```typescript
+interface DelegationStatusOptions {
+  address?: Address; // wallet address to check (defaults to connected wallet)
+  chainId?: number; // chain id to check (defaults to current chain)
+}
+```
+
+### **Response**
+
+```typescript
+interface DelegationStatusResponse {
+  delegationStatus:
+    | "Undelegated"
+    | "Pending"
+    | "Delegated"
+    | "Expired"
+    | "Errored";
+}
+```
+
+## Delegate Method
+
+Perform wallet delegation using EIP-7702 signed authorization. This method handles the complete delegation process including submission to the API and polling for blockchain confirmation.
+
+### **What the delegate Method Does**
+
+1. **Submits delegation** - Sends the signed EIP-7702 authorization to Otim's API
+2. **Returns submission result** - Provides immediate response about the delegation submission
+
+### **Method Signature**
+
+```
+otimClient.delegation.delegate(options: DelegateOptions): Promise<DelegationCreateResponse>
+```
+
+### **Parameters**
+
+```typescript
+interface DelegateOptions {
+  address?: Address; // connected wallet address to delegate.
+  chainId?: number; // chain id for delegation
+  signedAuthorization: string; // rlp-encoded eip-7702 authorization
+}
+```
+
+### **Response**
+
+The delegate method returns the submission result:
+
+```typescript
+interface DelegationCreateResponse {
+  success: boolean;
+  transactionHash?: string;
+  message?: string;
+}
+```
+
+### **Required Steps Before Calling **`delegate`
+
+Before calling the delegate method, you must:
+
+1. **Get current nonce** for the wallet address
+2. **Sign EIP-7702 authorization** using the wallet's private key
+3. **Convert to RLP format** using viem's `toRlp()` function
+
+### **Checking Delegation Status**
+
+After calling the delegate method, you'll need to check the delegation status separately using `getDelegationStatus()` to confirm when the delegation is processed on-chain:
+
+- `success: true` – Delegation submitted successfully, check status for confirmation
+- `success: false` – Delegation submission failed, check message for details
+- `transactionHash` – Optional hash of the delegation transaction
+
+## **Quick Reference**
+
+```typescript
+import { createRlpEncodedAuthorization } from "@otim/sdk"
+
+// get the delegate contract address first
+const config = await otimClient.config.getDelegateAddress({ chainId: 1 });
+const nonce = await publicClient.getTransactionCount({
+  address: account.address
+});
+
+// sign authorization (eip-7702)
+// example assuming that you're using the **privateKeyToAccount** function from viem.
+const authorization = await account.signAuthorization({
+  contractAddress: onfig.otimDelegateAddress,
+  chainId: 1,
+  nonce,
+});
+
+// convert to rlp format and delegate
+const rlpAuthorization = createRlpEncodedAuthorization(authorization);
+
+// perform delegation (submit to API)
+const result = await otimClient.delegation.delegate({
+  signedAuthorization: rlpAuthorization,
+});
+
+console.log(`delegation submitted: ${result.transactionHash}`);
+```
