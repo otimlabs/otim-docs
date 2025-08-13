@@ -758,7 +758,7 @@ components:
           example: "My cool instruction"
     GetInstructionDetailsResponse:
       type: object
-      required: [salt, maxExecutions, action, lastExecutedUnix, lastInstructedValue, totalInstructedValue]
+      required: [salt, maxExecutions, action, lastExecutedUnix, lastInstructedValue, totalInstructedValue, executionStatus, isDeactivation, chainId, chain]
       properties:
         actionName:
           type: string
@@ -822,15 +822,33 @@ components:
           description: Address of the instructed token
           example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
           nullable: true
-        last_error_code:
+        lastErrorCode:
           type: integer
           description: Code from the last execution error
           example: 0
-        last_error_message:
+        lastErrorMessage:
           type: string
           description: Message from the last execution error
           example: "Insufficient funds"
           nullable: true
+        executionStatus:
+          type: string
+          enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
+          description: Execution status of the instruction
+          example: "Active"
+        isDeactivation:
+          type: boolean
+          description: Whether this is a deactivation instruction
+          example: false
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID where the instruction exists
+          example: 11155111
+        chain:
+          type: string
+          description: Name of the chain where the instruction exists
+          example: "sepolia"
     StoredInstruction:
       type: object
       properties:
@@ -893,6 +911,28 @@ components:
           type: string
           description: Total instructed value
           example: "0"
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID where the instruction exists
+          example: 11155111
+        chain:
+          type: string
+          description: Name of the chain where the instruction exists
+          example: "sepolia"
+        lastErrorCode:
+          type: integer
+          description: Code from the last execution error
+          example: 0
+        lastErrorMessage:
+          type: string
+          description: Message from the last execution error
+          example: "Insufficient funds"
+          nullable: true
+        isDeactivation:
+          type: boolean
+          description: Whether this is a deactivation instruction
+          example: false
     StoredTransaction:
       type: object
       properties:
