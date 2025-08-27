@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "quill",
   "name": "Otim Documentation",
   "colors": {
     "primary": "#6B21A8",
