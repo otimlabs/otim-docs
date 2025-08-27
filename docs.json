@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Otim Documentation",
   "colors": {
-    "primary": "#8DF107",
+    "primary": "#6B21A8",
     "light": "#8DF107",
-    "dark": "#BAFF26"
+    "dark": "#6B21A8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
