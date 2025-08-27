@@ -4,8 +4,8 @@
   "name": "Otim Documentation",
   "colors": {
     "primary": "#6B21A8",
-    "light": "#6B21A8",
-    "dark": "#8DF107"
+    "light": "#8DF107",
+    "dark": "#6B21A8"
   },
   "favicon": "/favicon.svg",
   "navigation": {
