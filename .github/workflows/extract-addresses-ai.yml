@@ -1,0 +1,137 @@
+name: Extract Contract Addresses (AI-Powered)
+
+on:
+  repository_dispatch:
+    types: [contract-addresses-updated]
+  workflow_dispatch:
+
+jobs:
+  extract-addresses:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout otim-protocol
+      uses: actions/checkout@v4
+      with:
+        repository: otimlabs/otim-protocol
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm init -y
+        npm install openai dotenv
+        
+    - name: Extract addresses using AI
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        # Create the AI extraction script
+        cat > extract-addresses.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        const OpenAI = require('openai');
+        
+        const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+        });
+        
+        async function extractAddressesFromFile(filePath, networkType, chainName) {
+          if (!fs.existsSync(filePath)) return '';
+          
+          const content = fs.readFileSync(filePath, 'utf8');
+          
+        const prompt = "Extract ONLY variables starting with EXPECTED_ and ending with _ADDRESS that have non-empty values. Return ONLY this format:\\n\\n" +
+          "### " + chainName + "\\n\\n" +
+          "| Contract | Address |\\n" +
+          "|----------|---------|\\n" +
+          "| Contract Name | 0x... |\\n\\n" +
+          "Rules: Convert EXPECTED_CONTRACT_NAME_ADDRESS to Contract Name (title case, keep ERC20/CCTP uppercase). Remove EXPECTED prefix. Sort alphabetically. Skip empty addresses. No explanations.\\n\\n" +
+          content;
+        
+          try {
+            const completion = await openai.chat.completions.create({
+              model: "gpt-4o-mini",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a smart contract address extractor. Extract addresses from environment files and format them as clean markdown tables."
+                },
+                {
+                  role: "user",
+                  content: prompt
+                }
+              ],
+              max_tokens: 2000,
+              temperature: 0.1
+            });
+            
+            const aiOutput = completion.choices[0].message.content.trim();
+            
+            // Clean up verbose AI output - extract only the markdown table section
+            const lines = aiOutput.split('\n');
+            const startIdx = lines.findIndex(line => line.startsWith('### '));
+            if (startIdx === -1) return aiOutput;
+            
+            // Find the end of the table (look for empty line after table content)
+            let endIdx = lines.length;
+            for (let i = startIdx + 1; i < lines.length; i++) {
+              if (lines[i].trim() === '' && i > startIdx + 2) { // Allow some empty lines within table
+                endIdx = i;
+                break;
+              }
+            }
+            
+            const tableLines = lines.slice(startIdx, endIdx);
+            return tableLines.join('\n') + '\n\n';
+          } catch (error) {
+            console.error('OpenAI API error:', error);
+            return `## ${chainName}\n\nError extracting addresses: ${error.message}\n\n`;
+          }
+        }
+        
+        async function processNetwork(networkType, coreFile, excludeFiles) {
+          const dir = `.github/networks/${networkType}/`;
+          const output = [`# ${networkType.charAt(0).toUpperCase() + networkType.slice(1)} Contract Addresses\n`];
+          
+          // Core contracts
+          output.push(await extractAddressesFromFile(coreFile, networkType, 'Core Contracts'));
+          
+          // Chain-specific contracts
+          const files = fs.readdirSync(dir)
+            .filter(file => file.startsWith('.env-') && !excludeFiles.includes(file))
+            .map(file => ({ 
+              path: path.join(dir, file), 
+              name: file.replace('.env-', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+            }));
+          
+          for (const file of files) {
+            output.push(await extractAddressesFromFile(file.path, networkType, file.name));
+          }
+          
+          return output.join('');
+        }
+        
+        async function main() {
+          const mainnetOutput = await processNetwork('mainnet', '.github/networks/mainnet/.env-otim-mainnet', ['.env-otim-mainnet']);
+          const testnetOutput = await processNetwork('testnet', '.github/networks/testnet/.env-otim-testnet', ['.env-otim-testnet']);
+          
+          fs.writeFileSync('output/contract-addresses.md', mainnetOutput + '\n' + testnetOutput);
+          console.log('Contract addresses extracted successfully!');
+        }
+        
+        main().catch(console.error);
+        EOF
+        
+        # Run the extraction
+        node extract-addresses.js
+        
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: contract-addresses-ai
+        path: contract-addresses.md
+        
