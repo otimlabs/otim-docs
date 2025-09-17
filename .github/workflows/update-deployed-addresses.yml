@@ -1,0 +1,49 @@
+name: Update Deployed Contract Addresses
+
+on:
+  repository_dispatch:
+    types: [contract-addresses-updated]
+  workflow_dispatch:
+    inputs:
+      use_ai:
+        description: 'Use AI-powered extraction'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  update-addresses:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout otim-protocol
+      uses: actions/checkout@v4
+      with:
+        repository: otimlabs/otim-protocol
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Update deployed addresses
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        # Run the extraction script
+        node .github/scripts/extract-addresses.js ${{ github.event.inputs.use_ai && '--ai' || '' }}
+        
+    - name: Create PR for address updates
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Update deployed contract addresses${{ github.event.inputs.use_ai && ' (AI-generated)' || '' }}"
+        title: "Update Deployed Contract Addresses${{ github.event.inputs.use_ai && ' (AI)' || '' }}"
+        body: |
+          Contract address extraction detected changes.
+          
+          **Run**: [View logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        branch: update-deployed-addresses${{ github.event.inputs.use_ai && '-ai' || '' }}
+        branch-suffix: short-commit-hash
+        base: main
+        delete-branch: true
