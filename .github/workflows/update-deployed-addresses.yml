@@ -1,17 +1,9 @@
 name: Update Deployed Contract Addresses
 
 on:
-  push:
-    branches: [ahmad/auto_update_contract_address]
   repository_dispatch:
     types: [contract-addresses-updated]
   workflow_dispatch:
-    inputs:
-      test_mode:
-        description: 'Run in test mode (skip PR creation)'
-        required: false
-        default: 'true'
-        type: boolean
 
 permissions:
   contents: write
@@ -57,11 +49,6 @@ jobs:
         cat /tmp/env_data.txt >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
         
-        # Debug: Show environment data
-        echo "=== Environment Data ==="
-        cat /tmp/env_data.txt
-        echo "=== End Environment Data ==="
-        
     - name: Setup contract address MDX template
       id: setup-template
       run: |
@@ -69,11 +56,6 @@ jobs:
         echo "template<<EOF" >> $GITHUB_OUTPUT
         cat .github/templates/deployed-addresses.mdx.tmpl >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        
-        # Debug: Show template content
-        echo "=== Template Content ==="
-        cat .github/templates/deployed-addresses.mdx.tmpl
-        echo "=== End Template Content ==="
 
   submit-prompt:
     runs-on: ubuntu-latest
@@ -127,20 +109,19 @@ jobs:
             "temperature": 0
           }' > /tmp/openai_payload.json
         
-        # Call API and capture result
-        API_RESPONSE=$(curl -s "https://api.openai.com/v1/chat/completions" \
+        # Call API and extract content
+        curl -s "https://api.openai.com/v1/chat/completions" \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer $OPENAI_API_KEY" \
-          -d @/tmp/openai_payload.json)
+          -d @/tmp/openai_payload.json | \
+        jq -r '.choices[0].message.content // empty' > /tmp/mdx_content.txt
         
-        # Extract content and check for errors
-        echo "$API_RESPONSE" | jq -r '.choices[0].message.content // empty' > /tmp/mdx_content.txt
+        # Check for errors and store output
         if [ ! -s /tmp/mdx_content.txt ]; then
-          echo "Error: OpenAI API failed - $API_RESPONSE"
+          echo "Error: OpenAI API failed"
           exit 1
         fi
         
-        # Store as output
         echo "content<<EOF" >> $GITHUB_OUTPUT
         cat /tmp/mdx_content.txt >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
@@ -159,10 +140,23 @@ jobs:
         echo "${{ needs.submit-prompt.outputs.mdx-content }}" > docs/developers/deployed-addresses.mdx
         
     - name: Generate GitHub App Token
-      if: ${{ !inputs.test_mode }}
       id: bot_token
       uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       with:
         app_id: ${{ secrets.GH_APP_ID }}
         private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-
+        
+    # - name: Create PR for address updates
+    #   uses: peter-evans/create-pull-request@v7
+    #   with:
+    #     token: ${{ steps.bot_token.outputs.token }}
+    #     commit-message: "Update deployed contract addresses (AI-generated)"
+    #     title: "Sync: Deployed Contract Addresses"
+    #     body: |
+    #       Contract address extraction completed using AI.
+          
+    #       **Run**: [View logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+    #     branch: update-deployed-addresses-ai
+    #     branch-suffix: short-commit-hash
+    #     base: main
+    #     delete-branch: true
