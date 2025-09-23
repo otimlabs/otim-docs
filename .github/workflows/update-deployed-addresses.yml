@@ -4,16 +4,13 @@ on:
   repository_dispatch:
     types: [contract-addresses-updated]
   workflow_dispatch:
-    inputs:
-      use_ai:
-        description: 'Use AI-powered extraction'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
-  update-addresses:
+  setup-prompt:
     runs-on: ubuntu-latest
+    outputs:
+      environment-data: ${{ steps.collect-env.outputs.data }}
+      template: ${{ steps.setup-template.outputs.template }}
     
     steps:
     - name: Checkout otim-protocol
@@ -21,29 +18,134 @@ jobs:
       with:
         repository: otimlabs/otim-protocol
         
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+    - name: Collect environment files
+      id: collect-env
+      run: |
+        # Collect all environment files for processing
+        ENV_DATA=""
+        for network in mainnet testnet; do
+          for file in .github/networks/$network/.env-*; do
+            if [ -f "$file" ]; then
+              ENV_DATA="${ENV_DATA}file: $(basename $file)\n$(cat $file)\n\n"
+            fi
+          done
+        done
         
-    - name: Update deployed addresses
+        # Store as output
+        cat <<EOF >> $GITHUB_OUTPUT
+        data<<EOF
+        $ENV_DATA
+        EOF
+        EOF
+        
+    - name: Setup address MDX template
+      id: setup-template
+      run: |
+        cat <<EOF >> $GITHUB_OUTPUT
+        template<<EOF
+        ---
+        title: "Contract Addresses"
+        sidebarTitle: "Contract Addresses"
+        ---
+        <Tabs>
+          <Tab title="[NETWORK]">
+            ## Core Contracts
+            
+            | Name | Address |
+            | :--- | :--- |
+            | \`[ContractName]\` | \`[ADDRESS]\` |
+
+            ## Action Contracts
+
+            <Tabs>
+              <Tab title="[CHAIN_NAME]">
+                | Name | Address |
+                | :--- | :--- |
+                | \`[ContractName]\` | \`[ADDRESS]\` |
+              </Tab>
+              <!-- Repeat <Tab> for each chain -->
+            </Tabs>
+            
+          </Tab>
+          <!-- Repeat <Tab> for both Mainnet and Testnet -->
+        </Tabs>
+        EOF
+        EOF
+
+  call-openai:
+    runs-on: ubuntu-latest
+    needs: setup-prompt
+    outputs:
+      mdx-content: ${{ steps.call-api.outputs.content }}
+    
+    steps:
+    - name: Call OpenAI API
+      id: call-api
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        # Run the extraction script
-        node .github/scripts/extract-addresses.js ${{ github.event.inputs.use_ai && '--ai' || '' }}
+        # System prompt
+        SYSTEM_PROMPT="Generate clean, properly formatted MDX content for contract addresses. ALWAYS sort contract names alphabetically within each table for consistency."
+        
+        # User prompt
+        USER_PROMPT="Generate MDX content following this template:
+
+        ${{ needs.setup-prompt.outputs.template }}
+
+        Extract EXPECTED_*_ADDRESS variables from these environment files:
+
+        ${{ needs.setup-prompt.outputs.environment-data }}
+
+        Requirements:
+        - Collect all non-token contract addresses (no owner/deployer addresses)
+        - Convert envvar (CONTRACT_NAME_ADDRESS) to ContractName format
+        - Group core contracts (e.g. Gateway, OtimDelegate, InstructionStorage, FeeTokenRegistry, Treasury and ActionManager) under Core Contracts
+        - Group action contracts (contain ACTION at end of envvar) under Action Contracts with chain tabs
+        - Sort all contract names alphabetically within each table
+        - Do NOT create chain tabs for .env-otim-* files (they contain shared core contracts)"
+
+        # Call API and store output
+        curl -s "https://api.openai.com/v1/chat/completions" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $OPENAI_API_KEY" \
+          -d "{
+            \"model\": \"gpt-4o\",
+            \"messages\": [
+              {\"role\": \"system\", \"content\": \"$SYSTEM_PROMPT\"},
+              {\"role\": \"user\", \"content\": \"$USER_PROMPT\"}
+            ],
+            \"max_tokens\": 4000,
+            \"temperature\": 0
+          }" | jq -r '.choices[0].message.content' | cat <<EOF >> $GITHUB_OUTPUT
+        content<<EOF
+        $(cat)
+        EOF
+        EOF
+
+  write-mdx:
+    runs-on: ubuntu-latest
+    needs: call-openai
+    
+    steps:
+    - name: Checkout docs repository
+      uses: actions/checkout@v4
+      
+    - name: Write MDX content
+      run: |
+        # Write the generated content to the MDX file
+        echo "${{ needs.call-openai.outputs.mdx-content }}" > docs/developers/deployed-addresses.mdx
         
     - name: Create PR for address updates
       uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Update deployed contract addresses${{ github.event.inputs.use_ai && ' (AI-generated)' || '' }}"
-        title: "Update Deployed Contract Addresses${{ github.event.inputs.use_ai && ' (AI)' || '' }}"
+        commit-message: "Update deployed contract addresses (AI-generated)"
+        title: "Update Deployed Contract Addresses (AI)"
         body: |
-          Contract address extraction detected changes.
+          Contract address extraction completed using AI.
           
           **Run**: [View logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-        branch: update-deployed-addresses${{ github.event.inputs.use_ai && '-ai' || '' }}
+        branch: update-deployed-addresses-ai
         branch-suffix: short-commit-hash
         base: main
         delete-branch: true
