@@ -1,9 +1,22 @@
 name: Update Deployed Contract Addresses
 
 on:
+  push:
+    branches: [ahmad/auto_update_contract_address]
   repository_dispatch:
     types: [contract-addresses-updated]
   workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Run in test mode (skip PR creation)'
+        required: false
+        default: 'true'
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   setup-prompt:
@@ -13,40 +26,54 @@ jobs:
       template: ${{ steps.setup-template.outputs.template }}
     
     steps:
+    - name: Checkout current repository
+      uses: actions/checkout@v4
+      
     - name: Checkout otim-protocol
       uses: actions/checkout@v4
       with:
         repository: otimlabs/otim-protocol
+        path: otim-protocol
         
     - name: Collect protocol environment settings
       id: collect-env
       run: |
         # Collect all environment files for processing
-        ENV_DATA=""
-        for network in mainnet testnet; do
-          for file in .github/networks/$network/.env-*; do
-            if [ -f "$file" ]; then
-              ENV_DATA="${ENV_DATA}file: $(basename $file)\n$(cat $file)\n\n"
-            fi
+        {
+          for network in mainnet testnet; do
+            for file in otim-protocol/.github/networks/$network/.env-*; do
+              if [ -f "$file" ]; then
+                echo "=== $network: $(basename $file) ==="
+                cat "$file"
+                echo ""
+                echo ""
+              fi
+            done
           done
-        done
+        } > /tmp/env_data.txt
         
         # Store as output
-        cat <<EOF >> $GITHUB_OUTPUT
-        data<<EOF
-        $ENV_DATA
-        EOF
-        EOF
+        echo "data<<EOF" >> $GITHUB_OUTPUT
+        cat /tmp/env_data.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        # Debug: Show environment data
+        echo "=== Environment Data ==="
+        cat /tmp/env_data.txt
+        echo "=== End Environment Data ==="
         
     - name: Setup contract address MDX template
       id: setup-template
       run: |
         # Read template file and store as output
-        cat <<EOF >> $GITHUB_OUTPUT
-        template<<EOF
-        $(cat .github/templates/deployed-addresses.mdx.tmpl)
-        EOF
-        EOF
+        echo "template<<EOF" >> $GITHUB_OUTPUT
+        cat .github/templates/deployed-addresses.mdx.tmpl >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        # Debug: Show template content
+        echo "=== Template Content ==="
+        cat .github/templates/deployed-addresses.mdx.tmpl
+        echo "=== End Template Content ==="
 
   submit-prompt:
     runs-on: ubuntu-latest
@@ -60,10 +87,11 @@ jobs:
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        SYSTEM_PROMPT="Generate MDX content for contract addresses from environment variables."
+        SYSTEM_PROMPT="Generate MDX content (without code block wrappers) for contract addresses from environment variables."
         
-        ###
-        USER_PROMPT="Generate MDX content following this template:
+        # Create user prompt with proper escaping
+        cat > /tmp/user_prompt.txt << 'USER_EOF'
+        Generate MDX content following this template:
 
         ${{ needs.setup-prompt.outputs.template }}
 
@@ -72,44 +100,57 @@ jobs:
         ${{ needs.setup-prompt.outputs.environment-data }}
 
         Requirements:
-        - Extract non-token contract addresses (no owner/deployer)
+        - Extract ALL *_ADDRESS environment variables (no exclusions)
         - Convert envvar (CONTRACT_NAME_ADDRESS) to ContractName format
         - Group core contracts (Gateway, OtimDelegate, InstructionStorage, FeeTokenRegistry, Treasury, ActionManager) under Core Contracts
-        - Group action contracts under Action Contracts with chain tabs
+        - Group action contracts under Action Contracts with chain tabs (examples: DeactivateInstructionAction, SweepCCTPAction, TransferCCTPAction, SweepUniswapV3Action, UniswapV3ExactInputAction, RefuelAction, RefuelERC20Action, TransferAction, TransferERC20Action, SweepAction, SweepERC20Action)
         - Include common action contracts from .env-otim-* files in ALL chain tabs within each network (Mainnet/Testnet)
-        - Do NOT create chain tabs for .env-otim-* files (they contain shared core contracts)
-        - Output pure MDX content without code block wrappers (no \`\`\`mdx)"
-        ###
+        - Create tabs for ALL chains including specific examples: Base, Arbitrum, Ethereum, Optimism, Base Sepolia, Arbitrum Sepolia, Ethereum Sepolia, Optimism Sepolia, Pecorino Host, Pecorino Signet
+        - Do NOT create chain tabs for .env-otim-* files (they contain shared core contracts) - treat all other files as chains
+        - Sort all contract names alphabetically within each table
+        - Use proper MDX syntax with quoted tab titles: <Tab title="Tab Name">
+        USER_EOF
 
-        # Create JSON payload file
-        cat > /tmp/openai_payload.json << EOF
-        {
-          "model": "gpt-4o",
-          "messages": [
-            {"role": "system", "content": "$SYSTEM_PROMPT"},
-            {"role": "user", "content": "$USER_PROMPT"}
-          ],
-          "max_tokens": 6000,
-          "temperature": 0
-        }
-        EOF
+        USER_PROMPT=$(cat /tmp/user_prompt.txt)
 
-        # Call API and store output
-        curl -s "https://api.openai.com/v1/chat/completions" \
+        # Create JSON payload using jq for proper escaping
+        jq -n \
+          --arg system "$SYSTEM_PROMPT" \
+          --arg user "$USER_PROMPT" \
+          '{
+            "model": "gpt-4o",
+            "messages": [
+              {"role": "system", "content": $system},
+              {"role": "user", "content": $user}
+            ],
+            "max_tokens": 8000,
+            "temperature": 0
+          }' > /tmp/openai_payload.json
+        
+        # Call API and capture result
+        API_RESPONSE=$(curl -s "https://api.openai.com/v1/chat/completions" \
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer $OPENAI_API_KEY" \
-          -d @/tmp/openai_payload.json | jq -r '.choices[0].message.content' | cat <<EOF >> $GITHUB_OUTPUT
-        content<<EOF
-        $(cat)
-        EOF
-        EOF
+          -d @/tmp/openai_payload.json)
+        
+        # Extract content and check for errors
+        echo "$API_RESPONSE" | jq -r '.choices[0].message.content // empty' > /tmp/mdx_content.txt
+        if [ ! -s /tmp/mdx_content.txt ]; then
+          echo "Error: OpenAI API failed - $API_RESPONSE"
+          exit 1
+        fi
+        
+        # Store as output
+        echo "content<<EOF" >> $GITHUB_OUTPUT
+        cat /tmp/mdx_content.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
   process-prompt-result:
     runs-on: ubuntu-latest
     needs: submit-prompt
     
     steps:
-    - name: Checkout docs repository
+    - name: Checkout repository
       uses: actions/checkout@v4
       
     - name: Write MDX content
@@ -117,17 +158,11 @@ jobs:
         # Write the generated content to the MDX file
         echo "${{ needs.submit-prompt.outputs.mdx-content }}" > docs/developers/deployed-addresses.mdx
         
-    - name: Create PR for address updates
-      uses: peter-evans/create-pull-request@v7
+    - name: Generate GitHub App Token
+      if: ${{ !inputs.test_mode }}
+      id: bot_token
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Update deployed contract addresses (AI-generated)"
-        title: "Update Deployed Contract Addresses (AI)"
-        body: |
-          Contract address extraction completed using AI.
-          
-          **Run**: [View logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-        branch: update-deployed-addresses-ai
-        branch-suffix: short-commit-hash
-        base: main
-        delete-branch: true
+        app_id: ${{ secrets.GH_APP_ID }}
+        private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
