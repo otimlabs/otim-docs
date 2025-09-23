@@ -90,7 +90,6 @@ jobs:
         - Create tabs for ALL chains including specific examples: Base, Arbitrum, Ethereum, Optimism, Base Sepolia, Arbitrum Sepolia, Ethereum Sepolia, Optimism Sepolia, Pecorino Host, Pecorino Signet
         - Do NOT create chain tabs for .env-otim-* files (they contain shared core contracts) - treat all other files as chains
         - Sort all contract names alphabetically within each table
-        - Use proper MDX syntax with quoted tab titles: <Tab title="Tab Name">
         USER_EOF
 
         USER_PROMPT=$(cat /tmp/user_prompt.txt)
@@ -114,17 +113,23 @@ jobs:
           -H "Content-Type: application/json" \
           -H "Authorization: Bearer $OPENAI_API_KEY" \
           -d @/tmp/openai_payload.json | \
-        jq -r '.choices[0].message.content // empty' > /tmp/mdx_content.txt
+        jq -r '.choices[0].message.content // empty' > /tmp/deployed-addresses.mdx
         
         # Check for errors and store output
-        if [ ! -s /tmp/mdx_content.txt ]; then
+        if [ ! -s /tmp/deployed-addresses.mdx ]; then
           echo "Error: OpenAI API failed"
           exit 1
         fi
         
         echo "content<<EOF" >> $GITHUB_OUTPUT
-        cat /tmp/mdx_content.txt >> $GITHUB_OUTPUT
+        cat /tmp/deployed-addresses.mdx >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Upload MDX artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mdx-content
+        path: /tmp/deployed-addresses.mdx
 
   process-prompt-result:
     runs-on: ubuntu-latest
@@ -134,10 +139,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Write MDX content
-      run: |
-        # Write the generated content to the MDX file
-        echo "${{ needs.submit-prompt.outputs.mdx-content }}" > docs/developers/deployed-addresses.mdx
+    - name: Download MDX artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: mdx-content
+        path: docs/developers
         
     - name: Generate GitHub App Token
       id: bot_token
@@ -146,17 +152,16 @@ jobs:
         app_id: ${{ secrets.GH_APP_ID }}
         private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
         
-    # - name: Create PR for address updates
-    #   uses: peter-evans/create-pull-request@v7
-    #   with:
-    #     token: ${{ steps.bot_token.outputs.token }}
-    #     commit-message: "Update deployed contract addresses (AI-generated)"
-    #     title: "Sync: Deployed Contract Addresses"
-    #     body: |
-    #       Contract address extraction completed using AI.
+    - name: Create PR for address updates
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ steps.bot_token.outputs.token }}
+        commit-message: "Update deployed contract addresses (AI-generated)"
+        title: "Sync: Deployed Contract Addresses"
+        body: |
+          Contract address extraction completed using AI.
           
-    #       **Run**: [View logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-    #     branch: update-deployed-addresses-ai
-    #     branch-suffix: short-commit-hash
-    #     base: main
-    #     delete-branch: true
+          **Run**: [View logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        branch: update-deployed-addresses-ai
+        base: main
+        delete-branch: true
