@@ -5,14 +5,19 @@ sidebarTitle: "Current Actions"
 
 Below is the first batch of Actions currently available to users, but many more Actions are in development!
 
-| Action    | Description                                                                                                        |
-| :-------- | :------------------------------------------------------------------------------------------------------------------|
-| Transfer  | Send tokens to a target account at scheduled intervals.                                                            |                                                             |
-| Refuel    | Track the balance of a target account and send tokens if the target's token balance falls below a given threshold. |
-| Swap      | Swap tokens using Uniswap V3 pools on a recurring basis.                                                           |
-| Sweep     | Any funds sent to a pre-defined address gets swept to any chosen destination                                       |
-| Call      | Execute an arbitrary function call at scheduled intervals.                                                         |
-| MultiCall | Execute a batch of arbitrary function calls at scheduled intervals.                                                |
+| Action | Description |
+| :----- | :---------- |
+| **DeactivateInstruction** | Deactivate an existing instruction to stop its execution. |
+| **Refuel** | Refuel a target account when its native token balance falls below a threshold. |
+| **RefuelERC20** | Refuel a target account when its ERC20 token balance falls below a threshold. |
+| **Sweep** | Move native tokens from a target account when balance exceeds a threshold. |
+| **SweepCCTP** | Move CCTP tokens from a target account when balance exceeds a threshold. |
+| **SweepERC20** | Move ERC20 tokens from a target account when balance exceeds a threshold. |
+| **SweepUniswapV3** | Move tokens via Uniswap V3 swap when balance exceeds a threshold. |
+| **Transfer** | Send native tokens to a target account at scheduled intervals. |
+| **TransferCCTP** | Send CCTP tokens to a destination domain at scheduled intervals. |
+| **TransferERC20** | Send ERC20 tokens to a target account at scheduled intervals. |
+| **UniswapV3ExactInput** | Swap tokens using Uniswap V3 pools at scheduled intervals. |
 
 Find all of the above Actions' deployed contract addresses [here](/docs/developers/deployed-addresses).
 
