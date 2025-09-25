@@ -214,6 +214,11 @@
           "icon": "telegram"
         },
         {
+          "anchor": "LinkedIn",
+          "href": "https://linkedin.com/company/otim",
+          "icon": "linkedin"
+        },
+        {
           "anchor": "X",
           "href": "https://x.com/otimlabs",
           "icon": "x-twitter"
