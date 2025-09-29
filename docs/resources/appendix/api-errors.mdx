@@ -3,153 +3,118 @@ title: "API Error Codes"
 sidebarTitle: "API Error Codes"
 ---
 
-This document contains all user-addressable error codes (1xxx) that can be returned by the API. These errors are categorized by their retry behavior and error type.
+This document contains all user error codes that can be returned by the API. These errors are categorized by their retry behavior and error type.
 
 <Tabs>
-  <Tab title="Terminal">
-    <Tabs>
-      <Tab title="Contract-Level">
-        | Code | Description |
-        | :--- | :--- |
-        | 1201 | User account is not delegated to the OtimDelegate contract |
-        | 1202 | Signature verification failed for the provided instruction |
-        | 1203 | Action cannot be executed due to contract-level restrictions |
-        | 1205 | Instruction has already been deactivated and cannot be executed |
-      </Tab>
-      
-      <Tab title="Transfer Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1301 | Invalid or malformed arguments provided for transfer action |
-        | 1302 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Transfer ERC20 Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1305 | Invalid or malformed arguments provided for ERC20 transfer action |
-        | 1306 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Refuel Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1309 | Invalid or malformed arguments provided for refuel action |
-        | 1310 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Refuel ERC20 Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1314 | Invalid or malformed arguments provided for ERC20 refuel action |
-        | 1315 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="UniswapV3 Exact Input Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1319 | Invalid or malformed arguments provided for UniswapV3 swap action |
-        | 1320 | UniswapV3 pool does not exist for the specified token pair and fee tier |
-        | 1321 | Unexpected invalid tick data encountered during pool validation |
-        | 1322 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Sweep Deposit Account Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1325 | Invalid or malformed arguments provided for sweep deposit account action |
-        | 1326 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Sweep Deposit Account ERC20 Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1329 | Invalid or malformed arguments provided for ERC20 sweep deposit account action |
-        | 1330 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Sweep Skip CCTP Deposit Account Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1333 | Invalid or malformed arguments provided for sweep skip CCTP deposit account action |
-        | 1334 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-      
-      <Tab title="Skip CCTP Deposit Account">
-        | Code | Description |
-        | :--- | :--- |
-        | 1338 | SafeERC20 transfer operation failed due to token contract issues |
-      </Tab>
-    </Tabs>
+  <Tab title="Contract-Level">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1201 | Terminal | User account is not delegated to the OtimDelegate contract |
+    | 1202 | Terminal | Signature verification failed for the provided instruction |
+    | 1203 | Terminal | Action cannot be executed due to contract-level restrictions |
+    | 1204 | Retryable | Action execution failed on-chain, may succeed with retry |
+    | 1205 | Terminal | Instruction has already been deactivated and cannot be executed |
+    | 1206 | Terminal | Instruction has already been deactivated in DeactivateInstructionAction |
   </Tab>
   
-  <Tab title="Retryable">
-    <Tabs>
-      <Tab title="Contract-Level">
-        | Code | Description |
-        | :--- | :--- |
-        | 1204 | Action execution failed on-chain, may succeed with retry |
-      </Tab>
-      
-      <Tab title="Transfer Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1303 | Insufficient fee token balance to cover execution costs |
-        | 1304 | Insufficient native token balance for the transfer amount |
-      </Tab>
-      
-      <Tab title="Transfer ERC20 Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1307 | Insufficient fee token balance to cover execution costs |
-        | 1308 | Insufficient ERC20 token balance for the transfer amount |
-      </Tab>
-      
-      <Tab title="Refuel Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1311 | Insufficient fee token balance to cover execution costs |
-        | 1313 | Insufficient native token balance for the refuel amount |
-      </Tab>
-      
-      <Tab title="Refuel ERC20 Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1316 | Insufficient fee token balance to cover execution costs |
-        | 1318 | Insufficient ERC20 token balance for the refuel amount |
-      </Tab>
-      
-      <Tab title="UniswapV3 Exact Input Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1323 | Insufficient fee token balance to cover execution costs |
-        | 1324 | Insufficient input token balance for the swap amount |
-      </Tab>
-      
-      <Tab title="Sweep Deposit Account Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1327 | Insufficient fee token balance to cover execution costs |
-      </Tab>
-      
-      <Tab title="Sweep Deposit Account ERC20 Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1331 | Insufficient fee token balance to cover execution costs |
-      </Tab>
-      
-      <Tab title="Sweep Skip CCTP Deposit Account Action">
-        | Code | Description |
-        | :--- | :--- |
-        | 1335 | Insufficient fee token balance to cover execution costs |
-      </Tab>
-      
-      <Tab title="Skip CCTP Deposit Account">
-        | Code | Description |
-        | :--- | :--- |
-        | 1337 | Insufficient balance to cover the skip-go fee for CCTP transfer |
-        | 1339 | Skip Go route is not supported for the specified transfer parameters |
-      </Tab>
-    </Tabs>
+  <Tab title="Transfer">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1301 | Terminal | Invalid or malformed arguments provided for transfer action |
+    | 1302 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+    | 1303 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1304 | Retryable | Insufficient native token balance for the transfer amount |
+  </Tab>
+  
+  <Tab title="Transfer ERC20">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1305 | Terminal | Invalid or malformed arguments provided for ERC20 transfer action |
+    | 1306 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+    | 1307 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1308 | Retryable | Insufficient ERC20 token balance for the transfer amount |
+  </Tab>
+  
+  <Tab title="Refuel">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1309 | Terminal | Invalid or malformed arguments provided for refuel action |
+    | 1310 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+    | 1311 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1313 | Retryable | Insufficient native token balance for the refuel amount |
+  </Tab>
+  
+  <Tab title="Refuel ERC20">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1314 | Terminal | Invalid or malformed arguments provided for ERC20 refuel action |
+    | 1315 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+    | 1316 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1318 | Retryable | Insufficient ERC20 token balance for the refuel amount |
+  </Tab>
+  
+  <Tab title="UniswapV3 Exact Input">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1319 | Terminal | Invalid or malformed arguments provided for UniswapV3 swap action |
+    | 1320 | Terminal | UniswapV3 pool does not exist for the specified token pair and fee tier |
+    | 1321 | Terminal | Unexpected invalid tick data encountered during pool validation |
+    | 1322 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+    | 1323 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1324 | Retryable | Insufficient input token balance for the swap amount |
+    | 1328 | Retryable | UniswapV3 swap received too little output tokens |
+  </Tab>
+  
+  <Tab title="Deactivate Instruction">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1340 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1341 | Terminal | Invalid or malformed arguments provided for deactivate instruction action |
+    | 1342 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+  </Tab>
+  
+  <Tab title="Sweep CCTP">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1343 | Terminal | Invalid or malformed arguments provided for sweep CCTP action |
+    | 1344 | Terminal | CCTP token is not supported for the specified operation |
+    | 1345 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1346 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+  </Tab>
+  
+  <Tab title="Transfer CCTP">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1347 | Terminal | Invalid or malformed arguments provided for transfer CCTP action |
+    | 1348 | Retryable | Insufficient token balance for the CCTP transfer amount |
+    | 1349 | Terminal | CCTP token is not supported for the specified operation |
+    | 1350 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1351 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+  </Tab>
+  
+  <Tab title="Sweep">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1352 | Terminal | Invalid or malformed arguments provided for sweep action |
+    | 1353 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1354 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+  </Tab>
+  
+  <Tab title="Sweep ERC20">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1355 | Terminal | Invalid or malformed arguments provided for sweep ERC20 action |
+    | 1356 | Retryable | Insufficient fee token balance to cover execution costs |
+    | 1357 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+  </Tab>
+  
+  <Tab title="Sweep UniswapV3">
+    | Code | Type | Description |
+    | :--- | :--- | :--- |
+    | 1358 | Terminal | Invalid or malformed arguments provided for sweep UniswapV3 action |
+    | 1359 | Terminal | UniswapV3 pool does not exist for the specified token pair and fee tier |
+    | 1360 | Terminal | Unexpected invalid tick data encountered during pool validation |
+    | 1361 | Terminal | SafeERC20 transfer operation failed due to token contract issues |
+    | 1362 | Retryable | Insufficient fee token balance to cover execution costs |
   </Tab>
 </Tabs>
