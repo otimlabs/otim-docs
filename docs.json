@@ -114,6 +114,7 @@
                 "pages": [
                   "docs/resources/appendix/instruction-712-hashes",
                   "docs/resources/appendix/action-hash-abis",
+                  "docs/resources/appendix/api-errors",
                   "docs/resources/appendix/eip-7702"
                 ]
               },
