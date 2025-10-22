@@ -359,10 +359,679 @@ components:
           example: 3600
     ActionArguments:
       type: object
-      oneOf: []
+      oneOf:
+        - title: RefuelERC20
+          type: object
+          required:
+            - refuelERC20
+          properties:
+            refuelERC20:
+              type: object
+              required:
+                - token
+                - target
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: ERC20 token to refuel the recipient with
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                target:
+                  type: string
+                  format: address
+                  description: address of the refuel recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: if the balance of the recipient is below this threshold, the refuel will be executed
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: the balance the recipient will have after the refuel is executed
+                  example: 2000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: Refuel
+          type: object
+          required:
+            - refuel
+          properties:
+            refuel:
+              type: object
+              required:
+                - target
+                - threshold
+                - endBalance
+                - gasLimit
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: address of the refuel recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: if the balance of the recipient is below this threshold, the refuel will be executed
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: the balance the recipient will have after the refuel is executed
+                  example: 2000000000000000000
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: the maximum amount of gas the target can use when called during the refuel
+                  example: 100000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: TransferERC20
+          type: object
+          required:
+            - transferERC20
+          properties:
+            transferERC20:
+              type: object
+              required:
+                - token
+                - target
+                - value
+                - schedule
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: ERC20 token to be transferred
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                target:
+                  type: string
+                  format: address
+                  description: address of the recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                value:
+                  type: integer
+                  format: uint256
+                  description: amount to be transferred
+                  example: 1000000000000000000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: Transfer
+          type: object
+          required:
+            - transfer
+          properties:
+            transfer:
+              type: object
+              required:
+                - target
+                - value
+                - gasLimit
+                - schedule
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: address of the recipient
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                value:
+                  type: integer
+                  format: uint256
+                  description: amount to be transferred
+                  example: 1000000000000000000
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: the maximum amount of gas the target can use when called during the transfer
+                  example: 100000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: UniswapV3ExactInput
+          type: object
+          required:
+            - uniswapV3ExactInput
+          properties:
+            uniswapV3ExactInput:
+              type: object
+              required:
+                - recipient
+                - tokenIn
+                - tokenOut
+                - feeTier
+                - amountIn
+                - floorAmountOut
+                - meanPriceLookBack
+                - maxPriceDeviationBPS
+                - schedule
+                - fee
+              properties:
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient of the swapped tokens
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                tokenIn:
+                  type: string
+                  format: address
+                  description: ERC20 token to be sold
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                tokenOut:
+                  type: string
+                  format: address
+                  description: ERC20 token to be bought
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                feeTier:
+                  type: integer
+                  format: uint24
+                  description: fee tier for the Uniswap V3 pool
+                  example: 3000
+                amountIn:
+                  type: integer
+                  format: uint256
+                  description: amount of tokens to be sold
+                  example: 1000000000000000000
+                floorAmountOut:
+                  type: integer
+                  format: uint256
+                  description: minimum amount of tokens to receive for each swap
+                  example: 1000000000000000000
+                meanPriceLookBack:
+                  type: integer
+                  format: uint32
+                  description: number of seconds for mean price look back
+                  example: 100
+                maxPriceDeviationBPS:
+                  type: integer
+                  format: uint32
+                  description: maximum price deviation in basis points
+                  example: 100
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: DeactivateInstruction
+          type: object
+          required:
+            - deactivateInstruction
+          properties:
+            deactivateInstruction:
+              type: object
+              required:
+                - instructionId
+                - fee
+              properties:
+                instructionId:
+                  type: string
+                  format: bytes32
+                  description: instruction_id to be deactivated
+                  example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepCCTP
+          type: object
+          required:
+            - sweepCCTP
+          properties:
+            sweepCCTP:
+              type: object
+              required:
+                - token
+                - destinationDomain
+                - destinationMintRecipient
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: token to be swept
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                destinationDomain:
+                  type: integer
+                  format: uint32
+                  description: destination domain
+                  example: 1
+                destinationMintRecipient:
+                  type: string
+                  format: bytes32
+                  description: address of the destination mint recipient
+                  example: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: sweep threshold
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: sweep end balance
+                  example: 500000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: TransferCCTP
+          type: object
+          required:
+            - transferCCTP
+          properties:
+            transferCCTP:
+              type: object
+              required:
+                - token
+                - amount
+                - destinationDomain
+                - destinationMintRecipient
+                - schedule
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: token to be transferred
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                amount:
+                  type: integer
+                  format: uint256
+                  description: amount to be transferred
+                  example: 1000000000000000000
+                destinationDomain:
+                  type: integer
+                  format: uint32
+                  description: destination domain
+                  example: 1
+                destinationMintRecipient:
+                  type: string
+                  format: bytes32
+                  description: address of the destination mint recipient
+                  example: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: Sweep
+          type: object
+          required:
+            - sweep
+          properties:
+            sweep:
+              type: object
+              required:
+                - target
+                - threshold
+                - endBalance
+                - gasLimit
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: target to be swept
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: gas limit for the sweep
+                  example: 100000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepERC20
+          type: object
+          required:
+            - sweepERC20
+          properties:
+            sweepERC20:
+              type: object
+              required:
+                - token
+                - target
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: token to be swept
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                target:
+                  type: string
+                  format: address
+                  description: target to be swept
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepUniswapV3
+          type: object
+          required:
+            - sweepUniswapV3
+          properties:
+            sweepUniswapV3:
+              type: object
+              required:
+                - recipient
+                - tokenIn
+                - tokenOut
+                - feeTier
+                - threshold
+                - endBalance
+                - floorAmountOut
+                - meanPriceLookBack
+                - maxPriceDeviationBPS
+                - fee
+              properties:
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                tokenIn:
+                  type: string
+                  format: address
+                  description: input token address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                tokenOut:
+                  type: string
+                  format: address
+                  description: output token address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                feeTier:
+                  type: integer
+                  format: uint24
+                  description: fee tier for the Uniswap V3 pool
+                  example: 3000
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                floorAmountOut:
+                  type: integer
+                  format: uint256
+                  description: floor amount out
+                  example: 1000000000000000000
+                meanPriceLookBack:
+                  type: integer
+                  format: uint32
+                  description: mean price look back
+                  example: 100
+                maxPriceDeviationBPS:
+                  type: integer
+                  format: uint32
+                  description: max price deviation in basis points
+                  example: 100
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: DepositERC4626
+          type: object
+          required:
+            - depositERC4626
+          properties:
+            depositERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - value
+                - minTotalAssets
+                - schedule
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                value:
+                  type: integer
+                  format: uint256
+                  description: amount to deposit
+                  example: 1000000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepDepositERC4626
+          type: object
+          required:
+            - sweepDepositERC4626
+          properties:
+            sweepDepositERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - threshold
+                - endBalance
+                - minTotalAssets
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: WithdrawERC4626
+          type: object
+          required:
+            - withdrawERC4626
+          properties:
+            withdrawERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - value
+                - minTotalAssets
+                - schedule
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                value:
+                  type: integer
+                  format: uint256
+                  description: amount to withdraw
+                  example: 1000000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepWithdrawERC4626
+          type: object
+          required:
+            - sweepWithdrawERC4626
+          properties:
+            sweepWithdrawERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - threshold
+                - endBalance
+                - minTotalAssets
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: CallOnce
+          type: object
+          required:
+            - callOnce
+          properties:
+            callOnce:
+              type: object
+              required:
+                - target
+                - allowFailure
+                - value
+                - gasLimit
+                - returnSizeLimit
+                - selector
+                - data
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: target address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                allowFailure:
+                  type: boolean
+                  description: allow failure flag
+                  example: false
+                value:
+                  type: integer
+                  format: uint256
+                  description: value to send
+                  example: 0
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: gas limit
+                  example: 100000
+                returnSizeLimit:
+                  type: integer
+                  format: uint16
+                  description: return size limit
+                  example: 1024
+                selector:
+                  type: string
+                  format: bytes4
+                  description: function selector
+                  example: "0x12345678"
+                data:
+                  type: string
+                  format: bytes
+                  description: call data
+                  example: "0x"
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
       discriminator:
         propertyName: type
-        mapping: {}
+        mapping:
+          refuelERC20: '#/components/schemas/ActionArguments/oneOf/0'
+          refuel: '#/components/schemas/ActionArguments/oneOf/1'
+          transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
+          transfer: '#/components/schemas/ActionArguments/oneOf/3'
+          uniswapV3ExactInput: '#/components/schemas/ActionArguments/oneOf/4'
+          deactivateInstruction: '#/components/schemas/ActionArguments/oneOf/5'
+          sweepCCTP: '#/components/schemas/ActionArguments/oneOf/6'
+          transferCCTP: '#/components/schemas/ActionArguments/oneOf/7'
+          sweep: '#/components/schemas/ActionArguments/oneOf/8'
+          sweepERC20: '#/components/schemas/ActionArguments/oneOf/9'
+          sweepUniswapV3: '#/components/schemas/ActionArguments/oneOf/10'
+          depositERC4626: '#/components/schemas/ActionArguments/oneOf/11'
+          sweepDepositERC4626: '#/components/schemas/ActionArguments/oneOf/12'
+          withdrawERC4626: '#/components/schemas/ActionArguments/oneOf/13'
+          sweepWithdrawERC4626: '#/components/schemas/ActionArguments/oneOf/14'
+          callOnce: '#/components/schemas/ActionArguments/oneOf/15'
     PrimitiveSignature:
       type: object
       properties:
@@ -433,7 +1102,6 @@ components:
         - chainId
         - salt
         - maxExecutions
-        - action
         - actionArguments
       properties:
         address:
@@ -448,12 +1116,12 @@ components:
           example: 11155111
         salt:
           type: integer
-          format: uint64
+          format: uint256
           description: Salt to ensure instruction is unique
           example: 1234567890
         maxExecutions:
           type: integer
-          format: uint64
+          format: uint256
           description: Maximum number of times this instruction can be executed (`0` for unlimited)
           example: 10
         actionArguments:
@@ -483,12 +1151,12 @@ components:
           example: 11155111
         salt:
           type: integer
-          format: uint64
+          format: uint256
           description: Salt to ensure instruction is unique
           example: 1234567890
         maxExecutions:
           type: integer
-          format: uint64
+          format: uint256
           description: Maximum number of times this instruction can be executed (`0` for unlimited)
           example: 10
         action:
@@ -506,8 +1174,9 @@ components:
           $ref: '#/components/schemas/PrimitiveSignature'
         nickname:
           type: string
-          description: Nickname for the instruction
+          description: Instruction nickname
           example: My cool instruction
+          nullable: true
     GetInstructionDetailsResponse:
       type: object
       required:
@@ -524,9 +1193,25 @@ components:
       properties:
         actionName:
           type: string
-          enum: []
+          enum:
+            - refuelERC20
+            - refuel
+            - transferERC20
+            - transfer
+            - uniswapV3ExactInput
+            - deactivateInstruction
+            - sweepCCTP
+            - transferCCTP
+            - sweep
+            - sweepERC20
+            - sweepUniswapV3
+            - depositERC4626
+            - sweepDepositERC4626
+            - withdrawERC4626
+            - sweepWithdrawERC4626
+            - callOnce
           description: Name of the action
-          example: sweepDepositAccountERC20
+          example: sweepDepositERC4626
         salt:
           type: string
           format: bytes
@@ -796,7 +1481,7 @@ components:
           example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
-          format: int64
+          format: uint64
           description: Chain ID
           example: 11155111
         instructionIds:
@@ -832,12 +1517,7 @@ components:
           example: asc
         timeScale:
           type: string
-          description: The time scale to group summaries by
-          enum:
-            - seconds
-            - minutes
-            - hours
-            - days
+          description: The time scale to group summaries by (e.g. "seconds", "minutes", "hours", "days")
           example: days
     GetInstructionSummariesResponse:
       type: array
@@ -1050,7 +1730,7 @@ components:
           example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
-          format: int64
+          format: uint64
           description: Chain ID of the instruction
           example: 11155111
         instructionId:
@@ -1071,9 +1751,19 @@ components:
           example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
-          format: int64
+          format: uint64
           description: Chain ID to get instructions for
           example: 11155111
+        skip:
+          type: integer
+          format: int64
+          description: Number of records to skip for pagination
+          example: 0
+        take:
+          type: integer
+          format: int64
+          description: Number of records to take for pagination
+          example: 10
     GetAllInstructionsRequest:
       type: object
       required:
@@ -1084,6 +1774,16 @@ components:
           format: address
           description: Address of the user
           example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+        skip:
+          type: integer
+          format: int64
+          description: Number of records to skip for pagination
+          example: 0
+        take:
+          type: integer
+          format: int64
+          description: Number of records to take for pagination
+          example: 10
     InstructionDeactivation:
       type: object
       required:
