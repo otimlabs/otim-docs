@@ -59,7 +59,7 @@ paths:
                           example: 11155111
                         chainName:
                           type: string
-                          example: "sepolia"
+                          example: sepolia
   /config/delegate/address/{chainId}:
     get:
       description: Get delegate address for a specific chain in the supported chains list
@@ -292,7 +292,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetPriorityFeeEstimatesResponse'
-
 components:
   schemas:
     TokenFee:
@@ -301,7 +300,7 @@ components:
       enum:
         - ETH
         - USDC
-      example: "ETH"
+      example: ETH
     OtimFee:
       type: object
       required:
@@ -314,7 +313,7 @@ components:
           type: string
           format: address
           description: Address of the token used for fee payment
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         maxBaseFeePerGas:
           type: integer
           format: uint256
@@ -360,264 +359,17 @@ components:
           example: 3600
     ActionArguments:
       type: object
-      oneOf:
-        - title: RefuelERC20
-          type: object
-          required:
-            - refuelERC20
-          properties:
-            refuelERC20:
-              type: object
-              required:
-                - token
-                - target
-                - threshold
-                - endBalance
-                - fee
-              properties:
-                token:
-                  type: string
-                  format: address
-                  description: Address of the token to refuel
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                target:
-                  type: string
-                  format: address
-                  description: Address of the target to refuel
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                threshold:
-                  type: integer
-                  format: uint256
-                  description: Threshold amount to trigger refuel
-                  example: 1000000000000000000
-                endBalance:
-                  type: integer
-                  format: uint256
-                  description: Target balance after refuel
-                  example: 2000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: Refuel
-          type: object
-          required:
-            - refuel
-          properties:
-            refuel:
-              type: object
-              required:
-                - target
-                - threshold
-                - endBalance
-                - fee
-              properties:
-                target:
-                  type: string
-                  format: address
-                  description: Address of the target to refuel
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                threshold:
-                  type: integer
-                  format: uint256
-                  description: Threshold amount to trigger refuel
-                  example: 1000000000000000000
-                endBalance:
-                  type: integer
-                  format: uint256
-                  description: Target balance after refuel
-                  example: 2000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: TransferERC20
-          type: object
-          required:
-            - transferERC20
-          properties:
-            transferERC20:
-              type: object
-              required:
-                - token
-                - recipient
-                - amount
-                - fee
-              properties:
-                token:
-                  type: string
-                  format: address
-                  description: Address of the token to transfer
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                amount:
-                  type: integer
-                  format: uint256
-                  description: Amount of token to transfer
-                  example: 1000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: Transfer
-          type: object
-          required:
-            - transfer
-          properties:
-            transfer:
-              type: object
-              required:
-                - recipient
-                - amount
-                - fee
-              properties:
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                amount:
-                  type: integer
-                  format: uint256
-                  description: Amount to transfer
-                  example: 1000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: SweepDepositAccount
-          type: object
-          required:
-            - sweepDepositAccount
-          properties:
-            sweepDepositAccount:
-              type: object
-              required:
-                - depositor
-                - recipient
-                - threshold
-                - fee
-              properties:
-                depositor:
-                  type: string
-                  format: address
-                  description: Address of the depositor
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                threshold:
-                  type: integer
-                  format: uint256
-                  description: Threshold amount to trigger sweep
-                  example: 1000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: SweepDepositAccountERC20
-          type: object
-          required:
-            - sweepDepositAccountERC20
-          properties:
-            sweepDepositAccountERC20:
-              type: object
-              required:
-                - token
-                - depositor
-                - recipient
-                - threshold
-                - fee
-              properties:
-                token:
-                  type: string
-                  format: address
-                  description: Address of the token to sweep
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                depositor:
-                  type: string
-                  format: address
-                  description: Address of the depositor
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                threshold:
-                  type: integer
-                  format: uint256
-                  description: Threshold amount to trigger sweep
-                  example: 1000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: UniswapV3ExactInput
-          type: object
-          required:
-            - uniswapV3ExactInput
-          properties:
-            uniswapV3ExactInput:
-              type: object
-              required:
-                - tokenIn
-                - tokenOut
-                - amountIn
-                - floorAmountOut
-                - meanPriceLookBack
-                - maxPriceDeviationBPS
-                - recipient
-                - fee
-              properties:
-                tokenIn:
-                  type: string
-                  format: address
-                  description: Address of the input token
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                tokenOut:
-                  type: string
-                  format: address
-                  description: Address of the output token
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                amountIn:
-                  type: integer
-                  format: uint256
-                  description: Amount of input token to swap
-                  example: 1000000000000000000
-                floorAmountOut:
-                  type: integer
-                  format: uint256
-                  description: Minimum amount of output token to receive
-                  example: 1000000000000000000
-                meanPriceLookBack:
-                  type: integer
-                  format: uint32
-                  description: Number of blocks to look back for mean price calculation
-                  example: 100
-                maxPriceDeviationBPS:
-                  type: integer
-                  format: uint32
-                  description: Maximum price deviation in basis points
-                  example: 100
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
+      oneOf: []
       discriminator:
         propertyName: type
-        mapping:
-          refuelERC20: '#/components/schemas/ActionArguments/oneOf/0'
-          refuel: '#/components/schemas/ActionArguments/oneOf/1'
-          transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
-          transfer: '#/components/schemas/ActionArguments/oneOf/3'
-          sweepDepositAccount: '#/components/schemas/ActionArguments/oneOf/4'
-          sweepDepositAccountERC20: '#/components/schemas/ActionArguments/oneOf/5'
-          uniswapV3ExactInput: '#/components/schemas/ActionArguments/oneOf/6'
+        mapping: {}
     PrimitiveSignature:
       type: object
       properties:
         yParity:
           type: number
           description: Y parity of the signature
-          enum: 
+          enum:
             - 0
             - 1
           example: 0
@@ -625,12 +377,12 @@ components:
           type: string
           format: bytes
           description: R of the signature
-          example: "0x..."
+          example: 0x...
         s:
           type: string
           format: bytes
           description: S of the signature
-          example: "0x..."
+          example: 0x...
     StoredSignature:
       type: object
       properties:
@@ -645,12 +397,12 @@ components:
           type: string
           format: bytes
           description: R of the signature
-          example: "0x..."
+          example: 0x...
         s:
           type: string
           format: bytes
           description: S of the signature
-          example: "0x..."
+          example: 0x...
     Instruction:
       type: object
       properties:
@@ -668,12 +420,12 @@ components:
           type: string
           format: address
           description: Action contract address
-          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
+          example: '0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef'
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
     BuildInstructionRequest:
       type: object
       required:
@@ -688,7 +440,7 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: uint64
@@ -723,7 +475,7 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: uint64
@@ -743,63 +495,70 @@ components:
           type: string
           format: address
           description: Action contract address
-          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
+          example: '0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef'
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
         activationSignature:
           description: User signature over the activation hash
           $ref: '#/components/schemas/PrimitiveSignature'
         nickname:
           type: string
           description: Nickname for the instruction
-          example: "My cool instruction"
+          example: My cool instruction
     GetInstructionDetailsResponse:
       type: object
-      required: [salt, maxExecutions, action, lastExecutedUnix, lastInstructedValue, totalInstructedValue, executionStatus, isDeactivation, chainId, chain]
+      required:
+        - salt
+        - maxExecutions
+        - action
+        - lastExecutedUnix
+        - lastInstructedValue
+        - totalInstructedValue
+        - executionStatus
+        - isDeactivation
+        - chainId
+        - chain
       properties:
         actionName:
           type: string
-          enum: [refuelERC20, refuel, transfer, transferERC20, sweepDepositAccount, sweepDepositAccountERC20, uniswapV3ExactInput]
+          enum: []
           description: Name of the action
-          example: "sweepDepositAccountERC20"
+          example: sweepDepositAccountERC20
         salt:
           type: string
           format: bytes
           description: Salt to ensure Instruction is unique
-          example: "0x1df631942ef919"
+          example: '0x1df631942ef919'
         maxExecutions:
           type: string
           format: bytes
           description: Maximum number of times the Instruction can be executed
-          example: "0x2"
+          example: '0x2'
         action:
           type: string
           format: address
           description: Action contract address
-          example: "0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95"
+          example: '0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95'
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
-          example: {
-            "sweepDepositAccountERC20": {
-              "token": "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0",
-              "depositor": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
-              "recipient": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-              "threshold": "0x0",
-              "fee": {
-                "token": "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0",
-                "maxBaseFeePerGas": "0x0",
-                "maxPriorityFeePerGas": "0x124f80",
-                "executionFee": "0x186a0"
-              }
-            }
-          }
+          example:
+            sweepDepositAccountERC20:
+              token: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
+              depositor: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+              recipient: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
+              threshold: '0x0'
+              fee:
+                token: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
+                maxBaseFeePerGas: '0x0'
+                maxPriorityFeePerGas: '0x124f80'
+                executionFee: '0x186a0'
         nickname:
           type: string
           description: Instruction nickname
-          example: "My Instruction"
+          example: My Instruction
           nullable: true
         lastExecutedUnix:
           type: integer
@@ -810,17 +569,17 @@ components:
           type: string
           format: bytes
           description: Last instructed value
-          example: "0x0"
+          example: '0x0'
         totalInstructedValue:
           type: string
           format: bytes
           description: Total instructed value
-          example: "0x0"
+          example: '0x0'
         instructedTokenAddress:
           type: string
           format: address
           description: Address of the instructed token
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
           nullable: true
         lastErrorCode:
           type: integer
@@ -829,13 +588,19 @@ components:
         lastErrorMessage:
           type: string
           description: Message from the last execution error
-          example: "Insufficient funds"
+          example: Insufficient funds
           nullable: true
         executionStatus:
           type: string
-          enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
+          enum:
+            - PendingActivation
+            - Active
+            - PendingDeactivation
+            - Deactivated
+            - Completed
+            - Errored
           description: Execution status of the instruction
-          example: "Active"
+          example: Active
         isDeactivation:
           type: boolean
           description: Whether this is a deactivation instruction
@@ -848,7 +613,7 @@ components:
         chain:
           type: string
           description: Name of the chain where the instruction exists
-          example: "sepolia"
+          example: sepolia
     StoredInstruction:
       type: object
       properties:
@@ -856,12 +621,12 @@ components:
           type: string
           format: address
           description: Action contract address
-          example: "0x4AA3Bce8f633d68CfC066f7B7DB78443BCFe1B95"
+          example: '0x4AA3Bce8f633d68CfC066f7B7DB78443BCFe1B95'
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000124f8000000000000000000000000000000000000000000000000000000000000186a0"
+          example: '0x000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000124f8000000000000000000000000000000000000000000000000000000000000186a0'
         executionState:
           type: object
           properties:
@@ -872,8 +637,14 @@ components:
               example: 0
             executionStatus:
               type: string
-              enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
-              example: "Deactivated"
+              enum:
+                - PendingActivation
+                - Active
+                - PendingDeactivation
+                - Deactivated
+                - Completed
+                - Errored
+              example: Deactivated
             lastExecuted:
               type: integer
               format: int64
@@ -883,16 +654,16 @@ components:
           type: string
           format: address
           description: Address of the instructed token
-          example: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0"
+          example: '0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0'
         instructionId:
           type: string
           format: bytes32
           description: Unique identifier for the instruction
-          example: "0xc73545bc9fa857226b7861a284760b99a0ada92f3ce17f5696fb044ae876da19"
+          example: '0xc73545bc9fa857226b7861a284760b99a0ada92f3ce17f5696fb044ae876da19'
         lastInstructedValue:
           type: string
           description: Last instructed value
-          example: "0"
+          example: '0'
         maxExecutions:
           type: integer
           format: uint64
@@ -901,7 +672,7 @@ components:
         nickname:
           type: string
           description: Nickname for the instruction
-          example: "test sweep 4"
+          example: test sweep 4
         salt:
           type: integer
           format: uint64
@@ -910,7 +681,7 @@ components:
         totalInstructedValue:
           type: string
           description: Total instructed value
-          example: "0"
+          example: '0'
         chainId:
           type: integer
           format: uint64
@@ -919,7 +690,7 @@ components:
         chain:
           type: string
           description: Name of the chain where the instruction exists
-          example: "sepolia"
+          example: sepolia
         lastErrorCode:
           type: integer
           description: Code from the last execution error
@@ -927,7 +698,7 @@ components:
         lastErrorMessage:
           type: string
           description: Message from the last execution error
-          example: "Insufficient funds"
+          example: Insufficient funds
           nullable: true
         isDeactivation:
           type: boolean
@@ -950,7 +721,7 @@ components:
           type: string
           format: bytes32
           description: Hash of the transaction
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
         chainId:
           type: integer
           format: uint64
@@ -960,12 +731,12 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         instructionId:
           type: string
           format: bytes32
           description: Instruction ID of the Instruction submitted in the transaction
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
         startedAtUnix:
           type: integer
           format: int64
@@ -990,7 +761,7 @@ components:
           type: string
           format: bytes32
           description: Hash of the block the transaction was included in
-          example: "0x94fbe8788b93f18275955b725ddf5432f4d4d9a279d70e1c508bee558922e21a"
+          example: '0x94fbe8788b93f18275955b725ddf5432f4d4d9a279d70e1c508bee558922e21a'
         activation:
           type: boolean
           description: True if the transaction was an Instruction activation
@@ -1001,8 +772,12 @@ components:
           example: false
         transactionStatus:
           type: string
-          enum: ["Pending", "InFlight", "Success", "Error"]
-          example: "Success"
+          enum:
+            - Pending
+            - InFlight
+            - Success
+            - Error
+          example: Success
     GetInstructionSummariesRequest:
       type: object
       required:
@@ -1018,28 +793,29 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: int64
-          description: "Chain ID"
+          description: Chain ID
           example: 11155111
         instructionIds:
           type: array
           items:
             type: string
             format: bytes32
-          example: ["0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"]
+          example:
+            - '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
         from:
           type: string
           format: date-time
           description: Start date and time in ISO 8601 format
-          example: "2024-03-20T00:00:00Z"
+          example: '2024-03-20T00:00:00Z'
         to:
           type: string
           format: date-time
           description: End date and time in ISO 8601 format
-          example: "2024-03-21T00:00:00Z"
+          example: '2024-03-21T00:00:00Z'
         skip:
           type: integer
           format: int64
@@ -1050,61 +826,48 @@ components:
           example: 10
         sort:
           type: string
-          enum: ["asc", "dsc"]
-          example: "asc"
+          enum:
+            - asc
+            - dsc
+          example: asc
         timeScale:
           type: string
           description: The time scale to group summaries by
-          enum: ["seconds", "minutes", "hours", "days"]
-          example: "days"
+          enum:
+            - seconds
+            - minutes
+            - hours
+            - days
+          example: days
     GetInstructionSummariesResponse:
       type: array
-      example: [
-        [
-          {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "date": "2024-03-20",
-            "address": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
-            "chain_id": 11155111,
-            "instruction_id": "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-          },
-          [
-            {
-              "id": "550e8400-e29b-41d4-a716-446655440001",
-              "day_summary_id": "550e8400-e29b-41d4-a716-446655440000",
-              "activation": true,
-              "block_latency": 1,
-              "execution_time_unix": 1710936000
-            },
-            {
-              "id": "550e8400-e29b-41d4-a716-446655440002",
-              "day_summary_id": "550e8400-e29b-41d4-a716-446655440000",
-              "activation": false,
-              "block_latency": 2,
-              "execution_time_unix": 1710939600
-            }
-          ]
-        ],
-        [
-          {
-            "id": "550e8400-e29b-41d4-a716-446655440003",
-            "date": "2024-03-21",
-            "address": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
-            "chain_id": 11155111,
-            "instruction_id": "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-          },
-          [
-            {
-              "id": "550e8400-e29b-41d4-a716-446655440004",
-              "day_summary_id": "550e8400-e29b-41d4-a716-446655440003",
-              "activation": false,
-              "block_latency": 1,
-              "execution_time_unix": 1711022400
-            }
-          ]
-        ]
-      ]
-      description: "List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`"
+      example:
+        - - id: 550e8400-e29b-41d4-a716-446655440000
+            date: '2024-03-20'
+            address: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+            chain_id: 11155111
+            instruction_id: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
+          - - id: 550e8400-e29b-41d4-a716-446655440001
+              day_summary_id: 550e8400-e29b-41d4-a716-446655440000
+              activation: true
+              block_latency: 1
+              execution_time_unix: 1710936000
+            - id: 550e8400-e29b-41d4-a716-446655440002
+              day_summary_id: 550e8400-e29b-41d4-a716-446655440000
+              activation: false
+              block_latency: 2
+              execution_time_unix: 1710939600
+        - - id: 550e8400-e29b-41d4-a716-446655440003
+            date: '2024-03-21'
+            address: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+            chain_id: 11155111
+            instruction_id: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
+          - - id: 550e8400-e29b-41d4-a716-446655440004
+              day_summary_id: 550e8400-e29b-41d4-a716-446655440003
+              activation: false
+              block_latency: 1
+              execution_time_unix: 1711022400
+      description: 'List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`'
     AuthLoginResponse:
       type: object
       required:
@@ -1112,8 +875,8 @@ components:
       properties:
         authorization:
           type: string
-          description: "JWT token for API authentication"
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          description: JWT token for API authentication
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     GetDelegateAddressResponse:
       type: object
       required:
@@ -1122,8 +885,8 @@ components:
         otimDelegateAddress:
           type: string
           format: address
-          description: "Address of the OtimDelegate contract"
-          example: "0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0"
+          description: Address of the OtimDelegate contract
+          example: '0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0'
     GetInstructionStorageAddressResponse:
       type: object
       required:
@@ -1132,8 +895,8 @@ components:
         instructionStorageAddress:
           type: string
           format: address
-          description: "Address of the InstructionStorage contract"
-          example: "0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3"
+          description: Address of the InstructionStorage contract
+          example: '0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3'
     GetDelegationStatusResponse:
       type: object
       required:
@@ -1141,9 +904,14 @@ components:
       properties:
         delegationStatus:
           type: string
-          enum: ["Undelegated", "Pending", "Delegated", "Expired", "Errored"]
-          description: "Status of the delegation"
-          example: "Delegated"
+          enum:
+            - Undelegated
+            - Pending
+            - Delegated
+            - Expired
+            - Errored
+          description: Status of the delegation
+          example: Delegated
     NewInstructionResponse:
       type: object
       required:
@@ -1152,8 +920,8 @@ components:
         instructionId:
           type: string
           format: bytes32
-          description: "Unique identifier for the created instruction"
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+          description: Unique identifier for the created instruction
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
     GetTransactionsRequest:
       type: object
       properties:
@@ -1161,21 +929,22 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         instructionIds:
           type: array
           items:
             type: string
             format: bytes32
-          example: ["0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"]
+          example:
+            - '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
         from:
           type: string
           format: date-time
-          example: "2021-01-01T00:00:00Z"
+          example: '2021-01-01T00:00:00Z'
         to:
           type: string
           format: date-time
-          example: "2021-01-01T00:00:00Z"
+          example: '2021-01-01T00:00:00Z'
         skip:
           type: integer
           format: int64
@@ -1186,8 +955,10 @@ components:
           nullable: true
         sort:
           type: string
-          enum: ["Ascending", "Descending"]
-          example: "Ascending"
+          enum:
+            - Ascending
+            - Descending
+          example: Ascending
     AuthLoginRequest:
       type: object
       required:
@@ -1196,15 +967,10 @@ components:
       properties:
         siwe:
           type: string
-          description: "SIWE message as a raw string"
-          example: >-
+          description: SIWE message as a raw string
+          example: |-
             By signing in, you agree to the Terms and Conditions (https://otim.com/tac) and Privacy Policy (https://otim.com/pp).
-            
-            URI: https://otim.com
-            Version: 1.0.0
-            Chain ID: 1
-            Nonce: 1728633600000
-            Issued At: 2025-02-07T16:00:00.000Z
+            URI: https://otim.com Version: 1.0.0 Chain ID: 1 Nonce: 1728633600000 Issued At: 2025-02-07T16:00:00.000Z
         signature:
           $ref: '#/components/schemas/PrimitiveSignature'
     GetDelegateAddressRequest:
@@ -1215,7 +981,7 @@ components:
         chainId:
           type: integer
           format: int64
-          description: "Chain ID to get OtimDelegate address for"
+          description: Chain ID to get OtimDelegate address for
           example: 11155111
     NewDelegationRequest:
       type: object
@@ -1225,13 +991,13 @@ components:
       properties:
         signedAuthorization:
           type: string
-          description: "RLP-encoded 7702 signed authorization"
-          example: "0x..."
+          description: RLP-encoded 7702 signed authorization
+          example: 0x...
         signerAddress:
           type: string
           format: address
-          description: "Signer address to be able to verify signature correctness"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Signer address to be able to verify signature correctness
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
     GetDelegationStatusRequest:
       type: object
       required:
@@ -1241,12 +1007,12 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: int64
-          description: "Chain ID of the delegation"
+          description: Chain ID of the delegation
           example: 11155111
     DeactivationRequest:
       type: object
@@ -1259,12 +1025,12 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: int64
-          description: "Chain ID of the instruction"
+          description: Chain ID of the instruction
           example: 11155111
         deactivation:
           $ref: '#/components/schemas/InstructionDeactivation'
@@ -1280,18 +1046,18 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: int64
-          description: "Chain ID of the instruction"
+          description: Chain ID of the instruction
           example: 11155111
         instructionId:
           type: string
           format: bytes32
-          description: "Instruction ID"
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+          description: Instruction ID
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
     GetChainInstructionsRequest:
       type: object
       required:
@@ -1301,12 +1067,12 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: int64
-          description: "Chain ID to get instructions for"
+          description: Chain ID to get instructions for
           example: 11155111
     GetAllInstructionsRequest:
       type: object
@@ -1316,8 +1082,8 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
     InstructionDeactivation:
       type: object
       required:
@@ -1326,11 +1092,14 @@ components:
         instructionId:
           type: string
           format: bytes32
-          description: "ID of instruction to deactivate"
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+          description: ID of instruction to deactivate
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
     GetPriorityFeeEstimatesResponse:
       type: object
-      required: [slowMaxPriorityFeeEstimate, normalMaxPriorityFeeEstimate, fastMaxPriorityFeeEstimate]
+      required:
+        - slowMaxPriorityFeeEstimate
+        - normalMaxPriorityFeeEstimate
+        - fastMaxPriorityFeeEstimate
       properties:
         slowMaxPriorityFeeEstimate:
           type: integer
