@@ -121,7 +121,7 @@ const nonce = await publicClient.getTransactionCount({
 // sign authorization (eip-7702)
 // example assuming that you're using the **privateKeyToAccount** function from viem.
 const authorization = await account.signAuthorization({
-  contractAddress: onfig.otimDelegateAddress,
+  contractAddress: config.otimDelegateAddress,
   chainId: 1,
   nonce,
 });
@@ -134,5 +134,5 @@ const result = await otimClient.delegation.delegate({
   signedAuthorization: rlpAuthorization,
 });
 
-console.log(`delegation submitted: ${result.transactionHash}`);
+console.log(`delegation submitted: ${result.data.transactionHash}`);
 ```
