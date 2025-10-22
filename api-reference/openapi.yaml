@@ -1127,7 +1127,45 @@ components:
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
     BuildInstructionResponse:
-      $ref: '#/components/schemas/Instruction'
+      type: object
+      required:
+        - address
+        - chainId
+        - salt
+        - maxExecutions
+        - action
+        - arguments
+      properties:
+        address:
+          type: string
+          format: address
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        salt:
+          type: integer
+          format: uint256
+          description: Salt to ensure instruction is unique
+          example: 1234567890
+        maxExecutions:
+          type: integer
+          format: uint256
+          description: Maximum number of times this instruction can be executed (`0` for unlimited)
+          example: 10
+        action:
+          type: string
+          format: address
+          description: Action contract address
+          example: '0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef'
+        arguments:
+          type: string
+          format: bytes
+          description: Arguments to execute on the action contract
+          example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
     NewInstructionRequest:
       type: object
       required:
@@ -1212,16 +1250,17 @@ components:
             - callOnce
           description: Name of the action
           example: sweepDepositERC4626
+          nullable: true
         salt:
-          type: string
-          format: bytes
+          type: integer
+          format: uint256
           description: Salt to ensure Instruction is unique
-          example: '0x1df631942ef919'
+          example: 1234567890
         maxExecutions:
-          type: string
-          format: bytes
+          type: integer
+          format: uint256
           description: Maximum number of times the Instruction can be executed
-          example: '0x2'
+          example: 10
         action:
           type: string
           format: address
@@ -1229,17 +1268,19 @@ components:
           example: '0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95'
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
+          nullable: true
           example:
-            sweepDepositAccountERC20:
-              token: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
-              depositor: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-              recipient: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
-              threshold: '0x0'
+            sweepDepositERC4626:
+              vault: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
+              recipient: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+              threshold: 1000000000000000000
+              endBalance: 500000000000000000
+              minTotalAssets: 1000000000000000000
               fee:
                 token: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
-                maxBaseFeePerGas: '0x0'
-                maxPriorityFeePerGas: '0x124f80'
-                executionFee: '0x186a0'
+                maxBaseFeePerGas: 0
+                maxPriorityFeePerGas: 12000000
+                executionFee: 100000
         nickname:
           type: string
           description: Instruction nickname
@@ -1251,15 +1292,15 @@ components:
           description: Unix timestamp of last execution
           example: 0
         lastInstructedValue:
-          type: string
-          format: bytes
+          type: integer
+          format: uint256
           description: Last instructed value
-          example: '0x0'
+          example: 0
         totalInstructedValue:
-          type: string
-          format: bytes
+          type: integer
+          format: uint256
           description: Total instructed value
-          example: '0x0'
+          example: 0
         instructedTokenAddress:
           type: string
           format: address
@@ -1268,6 +1309,7 @@ components:
           nullable: true
         lastErrorCode:
           type: integer
+          format: int32
           description: Code from the last execution error
           example: 0
         lastErrorMessage:
