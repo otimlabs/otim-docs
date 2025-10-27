@@ -126,7 +126,7 @@ jobs:
         echo "EOF" >> $GITHUB_OUTPUT
         
     - name: Upload MDX artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: mdx-content
         path: /tmp/deployed-addresses.mdx
