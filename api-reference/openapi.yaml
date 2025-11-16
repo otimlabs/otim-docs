@@ -214,64 +214,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StoredInstruction'
-  /instructions/chain:
-    get:
-      description: Get instructions for a user specific chain by user
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetChainInstructionsRequest'
-      responses:
-        '200':
-          description: Chain instructions retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StoredInstruction'
-  /instructions/summary:
-    get:
-      description: Get instruction execution summaries for a list of instructions
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetInstructionSummariesRequest'
-      responses:
-        '200':
-          description: Instruction summaries retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetInstructionSummariesResponse'
-  /transactions:
-    get:
-      description: Get transactions for a user
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetTransactionsRequest'
-      responses:
-        '200':
-          description: Transactions retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StoredTransaction'
   /instruction/estimate/max_priority_fee_per_gas/{chainId}:
     get:
       description: Get max priority fee per gas estimates for a specified chain
@@ -292,6 +234,134 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetPriorityFeeEstimatesResponse'
+  /instructions/rules:
+    get:
+      description: Get instruction rules for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetRulesRequest'
+      responses:
+        '200':
+          description: Rules retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StoredInstruction'
+  /instructions/activity:
+    get:
+      description: Get instruction activity for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetInstructionActivityRequest'
+      responses:
+        '200':
+          description: Activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetInstructionActivityResponse'
+  /instructions/ephemeral-activity:
+    get:
+      description: Get ephemeral instruction activity for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetEphemeralInstructionActivityRequest'
+      responses:
+        '200':
+          description: Ephemeral activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetInstructionActivityResponse'
+  /payment/request/build:
+    post:
+      description: Build a payment request with ephemeral instructions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildPaymentReqRequest'
+      responses:
+        '200':
+          description: Payment request built successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildPaymentReqResponse'
+  /payment/request/new:
+    post:
+      description: Create a new payment request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPaymentReqRequest'
+      responses:
+        '201':
+          description: Payment request created successfully
+  /payment/request/details:
+    get:
+      description: Get payment request details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetPaymentReqDetailsRequest'
+      responses:
+        '200':
+          description: Payment request details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentReqDetailsResponse'
+  /payment/requests:
+    get:
+      description: Get payment requests for a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetPaymentReqsRequest'
+      responses:
+        '200':
+          description: Payment requests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentRequest'
 components:
   schemas:
     TokenFee:
@@ -1222,8 +1292,6 @@ components:
         - maxExecutions
         - action
         - lastExecutedUnix
-        - lastInstructedValue
-        - totalInstructedValue
         - executionStatus
         - isDeactivation
         - chainId
@@ -1291,22 +1359,6 @@ components:
           format: int64
           description: Unix timestamp of last execution
           example: 0
-        lastInstructedValue:
-          type: integer
-          format: uint256
-          description: Last instructed value
-          example: 0
-        totalInstructedValue:
-          type: integer
-          format: uint256
-          description: Total instructed value
-          example: 0
-        instructedTokenAddress:
-          type: string
-          format: address
-          description: Address of the instructed token
-          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-          nullable: true
         lastErrorCode:
           type: integer
           format: int32
@@ -1431,174 +1483,18 @@ components:
           type: boolean
           description: Whether this is a deactivation instruction
           example: false
-    StoredTransaction:
-      type: object
-      properties:
-        createdAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the document was created
-          example: 1716150000
-        updatedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the document was last updated
-          example: 1716150000
-        transactionHash:
-          type: string
-          format: bytes32
-          description: Hash of the transaction
-          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-        chainId:
-          type: integer
-          format: uint64
-          description: Chain ID of the transaction
-          example: 11155111
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-        instructionId:
-          type: string
-          format: bytes32
-          description: Instruction ID of the Instruction submitted in the transaction
-          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-        startedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the transaction was started
-          example: 1716150000
-        finishedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the transaction finished
-          example: 1716150000
-        startedAtBlock:
-          type: integer
-          format: uint64
-          description: Block number when the transaction was started
-          example: 1716150000
-        finishedAtBlock:
-          type: integer
-          format: uint64
-          description: Block number when the transaction finished
-          example: 1716150000
-        blockHash:
-          type: string
-          format: bytes32
-          description: Hash of the block the transaction was included in
-          example: '0x94fbe8788b93f18275955b725ddf5432f4d4d9a279d70e1c508bee558922e21a'
-        activation:
-          type: boolean
-          description: True if the transaction was an Instruction activation
-          example: true
-        deactivation:
-          type: boolean
-          description: True if the transaction was an Instruction deactivation
-          example: false
-        transactionStatus:
-          type: string
-          enum:
-            - Pending
-            - InFlight
-            - Success
-            - Error
-          example: Success
-    GetInstructionSummariesRequest:
-      type: object
-      required:
-        - address
-        - chainId
-        - instructionIds
-        - from
-        - to
-        - sort
-        - timeScale
-      properties:
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-        chainId:
-          type: integer
-          format: uint64
-          description: Chain ID
-          example: 11155111
-        instructionIds:
-          type: array
-          items:
-            type: string
-            format: bytes32
-          example:
-            - '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-        from:
-          type: string
-          format: date-time
-          description: Start date and time in ISO 8601 format
-          example: '2024-03-20T00:00:00Z'
-        to:
-          type: string
-          format: date-time
-          description: End date and time in ISO 8601 format
-          example: '2024-03-21T00:00:00Z'
-        skip:
-          type: integer
-          format: int64
-          example: 0
-        take:
-          type: integer
-          format: int64
-          example: 10
-        sort:
-          type: string
-          enum:
-            - asc
-            - dsc
-          example: asc
-        timeScale:
-          type: string
-          description: The time scale to group summaries by (e.g. "seconds", "minutes", "hours", "days")
-          example: days
-    GetInstructionSummariesResponse:
-      type: array
-      example:
-        - - id: 550e8400-e29b-41d4-a716-446655440000
-            date: '2024-03-20'
-            address: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-            chain_id: 11155111
-            instruction_id: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-          - - id: 550e8400-e29b-41d4-a716-446655440001
-              day_summary_id: 550e8400-e29b-41d4-a716-446655440000
-              activation: true
-              block_latency: 1
-              execution_time_unix: 1710936000
-            - id: 550e8400-e29b-41d4-a716-446655440002
-              day_summary_id: 550e8400-e29b-41d4-a716-446655440000
-              activation: false
-              block_latency: 2
-              execution_time_unix: 1710939600
-        - - id: 550e8400-e29b-41d4-a716-446655440003
-            date: '2024-03-21'
-            address: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-            chain_id: 11155111
-            instruction_id: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-          - - id: 550e8400-e29b-41d4-a716-446655440004
-              day_summary_id: 550e8400-e29b-41d4-a716-446655440003
-              activation: false
-              block_latency: 1
-              execution_time_unix: 1711022400
-      description: 'List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`'
     AuthLoginResponse:
       type: object
       required:
         - authorization
+        - user
       properties:
         authorization:
           type: string
           description: JWT token for API authentication
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          $ref: '#/components/schemas/User'
     GetDelegateAddressResponse:
       type: object
       required:
@@ -1644,43 +1540,6 @@ components:
           format: bytes32
           description: Unique identifier for the created instruction
           example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-    GetTransactionsRequest:
-      type: object
-      properties:
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-        instructionIds:
-          type: array
-          items:
-            type: string
-            format: bytes32
-          example:
-            - '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-        from:
-          type: string
-          format: date-time
-          example: '2021-01-01T00:00:00Z'
-        to:
-          type: string
-          format: date-time
-          example: '2021-01-01T00:00:00Z'
-        skip:
-          type: integer
-          format: int64
-          nullable: true
-        take:
-          type: integer
-          format: int64
-          nullable: true
-        sort:
-          type: string
-          enum:
-            - Ascending
-            - Descending
-          example: Ascending
     AuthLoginRequest:
       type: object
       required:
@@ -1780,32 +1639,6 @@ components:
           format: bytes32
           description: Instruction ID
           example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
-    GetChainInstructionsRequest:
-      type: object
-      required:
-        - address
-        - chainId
-      properties:
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-        chainId:
-          type: integer
-          format: uint64
-          description: Chain ID to get instructions for
-          example: 11155111
-        skip:
-          type: integer
-          format: int64
-          description: Number of records to skip for pagination
-          example: 0
-        take:
-          type: integer
-          format: int64
-          description: Number of records to take for pagination
-          example: 10
     GetAllInstructionsRequest:
       type: object
       required:
@@ -1858,6 +1691,507 @@ components:
           format: uint128
           description: Fast max priority fee estimate
           example: 3000000000
+    User:
+      type: object
+      required:
+        - id
+        - address
+        - createdAt
+        - updatedAt
+        - preferences
+        - isDeveloper
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the user
+        address:
+          type: string
+          format: address
+          description: Wallet address of the user
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was last updated
+        preferences:
+          type: object
+          description: User preferences as arbitrary JSON
+        isDeveloper:
+          type: boolean
+          description: Whether the user is a developer
+        developerPublicKey:
+          type: string
+          description: Developer public key, used to generate developer API keys
+          nullable: true
+    GetRulesRequest:
+      type: object
+      required:
+        - chainId
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    GetInstructionActivityRequest:
+      type: object
+      required:
+        - chainId
+        - actionNames
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        actionNames:
+          type: array
+          items:
+            type: string
+          description: List of action names to filter by
+          example:
+            - transferERC20
+            - transfer
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    GetEphemeralInstructionActivityRequest:
+      type: object
+      required:
+        - chainId
+        - actionNames
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        actionNames:
+          type: array
+          items:
+            type: string
+          description: List of action names to filter by
+          example:
+            - transferERC20
+            - transfer
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    GetInstructionActivityResponse:
+      type: object
+      required:
+        - address
+        - actionName
+        - blockTimestamp
+        - executionCount
+        - instructionId
+        - transactionHash
+        - activity
+      properties:
+        address:
+          type: string
+          format: address
+          description: User address
+        actionName:
+          type: string
+          description: Name of the action
+        blockTimestamp:
+          type: integer
+          format: uint64
+          description: Block timestamp
+        executionCount:
+          type: integer
+          format: uint64
+          description: Execution count
+        instructionId:
+          type: string
+          format: bytes32
+          description: Instruction ID
+        transactionHash:
+          type: string
+          format: bytes32
+          description: Transaction hash
+        activity:
+          $ref: '#/components/schemas/ActivityData'
+    ActivityData:
+      type: object
+      oneOf:
+        - title: Transfer
+          type: object
+          required:
+            - token
+            - from
+            - to
+            - value
+          properties:
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            to:
+              type: string
+              format: address
+            value:
+              type: integer
+              format: uint256
+        - title: Swap
+          type: object
+          required:
+            - poolAddress
+            - fromToken
+            - toToken
+            - from
+            - to
+            - fromAmount
+            - toAmount
+          properties:
+            poolAddress:
+              type: string
+              format: address
+            fromToken:
+              type: string
+              format: address
+            toToken:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            to:
+              type: string
+              format: address
+            fromAmount:
+              type: integer
+              format: uint256
+            toAmount:
+              type: integer
+              format: uint256
+        - title: CCTPBurn
+          type: object
+          required:
+            - token
+            - from
+            - mintRecipient
+            - destinationDomain
+            - value
+          properties:
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            mintRecipient:
+              type: string
+              format: bytes32
+            destinationDomain:
+              type: integer
+              format: uint256
+            value:
+              type: integer
+              format: uint256
+        - title: ERC4626Deposit
+          type: object
+          required:
+            - vault
+            - token
+            - from
+            - owner
+            - value
+            - shares
+          properties:
+            vault:
+              type: string
+              format: address
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            owner:
+              type: string
+              format: address
+            value:
+              type: integer
+              format: uint256
+            shares:
+              type: integer
+              format: uint256
+        - title: ERC4626Withdraw
+          type: object
+          required:
+            - vault
+            - token
+            - from
+            - to
+            - value
+            - shares
+          properties:
+            vault:
+              type: string
+              format: address
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            to:
+              type: string
+              format: address
+            value:
+              type: integer
+              format: uint256
+            shares:
+              type: integer
+              format: uint256
+    BuildEphemeralInstructionRequest:
+      type: object
+      required:
+        - chainId
+        - salt
+        - maxExecutions
+        - actionArguments
+        - setEphemeralTarget
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        salt:
+          type: integer
+          format: uint256
+          description: Salt to ensure instruction is unique
+          example: 1234567890
+        maxExecutions:
+          type: integer
+          format: uint256
+          description: Maximum number of times this instruction can be executed
+          example: 10
+        actionArguments:
+          $ref: '#/components/schemas/ActionArguments'
+        setEphemeralTarget:
+          type: boolean
+          description: Whether to set the ephemeral account as target for the action arguments
+          example: true
+    BuildPaymentReqRequest:
+      type: object
+      required:
+        - completionInstructions
+        - instructions
+        - metadata
+      properties:
+        payerAddress:
+          type: string
+          format: address
+          description: Address of the payer
+          nullable: true
+        completionInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildEphemeralInstructionRequest'
+          description: Instructions to complete the payment request
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildEphemeralInstructionRequest'
+          description: Instructions to receive the payment request
+        metadata:
+          type: object
+          description: Payment request metadata as arbitrary JSON
+        dueDate:
+          type: string
+          format: date-time
+          description: Due date for the payment request
+          nullable: true
+    BuildPaymentReqResponse:
+      type: object
+      required:
+        - requestId
+        - subOrgId
+        - walletId
+        - ephemeralWalletAddress
+        - completionInstructions
+        - instructions
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+        subOrgId:
+          type: string
+          description: Turnkey sub-organization ID
+        walletId:
+          type: string
+          description: Turnkey wallet ID
+        ephemeralWalletAddress:
+          type: string
+          format: address
+          description: Ephemeral wallet address
+        completionInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildInstructionResponse'
+          description: Completion instructions
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildInstructionResponse'
+          description: Instructions
+    NewPaymentReqRequest:
+      type: object
+      required:
+        - requestId
+        - signedAuthorization
+        - completionInstructions
+        - instructions
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+        signedAuthorization:
+          type: string
+          description: RLP encoded signed authorization
+        completionInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewInstructionRequest'
+          description: Completion instructions
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewInstructionRequest'
+          description: Instructions
+    GetPaymentReqDetailsRequest:
+      type: object
+      required:
+        - requestId
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+    GetPaymentReqDetailsResponse:
+      type: object
+      required:
+        - requestId
+        - ephemeralWalletAddress
+        - ephemeralWalletId
+        - status
+        - metadata
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+        ephemeralWalletAddress:
+          type: string
+          format: address
+          description: Ephemeral wallet address
+        ephemeralWalletId:
+          type: string
+          format: uuid
+          description: Ephemeral wallet ID
+        status:
+          type: string
+          enum:
+            - Pending
+            - Completed
+            - Cancelled
+          description: Payment request status
+        metadata:
+          type: object
+          description: Payment request metadata
+    PaymentRequestsDirection:
+      type: string
+      enum:
+        - From
+        - To
+      description: Direction to filter payment requests
+    PaymentRequestStatus:
+      type: string
+      enum:
+        - Pending
+        - Completed
+        - Cancelled
+      description: Payment request status
+    GetPaymentReqsRequest:
+      type: object
+      required:
+        - direction
+      properties:
+        direction:
+          $ref: '#/components/schemas/PaymentRequestsDirection'
+        statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentRequestStatus'
+          description: Optional statuses to filter by
+          nullable: true
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    PaymentRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/PaymentRequestStatus'
+        metadata:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
   securitySchemes:
     bearerAuth:
       type: http
