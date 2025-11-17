@@ -2144,15 +2144,17 @@ components:
     PaymentRequestsDirection:
       type: string
       enum:
-        - From
-        - To
+        - from
+        - to
       description: Direction to filter payment requests
     PaymentRequestStatus:
       type: string
       enum:
-        - Pending
-        - Completed
-        - Cancelled
+        - pending
+        - inProgress
+        - paid
+        - cancelled
+        - draft
       description: Payment request status
     GetPaymentReqsRequest:
       type: object
