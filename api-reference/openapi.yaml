@@ -1378,6 +1378,9 @@ components:
             - Deactivated
             - Completed
             - Errored
+            - UserNotDelegated
+            - EphemeralPendingActivation
+            - EphemeralActive
           description: Execution status of the instruction
           example: Active
         isDeactivation:
@@ -1423,6 +1426,9 @@ components:
                 - Deactivated
                 - Completed
                 - Errored
+                - UserNotDelegated
+                - EphemeralPendingActivation
+                - EphemeralActive
               example: Deactivated
             lastExecuted:
               type: integer
@@ -1525,6 +1531,7 @@ components:
           enum:
             - Undelegated
             - Pending
+            - EphemeralPending
             - Delegated
             - Expired
             - Errored
@@ -2132,12 +2139,7 @@ components:
           format: uuid
           description: Ephemeral wallet ID
         status:
-          type: string
-          enum:
-            - Pending
-            - Completed
-            - Cancelled
-          description: Payment request status
+          $ref: '#/components/schemas/PaymentRequestStatus'
         metadata:
           type: object
           description: Payment request metadata
