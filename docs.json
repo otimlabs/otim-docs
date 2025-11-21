@@ -79,6 +79,13 @@
                 ]
               },
               {
+                "group": "Orchestrators",
+                "pages": [
+                  "docs/developers/orchestrators/overview"
+                ]
+              },
+              "docs/developers/deployed-addresses",
+              {
                 "group": "Guides",
                 "pages": [
                   "docs/developers/guides/overview",
@@ -100,8 +107,7 @@
                     ]
                   }
                 ]
-              },
-              "docs/developers/deployed-addresses"
+              }
             ]
           },
           {
