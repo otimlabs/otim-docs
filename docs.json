@@ -187,14 +187,18 @@
                   "api-reference/instructions/instruction-deactivate",
                   "api-reference/instructions/instruction-details",
                   "api-reference/instructions/instructions-all",
-                  "api-reference/instructions/instructions-chain",
-                  "api-reference/instructions/instructions-summary"
+                  "api-reference/instructions/rules",
+                  "api-reference/instructions/activity",
+                  "api-reference/instructions/ephemeral-activity"
                 ]
               },
               {
-                "group": "Transactions",
+                "group": "Payment Requests",
                 "pages": [
-                  "api-reference/transactions/get"
+                  "api-reference/payment-requests/build",
+                  "api-reference/payment-requests/new",
+                  "api-reference/payment-requests/details",
+                  "api-reference/payment-requests/list"
                 ]
               }
             ]

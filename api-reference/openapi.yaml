@@ -55,11 +55,11 @@ paths:
                       properties:
                         chainId:
                           type: integer
-                          format: int64
+                          format: uint64
                           example: 11155111
                         chainName:
                           type: string
-                          example: "sepolia"
+                          example: sepolia
   /config/delegate/address/{chainId}:
     get:
       description: Get delegate address for a specific chain in the supported chains list
@@ -172,7 +172,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DeactivationRequest'
+              $ref: '#/components/schemas/NewInstructionRequest'
       responses:
         '200':
           description: Instruction deactivated successfully
@@ -214,64 +214,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/StoredInstruction'
-  /instructions/chain:
-    get:
-      description: Get instructions for a user specific chain by user
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetChainInstructionsRequest'
-      responses:
-        '200':
-          description: Chain instructions retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StoredInstruction'
-  /instructions/summary:
-    get:
-      description: Get instruction execution summaries for a list of instructions
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetInstructionSummariesRequest'
-      responses:
-        '200':
-          description: Instruction summaries retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetInstructionSummariesResponse'
-  /transactions:
-    get:
-      description: Get transactions for a user
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetTransactionsRequest'
-      responses:
-        '200':
-          description: Transactions retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/StoredTransaction'
   /instruction/estimate/max_priority_fee_per_gas/{chainId}:
     get:
       description: Get max priority fee per gas estimates for a specified chain
@@ -292,7 +234,134 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetPriorityFeeEstimatesResponse'
-
+  /instructions/rules:
+    get:
+      description: Get instruction rules for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetRulesRequest'
+      responses:
+        '200':
+          description: Rules retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StoredInstruction'
+  /instructions/activity:
+    get:
+      description: Get instruction activity for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetInstructionActivityRequest'
+      responses:
+        '200':
+          description: Activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetInstructionActivityResponse'
+  /instructions/ephemeral-activity:
+    get:
+      description: Get ephemeral instruction activity for a specific chain
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetEphemeralInstructionActivityRequest'
+      responses:
+        '200':
+          description: Ephemeral activity retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetInstructionActivityResponse'
+  /payment/request/build:
+    post:
+      description: Build a payment request with ephemeral instructions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildPaymentReqRequest'
+      responses:
+        '200':
+          description: Payment request built successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildPaymentReqResponse'
+  /payment/request/new:
+    post:
+      description: Create a new payment request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPaymentReqRequest'
+      responses:
+        '201':
+          description: Payment request created successfully
+  /payment/request/details:
+    get:
+      description: Get payment request details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetPaymentReqDetailsRequest'
+      responses:
+        '200':
+          description: Payment request details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPaymentReqDetailsResponse'
+  /payment/requests:
+    get:
+      description: Get payment requests for a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetPaymentReqsRequest'
+      responses:
+        '200':
+          description: Payment requests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentRequest'
 components:
   schemas:
     TokenFee:
@@ -301,7 +370,7 @@ components:
       enum:
         - ETH
         - USDC
-      example: "ETH"
+      example: ETH
     OtimFee:
       type: object
       required:
@@ -314,7 +383,7 @@ components:
           type: string
           format: address
           description: Address of the token used for fee payment
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         maxBaseFeePerGas:
           type: integer
           format: uint256
@@ -378,22 +447,22 @@ components:
                 token:
                   type: string
                   format: address
-                  description: Address of the token to refuel
+                  description: ERC20 token to refuel the recipient with
                   example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 target:
                   type: string
                   format: address
-                  description: Address of the target to refuel
+                  description: address of the refuel recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Threshold amount to trigger refuel
+                  description: if the balance of the recipient is below this threshold, the refuel will be executed
                   example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel
+                  description: the balance the recipient will have after the refuel is executed
                   example: 2000000000000000000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
@@ -408,23 +477,29 @@ components:
                 - target
                 - threshold
                 - endBalance
+                - gasLimit
                 - fee
               properties:
                 target:
                   type: string
                   format: address
-                  description: Address of the target to refuel
+                  description: address of the refuel recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 threshold:
                   type: integer
                   format: uint256
-                  description: Threshold amount to trigger refuel
+                  description: if the balance of the recipient is below this threshold, the refuel will be executed
                   example: 1000000000000000000
                 endBalance:
                   type: integer
                   format: uint256
-                  description: Target balance after refuel
+                  description: the balance the recipient will have after the refuel is executed
                   example: 2000000000000000000
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: the maximum amount of gas the target can use when called during the refuel
+                  example: 100000
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: TransferERC20
@@ -436,25 +511,28 @@ components:
               type: object
               required:
                 - token
-                - recipient
-                - amount
+                - target
+                - value
+                - schedule
                 - fee
               properties:
                 token:
                   type: string
                   format: address
-                  description: Address of the token to transfer
+                  description: ERC20 token to be transferred
                   example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                recipient:
+                target:
                   type: string
                   format: address
-                  description: Address of the recipient
+                  description: address of the recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                amount:
+                value:
                   type: integer
                   format: uint256
-                  description: Amount of token to transfer
+                  description: amount to be transferred
                   example: 1000000000000000000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: Transfer
@@ -465,86 +543,29 @@ components:
             transfer:
               type: object
               required:
-                - recipient
-                - amount
+                - target
+                - value
+                - gasLimit
+                - schedule
                 - fee
               properties:
-                recipient:
+                target:
                   type: string
                   format: address
-                  description: Address of the recipient
+                  description: address of the recipient
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                amount:
+                value:
                   type: integer
                   format: uint256
-                  description: Amount to transfer
+                  description: amount to be transferred
                   example: 1000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: SweepDepositAccount
-          type: object
-          required:
-            - sweepDepositAccount
-          properties:
-            sweepDepositAccount:
-              type: object
-              required:
-                - depositor
-                - recipient
-                - threshold
-                - fee
-              properties:
-                depositor:
-                  type: string
-                  format: address
-                  description: Address of the depositor
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                threshold:
+                gasLimit:
                   type: integer
                   format: uint256
-                  description: Threshold amount to trigger sweep
-                  example: 1000000000000000000
-                fee:
-                  $ref: '#/components/schemas/OtimFee'
-        - title: SweepDepositAccountERC20
-          type: object
-          required:
-            - sweepDepositAccountERC20
-          properties:
-            sweepDepositAccountERC20:
-              type: object
-              required:
-                - token
-                - depositor
-                - recipient
-                - threshold
-                - fee
-              properties:
-                token:
-                  type: string
-                  format: address
-                  description: Address of the token to sweep
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                depositor:
-                  type: string
-                  format: address
-                  description: Address of the depositor
-                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-                recipient:
-                  type: string
-                  format: address
-                  description: Address of the recipient
-                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
-                threshold:
-                  type: integer
-                  format: uint256
-                  description: Threshold amount to trigger sweep
-                  example: 1000000000000000000
+                  description: the maximum amount of gas the target can use when called during the transfer
+                  example: 100000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
                 fee:
                   $ref: '#/components/schemas/OtimFee'
         - title: UniswapV3ExactInput
@@ -555,50 +576,511 @@ components:
             uniswapV3ExactInput:
               type: object
               required:
+                - recipient
                 - tokenIn
                 - tokenOut
+                - feeTier
                 - amountIn
                 - floorAmountOut
                 - meanPriceLookBack
                 - maxPriceDeviationBPS
-                - recipient
+                - schedule
                 - fee
               properties:
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient of the swapped tokens
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
                 tokenIn:
                   type: string
                   format: address
-                  description: Address of the input token
+                  description: ERC20 token to be sold
                   example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
                 tokenOut:
                   type: string
                   format: address
-                  description: Address of the output token
+                  description: ERC20 token to be bought
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                feeTier:
+                  type: integer
+                  format: uint24
+                  description: fee tier for the Uniswap V3 pool
+                  example: 3000
                 amountIn:
                   type: integer
                   format: uint256
-                  description: Amount of input token to swap
+                  description: amount of tokens to be sold
                   example: 1000000000000000000
                 floorAmountOut:
                   type: integer
                   format: uint256
-                  description: Minimum amount of output token to receive
+                  description: minimum amount of tokens to receive for each swap
                   example: 1000000000000000000
                 meanPriceLookBack:
                   type: integer
                   format: uint32
-                  description: Number of blocks to look back for mean price calculation
+                  description: number of seconds for mean price look back
                   example: 100
                 maxPriceDeviationBPS:
                   type: integer
                   format: uint32
-                  description: Maximum price deviation in basis points
+                  description: maximum price deviation in basis points
                   example: 100
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: DeactivateInstruction
+          type: object
+          required:
+            - deactivateInstruction
+          properties:
+            deactivateInstruction:
+              type: object
+              required:
+                - instructionId
+                - fee
+              properties:
+                instructionId:
+                  type: string
+                  format: bytes32
+                  description: instruction_id to be deactivated
+                  example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepCCTP
+          type: object
+          required:
+            - sweepCCTP
+          properties:
+            sweepCCTP:
+              type: object
+              required:
+                - token
+                - destinationDomain
+                - destinationMintRecipient
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: token to be swept
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                destinationDomain:
+                  type: integer
+                  format: uint32
+                  description: destination domain
+                  example: 1
+                destinationMintRecipient:
+                  type: string
+                  format: bytes32
+                  description: address of the destination mint recipient
+                  example: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: sweep threshold
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: sweep end balance
+                  example: 500000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: TransferCCTP
+          type: object
+          required:
+            - transferCCTP
+          properties:
+            transferCCTP:
+              type: object
+              required:
+                - token
+                - amount
+                - destinationDomain
+                - destinationMintRecipient
+                - schedule
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: token to be transferred
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                amount:
+                  type: integer
+                  format: uint256
+                  description: amount to be transferred
+                  example: 1000000000000000000
+                destinationDomain:
+                  type: integer
+                  format: uint32
+                  description: destination domain
+                  example: 1
+                destinationMintRecipient:
+                  type: string
+                  format: bytes32
+                  description: address of the destination mint recipient
+                  example: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: Sweep
+          type: object
+          required:
+            - sweep
+          properties:
+            sweep:
+              type: object
+              required:
+                - target
+                - threshold
+                - endBalance
+                - gasLimit
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: target to be swept
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: gas limit for the sweep
+                  example: 100000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepERC20
+          type: object
+          required:
+            - sweepERC20
+          properties:
+            sweepERC20:
+              type: object
+              required:
+                - token
+                - target
+                - threshold
+                - endBalance
+                - fee
+              properties:
+                token:
+                  type: string
+                  format: address
+                  description: token to be swept
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                target:
+                  type: string
+                  format: address
+                  description: target to be swept
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepUniswapV3
+          type: object
+          required:
+            - sweepUniswapV3
+          properties:
+            sweepUniswapV3:
+              type: object
+              required:
+                - recipient
+                - tokenIn
+                - tokenOut
+                - feeTier
+                - threshold
+                - endBalance
+                - floorAmountOut
+                - meanPriceLookBack
+                - maxPriceDeviationBPS
+                - fee
+              properties:
                 recipient:
                   type: string
                   format: address
-                  description: Address of the recipient
+                  description: recipient address
                   example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                tokenIn:
+                  type: string
+                  format: address
+                  description: input token address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                tokenOut:
+                  type: string
+                  format: address
+                  description: output token address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                feeTier:
+                  type: integer
+                  format: uint24
+                  description: fee tier for the Uniswap V3 pool
+                  example: 3000
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                floorAmountOut:
+                  type: integer
+                  format: uint256
+                  description: floor amount out
+                  example: 1000000000000000000
+                meanPriceLookBack:
+                  type: integer
+                  format: uint32
+                  description: mean price look back
+                  example: 100
+                maxPriceDeviationBPS:
+                  type: integer
+                  format: uint32
+                  description: max price deviation in basis points
+                  example: 100
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: DepositERC4626
+          type: object
+          required:
+            - depositERC4626
+          properties:
+            depositERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - value
+                - minTotalAssets
+                - schedule
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                value:
+                  type: integer
+                  format: uint256
+                  description: amount to deposit
+                  example: 1000000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepDepositERC4626
+          type: object
+          required:
+            - sweepDepositERC4626
+          properties:
+            sweepDepositERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - threshold
+                - endBalance
+                - minTotalAssets
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: WithdrawERC4626
+          type: object
+          required:
+            - withdrawERC4626
+          properties:
+            withdrawERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - value
+                - minTotalAssets
+                - schedule
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                value:
+                  type: integer
+                  format: uint256
+                  description: amount to withdraw
+                  example: 1000000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                schedule:
+                  $ref: '#/components/schemas/IntervalSchedule'
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: SweepWithdrawERC4626
+          type: object
+          required:
+            - sweepWithdrawERC4626
+          properties:
+            sweepWithdrawERC4626:
+              type: object
+              required:
+                - vault
+                - recipient
+                - threshold
+                - endBalance
+                - minTotalAssets
+                - fee
+              properties:
+                vault:
+                  type: string
+                  format: address
+                  description: vault address
+                  example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+                recipient:
+                  type: string
+                  format: address
+                  description: recipient address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                threshold:
+                  type: integer
+                  format: uint256
+                  description: threshold for the sweep
+                  example: 1000000000000000000
+                endBalance:
+                  type: integer
+                  format: uint256
+                  description: end balance for the sweep
+                  example: 500000000000000000
+                minTotalAssets:
+                  type: integer
+                  format: uint256
+                  description: minimum total assets
+                  example: 1000000000000000000
+                fee:
+                  $ref: '#/components/schemas/OtimFee'
+        - title: CallOnce
+          type: object
+          required:
+            - callOnce
+          properties:
+            callOnce:
+              type: object
+              required:
+                - target
+                - allowFailure
+                - value
+                - gasLimit
+                - returnSizeLimit
+                - selector
+                - data
+                - fee
+              properties:
+                target:
+                  type: string
+                  format: address
+                  description: target address
+                  example: "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"
+                allowFailure:
+                  type: boolean
+                  description: allow failure flag
+                  example: false
+                value:
+                  type: integer
+                  format: uint256
+                  description: value to send
+                  example: 0
+                gasLimit:
+                  type: integer
+                  format: uint256
+                  description: gas limit
+                  example: 100000
+                returnSizeLimit:
+                  type: integer
+                  format: uint16
+                  description: return size limit
+                  example: 1024
+                selector:
+                  type: string
+                  format: bytes4
+                  description: function selector
+                  example: "0x12345678"
+                data:
+                  type: string
+                  format: bytes
+                  description: call data
+                  example: "0x"
                 fee:
                   $ref: '#/components/schemas/OtimFee'
       discriminator:
@@ -608,16 +1090,25 @@ components:
           refuel: '#/components/schemas/ActionArguments/oneOf/1'
           transferERC20: '#/components/schemas/ActionArguments/oneOf/2'
           transfer: '#/components/schemas/ActionArguments/oneOf/3'
-          sweepDepositAccount: '#/components/schemas/ActionArguments/oneOf/4'
-          sweepDepositAccountERC20: '#/components/schemas/ActionArguments/oneOf/5'
-          uniswapV3ExactInput: '#/components/schemas/ActionArguments/oneOf/6'
+          uniswapV3ExactInput: '#/components/schemas/ActionArguments/oneOf/4'
+          deactivateInstruction: '#/components/schemas/ActionArguments/oneOf/5'
+          sweepCCTP: '#/components/schemas/ActionArguments/oneOf/6'
+          transferCCTP: '#/components/schemas/ActionArguments/oneOf/7'
+          sweep: '#/components/schemas/ActionArguments/oneOf/8'
+          sweepERC20: '#/components/schemas/ActionArguments/oneOf/9'
+          sweepUniswapV3: '#/components/schemas/ActionArguments/oneOf/10'
+          depositERC4626: '#/components/schemas/ActionArguments/oneOf/11'
+          sweepDepositERC4626: '#/components/schemas/ActionArguments/oneOf/12'
+          withdrawERC4626: '#/components/schemas/ActionArguments/oneOf/13'
+          sweepWithdrawERC4626: '#/components/schemas/ActionArguments/oneOf/14'
+          callOnce: '#/components/schemas/ActionArguments/oneOf/15'
     PrimitiveSignature:
       type: object
       properties:
         yParity:
           type: number
           description: Y parity of the signature
-          enum: 
+          enum:
             - 0
             - 1
           example: 0
@@ -625,12 +1116,12 @@ components:
           type: string
           format: bytes
           description: R of the signature
-          example: "0x..."
+          example: 0x...
         s:
           type: string
           format: bytes
           description: S of the signature
-          example: "0x..."
+          example: 0x...
     StoredSignature:
       type: object
       properties:
@@ -645,12 +1136,12 @@ components:
           type: string
           format: bytes
           description: R of the signature
-          example: "0x..."
+          example: 0x...
         s:
           type: string
           format: bytes
           description: S of the signature
-          example: "0x..."
+          example: 0x...
     Instruction:
       type: object
       properties:
@@ -668,12 +1159,12 @@ components:
           type: string
           format: address
           description: Action contract address
-          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
+          example: '0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef'
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
     BuildInstructionRequest:
       type: object
       required:
@@ -681,14 +1172,13 @@ components:
         - chainId
         - salt
         - maxExecutions
-        - action
         - actionArguments
       properties:
         address:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: uint64
@@ -696,18 +1186,56 @@ components:
           example: 11155111
         salt:
           type: integer
-          format: uint64
+          format: uint256
           description: Salt to ensure instruction is unique
           example: 1234567890
         maxExecutions:
           type: integer
-          format: uint64
+          format: uint256
           description: Maximum number of times this instruction can be executed (`0` for unlimited)
           example: 10
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
     BuildInstructionResponse:
-      $ref: '#/components/schemas/Instruction'
+      type: object
+      required:
+        - address
+        - chainId
+        - salt
+        - maxExecutions
+        - action
+        - arguments
+      properties:
+        address:
+          type: string
+          format: address
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        salt:
+          type: integer
+          format: uint256
+          description: Salt to ensure instruction is unique
+          example: 1234567890
+        maxExecutions:
+          type: integer
+          format: uint256
+          description: Maximum number of times this instruction can be executed (`0` for unlimited)
+          example: 10
+        action:
+          type: string
+          format: address
+          description: Action contract address
+          example: '0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef'
+        arguments:
+          type: string
+          format: bytes
+          description: Arguments to execute on the action contract
+          example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
     NewInstructionRequest:
       type: object
       required:
@@ -723,7 +1251,7 @@ components:
           type: string
           format: address
           description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
           format: uint64
@@ -731,111 +1259,132 @@ components:
           example: 11155111
         salt:
           type: integer
-          format: uint64
+          format: uint256
           description: Salt to ensure instruction is unique
           example: 1234567890
         maxExecutions:
           type: integer
-          format: uint64
+          format: uint256
           description: Maximum number of times this instruction can be executed (`0` for unlimited)
           example: 10
         action:
           type: string
           format: address
           description: Action contract address
-          example: "0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef"
+          example: '0x838c90f3e8d4892dCfA67721CbbA7C86D3C059ef'
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
         activationSignature:
           description: User signature over the activation hash
           $ref: '#/components/schemas/PrimitiveSignature'
         nickname:
           type: string
-          description: Nickname for the instruction
-          example: "My cool instruction"
+          description: Instruction nickname
+          example: My cool instruction
+          nullable: true
     GetInstructionDetailsResponse:
       type: object
-      required: [salt, maxExecutions, action, lastExecutedUnix, lastInstructedValue, totalInstructedValue, executionStatus, isDeactivation, chainId, chain]
+      required:
+        - salt
+        - maxExecutions
+        - action
+        - lastExecutedUnix
+        - lastErrorCode
+        - executionStatus
+        - isDeactivation
+        - chainId
+        - chain
       properties:
         actionName:
           type: string
-          enum: [refuelERC20, refuel, transfer, transferERC20, sweepDepositAccount, sweepDepositAccountERC20, uniswapV3ExactInput]
+          enum:
+            - refuelERC20
+            - refuel
+            - transferERC20
+            - transfer
+            - uniswapV3ExactInput
+            - deactivateInstruction
+            - sweepCCTP
+            - transferCCTP
+            - sweep
+            - sweepERC20
+            - sweepUniswapV3
+            - depositERC4626
+            - sweepDepositERC4626
+            - withdrawERC4626
+            - sweepWithdrawERC4626
+            - callOnce
           description: Name of the action
-          example: "sweepDepositAccountERC20"
+          example: sweepDepositERC4626
+          nullable: true
         salt:
-          type: string
-          format: bytes
+          type: integer
+          format: uint256
           description: Salt to ensure Instruction is unique
-          example: "0x1df631942ef919"
+          example: 1234567890
         maxExecutions:
-          type: string
-          format: bytes
+          type: integer
+          format: uint256
           description: Maximum number of times the Instruction can be executed
-          example: "0x2"
+          example: 10
         action:
           type: string
           format: address
           description: Action contract address
-          example: "0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95"
+          example: '0x4aa3bce8f633d68cfc066f7b7db78443bcfe1b95'
         actionArguments:
           $ref: '#/components/schemas/ActionArguments'
-          example: {
-            "sweepDepositAccountERC20": {
-              "token": "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0",
-              "depositor": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
-              "recipient": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-              "threshold": "0x0",
-              "fee": {
-                "token": "0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0",
-                "maxBaseFeePerGas": "0x0",
-                "maxPriorityFeePerGas": "0x124f80",
-                "executionFee": "0x186a0"
-              }
-            }
-          }
+          nullable: true
+          example:
+            sweepDepositERC4626:
+              vault: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
+              recipient: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+              threshold: 1000000000000000000
+              endBalance: 500000000000000000
+              minTotalAssets: 1000000000000000000
+              fee:
+                token: '0xaa8e23fb1079ea71e0a56f48a2aa51851d8433d0'
+                maxBaseFeePerGas: 0
+                maxPriorityFeePerGas: 12000000
+                executionFee: 100000
         nickname:
           type: string
           description: Instruction nickname
-          example: "My Instruction"
+          example: My Instruction
           nullable: true
         lastExecutedUnix:
           type: integer
           format: int64
           description: Unix timestamp of last execution
           example: 0
-        lastInstructedValue:
-          type: string
-          format: bytes
-          description: Last instructed value
-          example: "0x0"
-        totalInstructedValue:
-          type: string
-          format: bytes
-          description: Total instructed value
-          example: "0x0"
-        instructedTokenAddress:
-          type: string
-          format: address
-          description: Address of the instructed token
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-          nullable: true
         lastErrorCode:
           type: integer
+          format: int32
           description: Code from the last execution error
           example: 0
         lastErrorMessage:
           type: string
           description: Message from the last execution error
-          example: "Insufficient funds"
+          example: Insufficient funds
           nullable: true
         executionStatus:
           type: string
-          enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
+          enum:
+            - PendingActivation
+            - Active
+            - PendingDeactivation
+            - Deactivated
+            - Completed
+            - Errored
+            - UserNotDelegated
+            - EphemeralPendingActivation
+            - EphemeralActive
+            - EphemeralCancelled
           description: Execution status of the instruction
-          example: "Active"
+          example: Active
         isDeactivation:
           type: boolean
           description: Whether this is a deactivation instruction
@@ -848,7 +1397,7 @@ components:
         chain:
           type: string
           description: Name of the chain where the instruction exists
-          example: "sepolia"
+          example: sepolia
     StoredInstruction:
       type: object
       properties:
@@ -856,12 +1405,12 @@ components:
           type: string
           format: address
           description: Action contract address
-          example: "0x4AA3Bce8f633d68CfC066f7B7DB78443BCFe1B95"
+          example: '0x4AA3Bce8f633d68CfC066f7B7DB78443BCFe1B95'
         arguments:
           type: string
           format: bytes
           description: Arguments to execute on the action contract
-          example: "0x000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000124f8000000000000000000000000000000000000000000000000000000000000186a0"
+          example: '0x000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa8e23fb1079ea71e0a56f48a2aa51851d8433d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000124f8000000000000000000000000000000000000000000000000000000000000186a0'
         executionState:
           type: object
           properties:
@@ -872,8 +1421,18 @@ components:
               example: 0
             executionStatus:
               type: string
-              enum: ["PendingActivation", "Active", "PendingDeactivation", "Deactivated", "Completed", "Errored"]
-              example: "Deactivated"
+              enum:
+                - PendingActivation
+                - Active
+                - PendingDeactivation
+                - Deactivated
+                - Completed
+                - Errored
+                - UserNotDelegated
+                - EphemeralPendingActivation
+                - EphemeralActive
+                - EphemeralCancelled
+              example: Deactivated
             lastExecuted:
               type: integer
               format: int64
@@ -883,16 +1442,16 @@ components:
           type: string
           format: address
           description: Address of the instructed token
-          example: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0"
+          example: '0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0'
         instructionId:
           type: string
           format: bytes32
           description: Unique identifier for the instruction
-          example: "0xc73545bc9fa857226b7861a284760b99a0ada92f3ce17f5696fb044ae876da19"
+          example: '0xc73545bc9fa857226b7861a284760b99a0ada92f3ce17f5696fb044ae876da19'
         lastInstructedValue:
           type: string
           description: Last instructed value
-          example: "0"
+          example: '0'
         maxExecutions:
           type: integer
           format: uint64
@@ -901,7 +1460,7 @@ components:
         nickname:
           type: string
           description: Nickname for the instruction
-          example: "test sweep 4"
+          example: test sweep 4
         salt:
           type: integer
           format: uint64
@@ -910,7 +1469,7 @@ components:
         totalInstructedValue:
           type: string
           description: Total instructed value
-          example: "0"
+          example: '0'
         chainId:
           type: integer
           format: uint64
@@ -919,7 +1478,7 @@ components:
         chain:
           type: string
           description: Name of the chain where the instruction exists
-          example: "sepolia"
+          example: sepolia
         lastErrorCode:
           type: integer
           description: Code from the last execution error
@@ -927,193 +1486,24 @@ components:
         lastErrorMessage:
           type: string
           description: Message from the last execution error
-          example: "Insufficient funds"
+          example: Insufficient funds
           nullable: true
         isDeactivation:
           type: boolean
           description: Whether this is a deactivation instruction
           example: false
-    StoredTransaction:
-      type: object
-      properties:
-        createdAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the document was created
-          example: 1716150000
-        updatedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the document was last updated
-          example: 1716150000
-        transactionHash:
-          type: string
-          format: bytes32
-          description: Hash of the transaction
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-        chainId:
-          type: integer
-          format: uint64
-          description: Chain ID of the transaction
-          example: 11155111
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-        instructionId:
-          type: string
-          format: bytes32
-          description: Instruction ID of the Instruction submitted in the transaction
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-        startedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the transaction was started
-          example: 1716150000
-        finishedAtUnix:
-          type: integer
-          format: int64
-          description: Unix timestamp of when the transaction finished
-          example: 1716150000
-        startedAtBlock:
-          type: integer
-          format: uint64
-          description: Block number when the transaction was started
-          example: 1716150000
-        finishedAtBlock:
-          type: integer
-          format: uint64
-          description: Block number when the transaction finished
-          example: 1716150000
-        blockHash:
-          type: string
-          format: bytes32
-          description: Hash of the block the transaction was included in
-          example: "0x94fbe8788b93f18275955b725ddf5432f4d4d9a279d70e1c508bee558922e21a"
-        activation:
-          type: boolean
-          description: True if the transaction was an Instruction activation
-          example: true
-        deactivation:
-          type: boolean
-          description: True if the transaction was an Instruction deactivation
-          example: false
-        transactionStatus:
-          type: string
-          enum: ["Pending", "InFlight", "Success", "Error"]
-          example: "Success"
-    GetInstructionSummariesRequest:
-      type: object
-      required:
-        - address
-        - chainId
-        - instructionIds
-        - from
-        - to
-        - sort
-        - timeScale
-      properties:
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-        chainId:
-          type: integer
-          format: int64
-          description: "Chain ID"
-          example: 11155111
-        instructionIds:
-          type: array
-          items:
-            type: string
-            format: bytes32
-          example: ["0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"]
-        from:
-          type: string
-          format: date-time
-          description: Start date and time in ISO 8601 format
-          example: "2024-03-20T00:00:00Z"
-        to:
-          type: string
-          format: date-time
-          description: End date and time in ISO 8601 format
-          example: "2024-03-21T00:00:00Z"
-        skip:
-          type: integer
-          format: int64
-          example: 0
-        take:
-          type: integer
-          format: int64
-          example: 10
-        sort:
-          type: string
-          enum: ["asc", "dsc"]
-          example: "asc"
-        timeScale:
-          type: string
-          description: The time scale to group summaries by
-          enum: ["seconds", "minutes", "hours", "days"]
-          example: "days"
-    GetInstructionSummariesResponse:
-      type: array
-      example: [
-        [
-          {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "date": "2024-03-20",
-            "address": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
-            "chain_id": 11155111,
-            "instruction_id": "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-          },
-          [
-            {
-              "id": "550e8400-e29b-41d4-a716-446655440001",
-              "day_summary_id": "550e8400-e29b-41d4-a716-446655440000",
-              "activation": true,
-              "block_latency": 1,
-              "execution_time_unix": 1710936000
-            },
-            {
-              "id": "550e8400-e29b-41d4-a716-446655440002",
-              "day_summary_id": "550e8400-e29b-41d4-a716-446655440000",
-              "activation": false,
-              "block_latency": 2,
-              "execution_time_unix": 1710939600
-            }
-          ]
-        ],
-        [
-          {
-            "id": "550e8400-e29b-41d4-a716-446655440003",
-            "date": "2024-03-21",
-            "address": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
-            "chain_id": 11155111,
-            "instruction_id": "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-          },
-          [
-            {
-              "id": "550e8400-e29b-41d4-a716-446655440004",
-              "day_summary_id": "550e8400-e29b-41d4-a716-446655440003",
-              "activation": false,
-              "block_latency": 1,
-              "execution_time_unix": 1711022400
-            }
-          ]
-        ]
-      ]
-      description: "List of tuples, each containing a day summary and its executions: `[(StoredInstructionSummaryDay, [StoredExecutionSummary, StoredExecutionSummary, ...]), ...]`"
     AuthLoginResponse:
       type: object
       required:
         - authorization
+        - user
       properties:
         authorization:
           type: string
-          description: "JWT token for API authentication"
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          description: JWT token for API authentication
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          $ref: '#/components/schemas/User'
     GetDelegateAddressResponse:
       type: object
       required:
@@ -1122,8 +1512,8 @@ components:
         otimDelegateAddress:
           type: string
           format: address
-          description: "Address of the OtimDelegate contract"
-          example: "0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0"
+          description: Address of the OtimDelegate contract
+          example: '0x6eb81ea5bc15f4f4a2d79fa15a75a43c1ee17cd0'
     GetInstructionStorageAddressResponse:
       type: object
       required:
@@ -1132,8 +1522,8 @@ components:
         instructionStorageAddress:
           type: string
           format: address
-          description: "Address of the InstructionStorage contract"
-          example: "0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3"
+          description: Address of the InstructionStorage contract
+          example: '0x40f4f967e81e873ec3929abd9e0ceb9d3f4a28e3'
     GetDelegationStatusResponse:
       type: object
       required:
@@ -1141,9 +1531,15 @@ components:
       properties:
         delegationStatus:
           type: string
-          enum: ["Undelegated", "Pending", "Delegated", "Expired", "Errored"]
-          description: "Status of the delegation"
-          example: "Delegated"
+          enum:
+            - Undelegated
+            - Pending
+            - EphemeralPending
+            - Delegated
+            - Expired
+            - Errored
+          description: Status of the delegation
+          example: Delegated
     NewInstructionResponse:
       type: object
       required:
@@ -1152,42 +1548,8 @@ components:
         instructionId:
           type: string
           format: bytes32
-          description: "Unique identifier for the created instruction"
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-    GetTransactionsRequest:
-      type: object
-      properties:
-        address:
-          type: string
-          format: address
-          description: Address of the user
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-        instructionIds:
-          type: array
-          items:
-            type: string
-            format: bytes32
-          example: ["0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"]
-        from:
-          type: string
-          format: date-time
-          example: "2021-01-01T00:00:00Z"
-        to:
-          type: string
-          format: date-time
-          example: "2021-01-01T00:00:00Z"
-        skip:
-          type: integer
-          format: int64
-          nullable: true
-        take:
-          type: integer
-          format: int64
-          nullable: true
-        sort:
-          type: string
-          enum: ["Ascending", "Descending"]
-          example: "Ascending"
+          description: Unique identifier for the created instruction
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
     AuthLoginRequest:
       type: object
       required:
@@ -1196,15 +1558,10 @@ components:
       properties:
         siwe:
           type: string
-          description: "SIWE message as a raw string"
-          example: >-
+          description: SIWE message as a raw string
+          example: |-
             By signing in, you agree to the Terms and Conditions (https://otim.com/tac) and Privacy Policy (https://otim.com/pp).
-            
-            URI: https://otim.com
-            Version: 1.0.0
-            Chain ID: 1
-            Nonce: 1728633600000
-            Issued At: 2025-02-07T16:00:00.000Z
+            URI: https://otim.com Version: 1.0.0 Chain ID: 1 Nonce: 1728633600000 Issued At: 2025-02-07T16:00:00.000Z
         signature:
           $ref: '#/components/schemas/PrimitiveSignature'
     GetDelegateAddressRequest:
@@ -1214,8 +1571,8 @@ components:
       properties:
         chainId:
           type: integer
-          format: int64
-          description: "Chain ID to get OtimDelegate address for"
+          format: uint64
+          description: Chain ID to get OtimDelegate address for
           example: 11155111
     NewDelegationRequest:
       type: object
@@ -1225,13 +1582,13 @@ components:
       properties:
         signedAuthorization:
           type: string
-          description: "RLP-encoded 7702 signed authorization"
-          example: "0x..."
+          description: RLP-encoded 7702 signed authorization
+          example: 0x...
         signerAddress:
           type: string
           format: address
-          description: "Signer address to be able to verify signature correctness"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Signer address to be able to verify signature correctness
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
     GetDelegationStatusRequest:
       type: object
       required:
@@ -1241,35 +1598,13 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
-          format: int64
-          description: "Chain ID of the delegation"
+          format: uint64
+          description: Chain ID of the delegation
           example: 11155111
-    DeactivationRequest:
-      type: object
-      required:
-        - address
-        - chainId
-        - deactivation
-        - deactivationSignature
-      properties:
-        address:
-          type: string
-          format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-        chainId:
-          type: integer
-          format: int64
-          description: "Chain ID of the instruction"
-          example: 11155111
-        deactivation:
-          $ref: '#/components/schemas/InstructionDeactivation'
-        deactivationSignature:
-          $ref: '#/components/schemas/PrimitiveSignature'
     GetInstructionDetailsRequest:
       type: object
       required:
@@ -1280,34 +1615,18 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
         chainId:
           type: integer
-          format: int64
-          description: "Chain ID of the instruction"
+          format: uint64
+          description: Chain ID of the instruction
           example: 11155111
         instructionId:
           type: string
           format: bytes32
-          description: "Instruction ID"
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
-    GetChainInstructionsRequest:
-      type: object
-      required:
-        - address
-        - chainId
-      properties:
-        address:
-          type: string
-          format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-        chainId:
-          type: integer
-          format: int64
-          description: "Chain ID to get instructions for"
-          example: 11155111
+          description: Instruction ID
+          example: '0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9'
     GetAllInstructionsRequest:
       type: object
       required:
@@ -1316,21 +1635,26 @@ components:
         address:
           type: string
           format: address
-          description: "Address of the user"
-          example: "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"
-    InstructionDeactivation:
-      type: object
-      required:
-        - instructionId
-      properties:
-        instructionId:
-          type: string
-          format: bytes32
-          description: "ID of instruction to deactivate"
-          example: "0x97fbe0031494c55eb0e1d182988e110af02f5db3adb95065733e7dc8447581f9"
+          description: Address of the user
+          example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
     GetPriorityFeeEstimatesResponse:
       type: object
-      required: [slowMaxPriorityFeeEstimate, normalMaxPriorityFeeEstimate, fastMaxPriorityFeeEstimate]
+      required:
+        - slowMaxPriorityFeeEstimate
+        - normalMaxPriorityFeeEstimate
+        - fastMaxPriorityFeeEstimate
       properties:
         slowMaxPriorityFeeEstimate:
           type: integer
@@ -1347,6 +1671,559 @@ components:
           format: uint128
           description: Fast max priority fee estimate
           example: 3000000000
+    User:
+      type: object
+      required:
+        - id
+        - address
+        - createdAt
+        - updatedAt
+        - preferences
+        - isDeveloper
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the user
+        address:
+          type: string
+          format: address
+          description: Wallet address of the user
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was last updated
+        preferences:
+          type: object
+          description: User preferences as arbitrary JSON
+        isDeveloper:
+          type: boolean
+          description: Whether the user is a developer
+        developerPublicKey:
+          type: string
+          description: Developer public key, used to generate developer API keys
+          nullable: true
+    GetRulesRequest:
+      type: object
+      required:
+        - chainId
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    GetInstructionActivityRequest:
+      type: object
+      required:
+        - chainId
+        - actionNames
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        actionNames:
+          type: array
+          items:
+            type: string
+          description: List of action names to filter by
+          example:
+            - transferERC20
+            - transfer
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    GetEphemeralInstructionActivityRequest:
+      type: object
+      required:
+        - chainId
+        - actionNames
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        actionNames:
+          type: array
+          items:
+            type: string
+          description: List of action names to filter by
+          example:
+            - transferERC20
+            - transfer
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    GetInstructionActivityResponse:
+      type: object
+      required:
+        - address
+        - actionName
+        - blockTimestamp
+        - executionCount
+        - instructionId
+        - transactionHash
+        - activity
+      properties:
+        address:
+          type: string
+          format: address
+          description: User address
+        actionName:
+          type: string
+          description: Name of the action
+        blockTimestamp:
+          type: integer
+          format: uint64
+          description: Block timestamp
+        executionCount:
+          type: integer
+          format: uint64
+          description: Execution count
+        instructionId:
+          type: string
+          format: bytes32
+          description: Instruction ID
+        transactionHash:
+          type: string
+          format: bytes32
+          description: Transaction hash
+        activity:
+          $ref: '#/components/schemas/ActivityData'
+    ActivityData:
+      type: object
+      oneOf:
+        - title: Transfer
+          type: object
+          required:
+            - token
+            - from
+            - to
+            - value
+          properties:
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            to:
+              type: string
+              format: address
+            value:
+              type: integer
+              format: uint256
+        - title: Swap
+          type: object
+          required:
+            - poolAddress
+            - fromToken
+            - toToken
+            - from
+            - to
+            - fromAmount
+            - toAmount
+          properties:
+            poolAddress:
+              type: string
+              format: address
+            fromToken:
+              type: string
+              format: address
+            toToken:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            to:
+              type: string
+              format: address
+            fromAmount:
+              type: integer
+              format: uint256
+            toAmount:
+              type: integer
+              format: uint256
+        - title: CCTPBurn
+          type: object
+          required:
+            - token
+            - from
+            - mintRecipient
+            - destinationDomain
+            - value
+          properties:
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            mintRecipient:
+              type: string
+              format: bytes32
+            destinationDomain:
+              type: integer
+              format: uint256
+            value:
+              type: integer
+              format: uint256
+        - title: ERC4626Deposit
+          type: object
+          required:
+            - vault
+            - token
+            - from
+            - owner
+            - value
+            - shares
+          properties:
+            vault:
+              type: string
+              format: address
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            owner:
+              type: string
+              format: address
+            value:
+              type: integer
+              format: uint256
+            shares:
+              type: integer
+              format: uint256
+        - title: ERC4626Withdraw
+          type: object
+          required:
+            - vault
+            - token
+            - from
+            - to
+            - value
+            - shares
+          properties:
+            vault:
+              type: string
+              format: address
+            token:
+              type: string
+              format: address
+            from:
+              type: string
+              format: address
+            to:
+              type: string
+              format: address
+            value:
+              type: integer
+              format: uint256
+            shares:
+              type: integer
+              format: uint256
+    BuildEphemeralInstructionRequest:
+      type: object
+      required:
+        - chainId
+        - salt
+        - maxExecutions
+        - actionArguments
+        - setEphemeralTarget
+      properties:
+        chainId:
+          type: integer
+          format: uint64
+          description: Chain ID
+          example: 11155111
+        salt:
+          type: integer
+          format: uint256
+          description: Salt to ensure instruction is unique
+          example: 1234567890
+        maxExecutions:
+          type: integer
+          format: uint256
+          description: Maximum number of times this instruction can be executed
+          example: 10
+        actionArguments:
+          $ref: '#/components/schemas/ActionArguments'
+        setEphemeralTarget:
+          type: boolean
+          description: Whether to set the ephemeral account as target for the action arguments
+          example: true
+    BuildPaymentReqRequest:
+      type: object
+      required:
+        - completionInstructions
+        - instructions
+        - metadata
+      properties:
+        payerAddress:
+          type: string
+          format: address
+          description: Address of the payer
+          nullable: true
+        completionInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildEphemeralInstructionRequest'
+          description: Instructions to complete the payment request
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildEphemeralInstructionRequest'
+          description: Instructions to receive the payment request
+        metadata:
+          type: object
+          description: Payment request metadata as arbitrary JSON
+        dueDate:
+          type: string
+          format: date-time
+          description: Due date for the payment request
+          nullable: true
+    BuildPaymentReqResponse:
+      type: object
+      required:
+        - requestId
+        - subOrgId
+        - walletId
+        - ephemeralWalletAddress
+        - completionInstructions
+        - instructions
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+        subOrgId:
+          type: string
+          description: Turnkey sub-organization ID
+        walletId:
+          type: string
+          description: Turnkey wallet ID
+        ephemeralWalletAddress:
+          type: string
+          format: address
+          description: Ephemeral wallet address
+        completionInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildInstructionResponse'
+          description: Completion instructions
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildInstructionResponse'
+          description: Instructions
+    NewPaymentReqRequest:
+      type: object
+      required:
+        - requestId
+        - signedAuthorization
+        - completionInstructions
+        - instructions
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+        signedAuthorization:
+          type: string
+          description: RLP encoded signed authorization
+        completionInstructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewInstructionRequest'
+          description: Completion instructions
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewInstructionRequest'
+          description: Instructions
+    GetPaymentReqDetailsRequest:
+      type: object
+      required:
+        - requestId
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+    GetPaymentReqDetailsResponse:
+      type: object
+      required:
+        - requestId
+        - ephemeralWalletAddress
+        - ephemeralWalletId
+        - status
+        - metadata
+      properties:
+        requestId:
+          type: string
+          format: uuid
+          description: Payment request ID
+        ephemeralWalletAddress:
+          type: string
+          format: address
+          description: Ephemeral wallet address
+        ephemeralWalletId:
+          type: string
+          format: uuid
+          description: Ephemeral wallet ID
+        status:
+          $ref: '#/components/schemas/PaymentRequestStatus'
+        metadata:
+          type: object
+          description: Payment request metadata
+    PaymentRequestsDirection:
+      type: string
+      enum:
+        - from
+        - to
+      description: Direction to filter payment requests
+    PaymentRequestStatus:
+      type: string
+      enum:
+        - pending
+        - inProgress
+        - paid
+        - cancelled
+        - draft
+      description: Payment request status
+    GetPaymentReqsRequest:
+      type: object
+      required:
+        - direction
+      properties:
+        direction:
+          $ref: '#/components/schemas/PaymentRequestsDirection'
+        statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentRequestStatus'
+          description: Optional statuses to filter by
+          nullable: true
+        perPage:
+          type: integer
+          format: int8
+          description: Number of records per page
+          example: 10
+          nullable: true
+        page:
+          type: integer
+          format: int16
+          description: Page number
+          example: 0
+          nullable: true
+    PaymentRequest:
+      type: object
+      required:
+        - id
+        - fromUserId
+        - ephemeralWalletAddress
+        - instructions
+        - metadata
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the payment request
+        fromUserId:
+          type: string
+          format: uuid
+          description: Unique identifier for the user creating the payment request
+        toUserId:
+          type: string
+          format: uuid
+          description: Optional user id of the payee to connect the payment request to
+          nullable: true
+        payerAddress:
+          type: string
+          format: address
+          description: Address of the payer
+          nullable: true
+        ephemeralWalletAddress:
+          type: string
+          format: address
+          description: Address of the ephemeral wallet that will sweep the funds
+        instructions:
+          type: object
+          description: Instructions associated with the payment request
+          properties:
+            ids:
+              type: array
+              items:
+                type: string
+                format: uuid
+              description: Unique identifiers of the instructions that help orchestrate funds
+            completionIds:
+              type: array
+              items:
+                type: string
+                format: uuid
+              description: Unique identifiers of the instructions that can complete the payment request
+        metadata:
+          type: object
+          description: Payment request metadata as arbitrary JSON
+        status:
+          $ref: '#/components/schemas/PaymentRequestStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the payment request was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the payment request was last updated
+        dueDate:
+          type: string
+          format: date-time
+          description: Due date of the payment request
+          nullable: true
   securitySchemes:
     bearerAuth:
       type: http
