@@ -1,0 +1,50 @@
+---
+title: "Client Setup"
+sidebarTitle: "Client Setup"
+---
+
+Add the following environment variables to your `.env` file:
+```bash
+OTIM_APP_ID=
+OTIM_PRIVATE_KEY=
+OTIM_PUBLIC_KEY=
+OTIM_API_KEY=
+OTIM_ENVIRONMENT=
+```
+
+For setting `OTIM_ENVIRONMENT`, there are 2 options:
+- `production`: mainnet chains
+- `sandbox`: testnet chains
+
+Now, set up and initialize your Otim server client:
+```typescript
+  import { chains, createOtimServerClient } from '@otim/sdk-server';
+  import dotenv from 'dotenv';
+
+  dotenv.config();
+
+  async function main() {
+    const client = createOtimServerClient({
+      appId: process.env.OTIM_APP_ID,
+      privateKey: process.env.OTIM_PRIVATE_KEY,
+      publicKey: process.env.OTIM_PUBLIC_KEY,
+      apiKey: process.env.OTIM_API_KEY,
+      environment: process.env.OTIM_ENVIRONMENT
+    });
+
+    await client.init();
+    
+    console.log('Otim server client initialized successfully');
+  }
+  
+  main().catch((error) => {
+    console.error('Error:', error);
+    process.exit(1);
+  });
+```
+
+Simply check that you're authenticated by calling the following:
+```typescript
+  const me = await client.auth.getCurrentUser();
+  console.log('Me:', JSON.stringify(me, null, 2));
+```
