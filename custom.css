@@ -1,0 +1,206 @@
+/* Override anchor button icon background colors in dark mode - dark gray when idle, #baff26 on hover */
+/* Target all possible structures - match exact hrefs from docs.json */
+/* Idle state - dark gray, remove purple */
+[data-theme="dark"] a[href*="github.com"] > div,
+[data-theme="dark"] a[href*="github.com"] div,
+[data-theme="dark"] a[href*="github"] > div,
+[data-theme="dark"] a[href*="github"] div,
+[data-theme="dark"] a[href*="t.me"] > div,
+[data-theme="dark"] a[href*="t.me"] div,
+[data-theme="dark"] a[href*="telegram"] > div,
+[data-theme="dark"] a[href*="telegram"] div,
+[data-theme="dark"] a[href*="linkedin.com"] > div,
+[data-theme="dark"] a[href*="linkedin.com"] div,
+[data-theme="dark"] a[href*="linkedin"] > div,
+[data-theme="dark"] a[href*="linkedin"] div,
+[data-theme="dark"] a[href*="x.com"] > div,
+[data-theme="dark"] a[href*="x.com"] div,
+[data-theme="dark"] a[href*="otim.com/blog"] > div,
+[data-theme="dark"] a[href*="otim.com/blog"] div,
+[data-theme="dark"] a[href*="blog"] > div,
+[data-theme="dark"] a[href*="blog"] div,
+[data-theme="dark"] [class*="anchor"] > div,
+[data-theme="dark"] [class*="anchor"] div,
+[data-theme="dark"] [class*="Anchor"] > div,
+[data-theme="dark"] [class*="Anchor"] div,
+.dark a[href*="github.com"] > div,
+.dark a[href*="github.com"] div,
+.dark a[href*="github"] > div,
+.dark a[href*="github"] div,
+.dark a[href*="t.me"] > div,
+.dark a[href*="t.me"] div,
+.dark a[href*="telegram"] > div,
+.dark a[href*="telegram"] div,
+.dark a[href*="linkedin.com"] > div,
+.dark a[href*="linkedin.com"] div,
+.dark a[href*="linkedin"] > div,
+.dark a[href*="linkedin"] div,
+.dark a[href*="x.com"] > div,
+.dark a[href*="x.com"] div,
+.dark a[href*="otim.com/blog"] > div,
+.dark a[href*="otim.com/blog"] div,
+.dark a[href*="blog"] > div,
+.dark a[href*="blog"] div,
+.dark [class*="anchor"] > div,
+.dark [class*="anchor"] div,
+.dark [class*="Anchor"] > div,
+.dark [class*="Anchor"] div {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+}
+
+/* Hover and active states - use #baff26 */
+[data-theme="dark"] a[href*="github.com"]:hover > div,
+[data-theme="dark"] a[href*="github.com"]:hover div,
+[data-theme="dark"] a[href*="github"]:hover > div,
+[data-theme="dark"] a[href*="github"]:hover div,
+[data-theme="dark"] a[href*="t.me"]:hover > div,
+[data-theme="dark"] a[href*="t.me"]:hover div,
+[data-theme="dark"] a[href*="telegram"]:hover > div,
+[data-theme="dark"] a[href*="telegram"]:hover div,
+[data-theme="dark"] a[href*="linkedin.com"]:hover > div,
+[data-theme="dark"] a[href*="linkedin.com"]:hover div,
+[data-theme="dark"] a[href*="linkedin"]:hover > div,
+[data-theme="dark"] a[href*="linkedin"]:hover div,
+[data-theme="dark"] a[href*="x.com"]:hover > div,
+[data-theme="dark"] a[href*="x.com"]:hover div,
+[data-theme="dark"] a[href*="otim.com/blog"]:hover > div,
+[data-theme="dark"] a[href*="otim.com/blog"]:hover div,
+[data-theme="dark"] a[href*="blog"]:hover > div,
+[data-theme="dark"] a[href*="blog"]:hover div,
+[data-theme="dark"] [class*="anchor"]:hover > div,
+[data-theme="dark"] [class*="anchor"]:hover div,
+[data-theme="dark"] [class*="Anchor"]:hover > div,
+[data-theme="dark"] [class*="Anchor"]:hover div,
+.dark a[href*="github.com"]:hover > div,
+.dark a[href*="github.com"]:hover div,
+.dark a[href*="github"]:hover > div,
+.dark a[href*="github"]:hover div,
+.dark a[href*="t.me"]:hover > div,
+.dark a[href*="t.me"]:hover div,
+.dark a[href*="telegram"]:hover > div,
+.dark a[href*="telegram"]:hover div,
+.dark a[href*="linkedin.com"]:hover > div,
+.dark a[href*="linkedin.com"]:hover div,
+.dark a[href*="linkedin"]:hover > div,
+.dark a[href*="linkedin"]:hover div,
+.dark a[href*="x.com"]:hover > div,
+.dark a[href*="x.com"]:hover div,
+.dark a[href*="otim.com/blog"]:hover > div,
+.dark a[href*="otim.com/blog"]:hover div,
+.dark a[href*="blog"]:hover > div,
+.dark a[href*="blog"]:hover div,
+.dark [class*="anchor"]:hover > div,
+.dark [class*="anchor"]:hover div,
+.dark [class*="Anchor"]:hover > div,
+.dark [class*="Anchor"]:hover div {
+  background-color: #8DF107 !important;
+}
+
+/* Override any purple background color (#6B21A8) in dark mode - replace with dark gray when idle */
+[data-theme="dark"] [style*="#6B21A8"]:not(:hover),
+[data-theme="dark"] [style*="6B21A8"]:not(:hover),
+[data-theme="dark"] [style*="background-color: #6B21A8"]:not(:hover),
+[data-theme="dark"] [style*="background-color:#6B21A8"]:not(:hover),
+[data-theme="dark"] [style*="background: #6B21A8"]:not(:hover),
+[data-theme="dark"] [style*="background:#6B21A8"]:not(:hover),
+.dark [style*="#6B21A8"]:not(:hover),
+.dark [style*="6B21A8"]:not(:hover),
+.dark [style*="background-color: #6B21A8"]:not(:hover),
+.dark [style*="background-color:#6B21A8"]:not(:hover),
+.dark [style*="background: #6B21A8"]:not(:hover),
+.dark [style*="background:#6B21A8"]:not(:hover) {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  background: rgba(55, 65, 81, 0.5) !important;
+}
+
+/* Purple on hover becomes #baff26 */
+[data-theme="dark"] [style*="#6B21A8"]:hover,
+[data-theme="dark"] [style*="6B21A8"]:hover,
+[data-theme="dark"] [style*="background-color: #6B21A8"]:hover,
+[data-theme="dark"] [style*="background-color:#6B21A8"]:hover,
+[data-theme="dark"] [style*="background: #6B21A8"]:hover,
+[data-theme="dark"] [style*="background:#6B21A8"]:hover,
+.dark [style*="#6B21A8"]:hover,
+.dark [style*="6B21A8"]:hover,
+.dark [style*="background-color: #6B21A8"]:hover,
+.dark [style*="background-color:#6B21A8"]:hover,
+.dark [style*="background: #6B21A8"]:hover,
+.dark [style*="background:#6B21A8"]:hover {
+  background-color: #8DF107 !important;
+  background: #8DF107 !important;
+}
+
+/* Target any element with purple background in navigation anchors area - dark gray when idle */
+[data-theme="dark"] nav a[href*="github"]:not(:hover) div,
+[data-theme="dark"] nav a[href*="t.me"]:not(:hover) div,
+[data-theme="dark"] nav a[href*="telegram"]:not(:hover) div,
+[data-theme="dark"] nav a[href*="linkedin"]:not(:hover) div,
+[data-theme="dark"] nav a[href*="x.com"]:not(:hover) div,
+[data-theme="dark"] nav a[href*="blog"]:not(:hover) div,
+.dark nav a[href*="github"]:not(:hover) div,
+.dark nav a[href*="t.me"]:not(:hover) div,
+.dark nav a[href*="telegram"]:not(:hover) div,
+.dark nav a[href*="linkedin"]:not(:hover) div,
+.dark nav a[href*="x.com"]:not(:hover) div,
+.dark nav a[href*="blog"]:not(:hover) div {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+}
+
+/* Navigation anchors on hover - use #baff26 */
+[data-theme="dark"] nav a[href*="github"]:hover div,
+[data-theme="dark"] nav a[href*="t.me"]:hover div,
+[data-theme="dark"] nav a[href*="telegram"]:hover div,
+[data-theme="dark"] nav a[href*="linkedin"]:hover div,
+[data-theme="dark"] nav a[href*="x.com"]:hover div,
+[data-theme="dark"] nav a[href*="blog"]:hover div,
+.dark nav a[href*="github"]:hover div,
+.dark nav a[href*="t.me"]:hover div,
+.dark nav a[href*="telegram"]:hover div,
+.dark nav a[href*="linkedin"]:hover div,
+.dark nav a[href*="x.com"]:hover div,
+.dark nav a[href*="blog"]:hover div {
+  background-color: #8DF107 !important;
+}
+
+/* Target SVGs inside the buttons - white/gray when idle, black on #baff26 background */
+[data-theme="dark"] [class*="anchor"]:not(:hover) svg,
+[data-theme="dark"] [class*="Anchor"]:not(:hover) svg,
+[data-theme="dark"] a[href*="github"]:not(:hover) svg,
+[data-theme="dark"] a[href*="t.me"]:not(:hover) svg,
+[data-theme="dark"] a[href*="telegram"]:not(:hover) svg,
+[data-theme="dark"] a[href*="linkedin"]:not(:hover) svg,
+[data-theme="dark"] a[href*="x.com"]:not(:hover) svg,
+[data-theme="dark"] a[href*="blog"]:not(:hover) svg,
+.dark [class*="anchor"]:not(:hover) svg,
+.dark [class*="Anchor"]:not(:hover) svg,
+.dark a[href*="github"]:not(:hover) svg,
+.dark a[href*="t.me"]:not(:hover) svg,
+.dark a[href*="telegram"]:not(:hover) svg,
+.dark a[href*="linkedin"]:not(:hover) svg,
+.dark a[href*="x.com"]:not(:hover) svg,
+.dark a[href*="blog"]:not(:hover) svg {
+  color: #e5e7eb !important;
+  fill: #e5e7eb !important;
+}
+
+/* SVGs on hover - black for contrast on #baff26 */
+[data-theme="dark"] [class*="anchor"]:hover svg,
+[data-theme="dark"] [class*="Anchor"]:hover svg,
+[data-theme="dark"] a[href*="github"]:hover svg,
+[data-theme="dark"] a[href*="t.me"]:hover svg,
+[data-theme="dark"] a[href*="telegram"]:hover svg,
+[data-theme="dark"] a[href*="linkedin"]:hover svg,
+[data-theme="dark"] a[href*="x.com"]:hover svg,
+[data-theme="dark"] a[href*="blog"]:hover svg,
+.dark [class*="anchor"]:hover svg,
+.dark [class*="Anchor"]:hover svg,
+.dark a[href*="github"]:hover svg,
+.dark a[href*="t.me"]:hover svg,
+.dark a[href*="telegram"]:hover svg,
+.dark a[href*="linkedin"]:hover svg,
+.dark a[href*="x.com"]:hover svg,
+.dark a[href*="blog"]:hover svg {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
