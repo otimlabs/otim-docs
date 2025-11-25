@@ -267,3 +267,224 @@
   color: #e5e7eb !important;
 }
 
+/* Target search input container and any buttons/divs inside it - override purple */
+[data-theme="dark"] input[type="search"] ~ button,
+[data-theme="dark"] input[type="text"] ~ button,
+[data-theme="dark"] [class*="input"] ~ button,
+[data-theme="dark"] [class*="Input"] ~ button,
+[data-theme="dark"] input + button,
+[data-theme="dark"] input + div button,
+[data-theme="dark"] input + div[role="button"],
+[data-theme="dark"] [class*="input"] + button,
+[data-theme="dark"] [class*="Input"] + button,
+.dark input[type="search"] ~ button,
+.dark input[type="text"] ~ button,
+.dark [class*="input"] ~ button,
+.dark [class*="Input"] ~ button,
+.dark input + button,
+.dark input + div button,
+.dark input + div[role="button"],
+.dark [class*="input"] + button,
+.dark [class*="Input"] + button {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
+}
+
+/* Search button on hover */
+[data-theme="dark"] input[type="search"] ~ button:hover,
+[data-theme="dark"] input[type="text"] ~ button:hover,
+[data-theme="dark"] [class*="input"] ~ button:hover,
+[data-theme="dark"] [class*="Input"] ~ button:hover,
+[data-theme="dark"] input + button:hover,
+[data-theme="dark"] input + div button:hover,
+[data-theme="dark"] input + div[role="button"]:hover,
+[data-theme="dark"] [class*="input"] + button:hover,
+[data-theme="dark"] [class*="Input"] + button:hover,
+.dark input[type="search"] ~ button:hover,
+.dark input[type="text"] ~ button:hover,
+.dark [class*="input"] ~ button:hover,
+.dark [class*="Input"] ~ button:hover,
+.dark input + button:hover,
+.dark input + div button:hover,
+.dark input + div[role="button"]:hover,
+.dark [class*="input"] + button:hover,
+.dark [class*="Input"] + button:hover {
+  background-color: #8DF107 !important;
+  color: #000000 !important;
+}
+
+/* Target any circular button or button with arrow icon */
+[data-theme="dark"] button[class*="circle"],
+[data-theme="dark"] button[class*="round"],
+[data-theme="dark"] button[class*="icon"],
+[data-theme="dark"] button svg[class*="arrow"],
+[data-theme="dark"] button svg[class*="Arrow"],
+[data-theme="dark"] button:has(svg[class*="arrow"]),
+[data-theme="dark"] button:has(svg[class*="Arrow"]),
+.dark button[class*="circle"],
+.dark button[class*="round"],
+.dark button[class*="icon"],
+.dark button svg[class*="arrow"],
+.dark button svg[class*="Arrow"],
+.dark button:has(svg[class*="arrow"]),
+.dark button:has(svg[class*="Arrow"]) {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
+}
+
+/* Circular/icon buttons on hover */
+[data-theme="dark"] button[class*="circle"]:hover,
+[data-theme="dark"] button[class*="round"]:hover,
+[data-theme="dark"] button[class*="icon"]:hover,
+[data-theme="dark"] button svg[class*="arrow"]:hover,
+[data-theme="dark"] button svg[class*="Arrow"]:hover,
+[data-theme="dark"] button:has(svg[class*="arrow"]):hover,
+[data-theme="dark"] button:has(svg[class*="Arrow"]):hover,
+.dark button[class*="circle"]:hover,
+.dark button[class*="round"]:hover,
+.dark button[class*="icon"]:hover,
+.dark button svg[class*="arrow"]:hover,
+.dark button svg[class*="Arrow"]:hover,
+.dark button:has(svg[class*="arrow"]):hover,
+.dark button:has(svg[class*="Arrow"]):hover {
+  background-color: #8DF107 !important;
+  color: #000000 !important;
+}
+
+/* Nuclear option - target ANY element with purple background in dark mode that's not already handled */
+[data-theme="dark"] *[style*="background"][style*="#6B21A8"]:not([class*="anchor"]):not(a),
+[data-theme="dark"] *[style*="background"][style*="6B21A8"]:not([class*="anchor"]):not(a),
+.dark *[style*="background"][style*="#6B21A8"]:not([class*="anchor"]):not(a),
+.dark *[style*="background"][style*="6B21A8"]:not([class*="anchor"]):not(a) {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  background: rgba(55, 65, 81, 0.5) !important;
+}
+
+/* Override CSS variables for primary color in dark mode */
+[data-theme="dark"] {
+  --primary: rgba(55, 65, 81, 0.5) !important;
+}
+
+[data-theme="dark"] * {
+  --mint-primary: rgba(55, 65, 81, 0.5) !important;
+}
+
+/* Target any button that might be using primary color variable */
+[data-theme="dark"] button[style*="var(--primary)"],
+[data-theme="dark"] button[style*="var(--mint-primary)"],
+[data-theme="dark"] button[style*="primary"],
+.dark button[style*="var(--primary)"],
+.dark button[style*="var(--mint-primary)"],
+.dark button[style*="primary"] {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  background: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] button[style*="var(--primary)"]:hover,
+[data-theme="dark"] button[style*="var(--mint-primary)"]:hover,
+[data-theme="dark"] button[style*="primary"]:hover,
+.dark button[style*="var(--primary)"]:hover,
+.dark button[style*="var(--mint-primary)"]:hover,
+.dark button[style*="primary"]:hover {
+  background-color: #8DF107 !important;
+  background: #8DF107 !important;
+  color: #000000 !important;
+}
+
+/* Target buttons in form/input contexts (like search) - override purple */
+[data-theme="dark"] form button,
+[data-theme="dark"] form [role="button"],
+[data-theme="dark"] [class*="form"] button,
+[data-theme="dark"] [class*="Form"] button,
+[data-theme="dark"] input ~ button,
+[data-theme="dark"] input + button,
+[data-theme="dark"] [class*="input"] ~ button,
+[data-theme="dark"] [class*="Input"] ~ button,
+.dark form button,
+.dark form [role="button"],
+.dark [class*="form"] button,
+.dark [class*="Form"] button,
+.dark input ~ button,
+.dark input + button,
+.dark [class*="input"] ~ button,
+.dark [class*="Input"] ~ button {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] form button:hover,
+[data-theme="dark"] form [role="button"]:hover,
+[data-theme="dark"] [class*="form"] button:hover,
+[data-theme="dark"] [class*="Form"] button:hover,
+[data-theme="dark"] input ~ button:hover,
+[data-theme="dark"] input + button:hover,
+[data-theme="dark"] [class*="input"] ~ button:hover,
+[data-theme="dark"] [class*="Input"] ~ button:hover,
+.dark form button:hover,
+.dark form [role="button"]:hover,
+.dark [class*="form"] button:hover,
+.dark [class*="Form"] button:hover,
+.dark input ~ button:hover,
+.dark input + button:hover,
+.dark [class*="input"] ~ button:hover,
+.dark [class*="Input"] ~ button:hover {
+  background-color: #8DF107 !important;
+  color: #000000 !important;
+}
+
+/* Target button inside #content-area - specific to search button */
+[data-theme="dark"] #content-area button,
+[data-theme="dark"] #content-area button:has(svg),
+[data-theme="dark"] #content-area div button,
+[data-theme="dark"] #content-area div div button,
+[data-theme="dark"] #content-area div div div button,
+[data-theme="dark"] #content-area div div div div button,
+.dark #content-area button,
+.dark #content-area button:has(svg),
+.dark #content-area div button,
+.dark #content-area div div button,
+.dark #content-area div div div button,
+.dark #content-area div div div div button {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  background: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] #content-area button:hover,
+[data-theme="dark"] #content-area button:has(svg):hover,
+[data-theme="dark"] #content-area div button:hover,
+[data-theme="dark"] #content-area div div button:hover,
+[data-theme="dark"] #content-area div div div button:hover,
+[data-theme="dark"] #content-area div div div div button:hover,
+.dark #content-area button:hover,
+.dark #content-area button:has(svg):hover,
+.dark #content-area div button:hover,
+.dark #content-area div div button:hover,
+.dark #content-area div div div button:hover,
+.dark #content-area div div div div button:hover {
+  background-color: #8DF107 !important;
+  background: #8DF107 !important;
+  color: #000000 !important;
+}
+
+/* Target buttons with SVG children (like search button with arrow icon) */
+[data-theme="dark"] button:has(svg),
+[data-theme="dark"] button svg,
+.dark button:has(svg),
+.dark button svg {
+  /* Let the button handle the background, not the SVG */
+}
+
+[data-theme="dark"] button:has(svg),
+.dark button:has(svg) {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  background: rgba(55, 65, 81, 0.5) !important;
+}
+
+[data-theme="dark"] button:has(svg):hover,
+.dark button:has(svg):hover {
+  background-color: #8DF107 !important;
+  background: #8DF107 !important;
+}
+
