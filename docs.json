@@ -8,6 +8,7 @@
     "dark": "#6B21A8"
   },
   "favicon": "/favicon.svg",
+  "css": "custom.css",
   "navigation": {
     "tabs": [
       {
@@ -79,6 +80,13 @@
                 ]
               },
               {
+                "group": "Orchestrators",
+                "pages": [
+                  "docs/developers/orchestrators/overview"
+                ]
+              },
+              "docs/developers/deployed-addresses",
+              {
                 "group": "Guides",
                 "pages": [
                   "docs/developers/guides/overview",
@@ -100,8 +108,7 @@
                     ]
                   }
                 ]
-              },
-              "docs/developers/deployed-addresses"
+              }
             ]
           },
           {
@@ -130,16 +137,20 @@
             "group": "Getting Started",
             "pages": [
               "sdk/overview",
-              "sdk/installation"
+              "sdk/getting-your-developer-keys"
             ]
           },
           {
-            "group": "Flows",
+            "group": "TypeScript Server-Side",
             "pages": [
-              "sdk/flows/client-setup",
-              "sdk/flows/authentication",
-              "sdk/flows/delegation",
-              "sdk/flows/instructions"
+              "sdk/typescript-server-side/installation",
+              "sdk/typescript-server-side/client-setup",
+              {
+                "group": "Guides",
+                "pages": [
+                  "sdk/typescript-server-side/guides/create-a-payment-request"
+                ]
+              }
             ]
           }
         ]
@@ -219,6 +230,11 @@
           "icon": "telegram"
         },
         {
+          "anchor": "Blog",
+          "href": "https://otim.com/blog",
+          "icon": "book-open"
+        },
+        {
           "anchor": "LinkedIn",
           "href": "https://linkedin.com/company/otim",
           "icon": "linkedin"
@@ -227,11 +243,6 @@
           "anchor": "X",
           "href": "https://x.com/otimlabs",
           "icon": "x-twitter"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://otim.com/blog",
-          "icon": "book-open"
         }
       ]
     }
