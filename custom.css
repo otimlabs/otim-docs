@@ -470,13 +470,6 @@
 
 /* Target buttons with SVG children (like search button with arrow icon) */
 [data-theme="dark"] button:has(svg),
-[data-theme="dark"] button svg,
-.dark button:has(svg),
-.dark button svg {
-  /* Let the button handle the background, not the SVG */
-}
-
-[data-theme="dark"] button:has(svg),
 .dark button:has(svg) {
   background-color: rgba(55, 65, 81, 0.5) !important;
   background: rgba(55, 65, 81, 0.5) !important;
@@ -486,5 +479,59 @@
 .dark button:has(svg):hover {
   background-color: #8DF107 !important;
   background: #8DF107 !important;
+}
+
+/* Remove gray box from SVG and its containers - make them transparent */
+[data-theme="dark"] button svg,
+[data-theme="dark"] button svg *,
+[data-theme="dark"] button > div svg,
+[data-theme="dark"] button > span svg,
+[data-theme="dark"] #content-area button svg,
+[data-theme="dark"] #content-area button svg *,
+[data-theme="dark"] #content-area button > div,
+[data-theme="dark"] #content-area button > span,
+.dark button svg,
+.dark button svg *,
+.dark button > div svg,
+.dark button > span svg,
+.dark #content-area button svg,
+.dark #content-area button svg *,
+.dark #content-area button > div,
+.dark #content-area button > span {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Ensure SVG fill is white/black appropriately */
+[data-theme="dark"] button svg,
+[data-theme="dark"] button svg path,
+[data-theme="dark"] button svg *,
+[data-theme="dark"] #content-area button svg,
+[data-theme="dark"] #content-area button svg path,
+[data-theme="dark"] #content-area button svg *,
+.dark button svg,
+.dark button svg path,
+.dark button svg *,
+.dark #content-area button svg,
+.dark #content-area button svg path,
+.dark #content-area button svg * {
+  fill: #e5e7eb !important;
+  color: #e5e7eb !important;
+}
+
+[data-theme="dark"] button:hover svg,
+[data-theme="dark"] button:hover svg path,
+[data-theme="dark"] button:hover svg *,
+[data-theme="dark"] #content-area button:hover svg,
+[data-theme="dark"] #content-area button:hover svg path,
+[data-theme="dark"] #content-area button:hover svg *,
+.dark button:hover svg,
+.dark button:hover svg path,
+.dark button:hover svg *,
+.dark #content-area button:hover svg,
+.dark #content-area button:hover svg path,
+.dark #content-area button:hover svg * {
+  fill: #000000 !important;
+  color: #000000 !important;
 }
 
