@@ -48,7 +48,7 @@
   background-color: rgba(55, 65, 81, 0.5) !important;
 }
 
-/* Hover and active states - use #baff26 */
+/* Hover and active states - use #8DF107 */
 [data-theme="dark"] a[href*="github.com"]:hover > div,
 [data-theme="dark"] a[href*="github.com"]:hover div,
 [data-theme="dark"] a[href*="github"]:hover > div,
@@ -146,7 +146,7 @@
   background-color: rgba(55, 65, 81, 0.5) !important;
 }
 
-/* Navigation anchors on hover - use #baff26 */
+/* Navigation anchors on hover - use #8DF107 */
 [data-theme="dark"] nav a[href*="github"]:hover div,
 [data-theme="dark"] nav a[href*="t.me"]:hover div,
 [data-theme="dark"] nav a[href*="telegram"]:hover div,
@@ -162,7 +162,7 @@
   background-color: #8DF107 !important;
 }
 
-/* Target SVGs inside the buttons - white/gray when idle, black on #baff26 background */
+/* Target SVGs inside the buttons - white/gray when idle, black on #8DF107 background */
 [data-theme="dark"] [class*="anchor"]:not(:hover) svg,
 [data-theme="dark"] [class*="Anchor"]:not(:hover) svg,
 [data-theme="dark"] a[href*="github"]:not(:hover) svg,
@@ -183,7 +183,7 @@
   fill: #e5e7eb !important;
 }
 
-/* SVGs on hover - black for contrast on #baff26 */
+/* SVGs on hover - black for contrast on #8DF107 */
 [data-theme="dark"] [class*="anchor"]:hover svg,
 [data-theme="dark"] [class*="Anchor"]:hover svg,
 [data-theme="dark"] a[href*="github"]:hover svg,
@@ -202,5 +202,68 @@
 .dark a[href*="blog"]:hover svg {
   color: #000000 !important;
   fill: #000000 !important;
+}
+
+/* Search bar button - remove purple in dark mode */
+[data-theme="dark"] [class*="search"] button,
+[data-theme="dark"] [class*="Search"] button,
+[data-theme="dark"] button[class*="search"],
+[data-theme="dark"] button[class*="Search"],
+[data-theme="dark"] [class*="search"] > div,
+[data-theme="dark"] [class*="Search"] > div,
+[data-theme="dark"] [class*="search"] div,
+[data-theme="dark"] [class*="Search"] div,
+[data-theme="dark"] [class*="search"] [role="button"],
+[data-theme="dark"] [class*="Search"] [role="button"],
+.dark [class*="search"] button,
+.dark [class*="Search"] button,
+.dark button[class*="search"],
+.dark button[class*="Search"],
+.dark [class*="search"] > div,
+.dark [class*="Search"] > div,
+.dark [class*="search"] div,
+.dark [class*="Search"] div,
+.dark [class*="search"] [role="button"],
+.dark [class*="Search"] [role="button"] {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
+}
+
+/* Search bar button on hover/active */
+[data-theme="dark"] [class*="search"] button:hover,
+[data-theme="dark"] [class*="Search"] button:hover,
+[data-theme="dark"] button[class*="search"]:hover,
+[data-theme="dark"] button[class*="Search"]:hover,
+[data-theme="dark"] [class*="search"]:hover > div,
+[data-theme="dark"] [class*="Search"]:hover > div,
+[data-theme="dark"] [class*="search"]:hover div,
+[data-theme="dark"] [class*="Search"]:hover div,
+[data-theme="dark"] [class*="search"] [role="button"]:hover,
+[data-theme="dark"] [class*="Search"] [role="button"]:hover,
+.dark [class*="search"] button:hover,
+.dark [class*="Search"] button:hover,
+.dark button[class*="search"]:hover,
+.dark button[class*="Search"]:hover,
+.dark [class*="search"]:hover > div,
+.dark [class*="Search"]:hover > div,
+.dark [class*="search"]:hover div,
+.dark [class*="Search"]:hover div,
+.dark [class*="search"] [role="button"]:hover,
+.dark [class*="Search"] [role="button"]:hover {
+  background-color: #8DF107 !important;
+  color: #000000 !important;
+}
+
+/* Override purple in any button or interactive element in dark mode */
+[data-theme="dark"] button[style*="#6B21A8"],
+[data-theme="dark"] button[style*="6B21A8"],
+[data-theme="dark"] [role="button"][style*="#6B21A8"],
+[data-theme="dark"] [role="button"][style*="6B21A8"],
+.dark button[style*="#6B21A8"],
+.dark button[style*="6B21A8"],
+.dark [role="button"][style*="#6B21A8"],
+.dark [role="button"][style*="6B21A8"] {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+  color: #e5e7eb !important;
 }
 
