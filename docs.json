@@ -204,12 +204,13 @@
                 ]
               },
               {
-                "group": "Payment Requests",
+                "group": "Orchestrations",
                 "pages": [
-                  "api-reference/payment-requests/build",
-                  "api-reference/payment-requests/new",
-                  "api-reference/payment-requests/details",
-                  "api-reference/payment-requests/list"
+                  "api-reference/orchestrations/build",
+                  "api-reference/orchestrations/build-settlement",
+                  "api-reference/orchestrations/new",
+                  "api-reference/orchestrations/details",
+                  "api-reference/orchestrations/list"
                 ]
               }
             ]
