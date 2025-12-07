@@ -294,9 +294,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetInstructionActivityResponse'
-  /payment/request/build:
+  /orchestration/build:
     post:
-      description: Build a payment request with ephemeral instructions
+      description: Build an orchestration with ephemeral instructions
       security:
         - bearerAuth: []
       requestBody:
@@ -304,47 +304,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BuildPaymentReqRequest'
-      responses:
-        '200':
-          description: Payment request built successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuildPaymentReqResponse'
-  /payment/request/new:
-    post:
-      description: Create a new payment request
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewPaymentReqRequest'
+              $ref: '#/components/schemas/BuildOrchestrationRequest'
       responses:
         '201':
-          description: Payment request created successfully
-  /payment/request/details:
-    get:
-      description: Get payment request details
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetPaymentReqDetailsRequest'
-      responses:
-        '200':
-          description: Payment request details retrieved successfully
+          description: Orchestration built successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetPaymentReqDetailsResponse'
-  /payment/requests:
-    get:
-      description: Get payment requests for a user
+                $ref: '#/components/schemas/BuildOrchestrationResponse'
+  /orchestration/build/settlement:
+    post:
+      description: Build a settlement orchestration with ephemeral instructions
       security:
         - bearerAuth: []
       requestBody:
@@ -352,16 +322,64 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GetPaymentReqsRequest'
+              $ref: '#/components/schemas/BuildSettlementOrchestrationRequest'
+      responses:
+        '201':
+          description: Settlement orchestration built successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildOrchestrationResponse'
+  /orchestration/new:
+    post:
+      description: Create a new orchestration
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOrchestrationRequest'
+      responses:
+        '201':
+          description: Orchestration created successfully
+  /orchestration/details:
+    get:
+      description: Get orchestration details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetOrchestrationDetailsRequest'
       responses:
         '200':
-          description: Payment requests retrieved successfully
+          description: Orchestration details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrchestrationDetailsResponse'
+  /orchestrations:
+    get:
+      description: Get orchestrations for a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetOrchestrationsRequest'
+      responses:
+        '200':
+          description: Orchestrations retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PaymentRequest'
+                  $ref: '#/components/schemas/Orchestration'
 components:
   schemas:
     TokenFee:
@@ -1992,7 +2010,7 @@ components:
           type: boolean
           description: Whether to set the ephemeral account as target for the action arguments
           example: true
-    BuildPaymentReqRequest:
+    BuildOrchestrationRequest:
       type: object
       required:
         - completionInstructions
@@ -2008,21 +2026,78 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BuildEphemeralInstructionRequest'
-          description: Instructions to complete the payment request
+          description: Instructions to complete the orchestration
         instructions:
           type: array
           items:
             $ref: '#/components/schemas/BuildEphemeralInstructionRequest'
-          description: Instructions to receive the payment request
+          description: Instructions to receive the orchestration
         metadata:
           type: object
-          description: Payment request metadata as arbitrary JSON
+          description: Orchestration metadata as arbitrary JSON
         dueDate:
           type: string
           format: date-time
-          description: Due date for the payment request
+          description: Due date for the orchestration
           nullable: true
-    BuildPaymentReqResponse:
+        maxRuns:
+          type: integer
+          format: uint64
+          description: Maximum number of times the orchestration can be executed
+          nullable: true
+    BuildSettlementOrchestrationRequest:
+      type: object
+      required:
+        - acceptedTokens
+        - settlementChain
+        - settlementToken
+        - settlementAmount
+        - recipientAddress
+        - metadata
+      properties:
+        acceptedTokens:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              format: address
+          description: Accepted tokens grouped by chain ID (chain_id -> list of token addresses)
+        settlementChain:
+          type: integer
+          format: uint64
+          description: Chain ID of the settlement chain
+        settlementToken:
+          type: string
+          format: address
+          description: Token address of the settlement token
+        settlementAmount:
+          type: integer
+          format: uint256
+          description: Settlement amount denominated in the settlement token
+        payerAddress:
+          type: string
+          format: address
+          description: Address of the payer
+          nullable: true
+        recipientAddress:
+          type: string
+          format: address
+          description: Address of the recipient
+        metadata:
+          type: object
+          description: Orchestration metadata as arbitrary JSON
+        dueDate:
+          type: string
+          format: date-time
+          description: Due date for the orchestration
+          nullable: true
+        maxRuns:
+          type: integer
+          format: uint64
+          description: Maximum number of times the orchestration can be executed
+          nullable: true
+    BuildOrchestrationResponse:
       type: object
       required:
         - requestId
@@ -2035,7 +2110,7 @@ components:
         requestId:
           type: string
           format: uuid
-          description: Payment request ID
+          description: Orchestration ID
         subOrgId:
           type: string
           description: Turnkey sub-organization ID
@@ -2056,7 +2131,7 @@ components:
           items:
             $ref: '#/components/schemas/BuildInstructionResponse'
           description: Instructions
-    NewPaymentReqRequest:
+    NewOrchestrationRequest:
       type: object
       required:
         - requestId
@@ -2067,7 +2142,7 @@ components:
         requestId:
           type: string
           format: uuid
-          description: Payment request ID
+          description: Orchestration ID
         signedAuthorization:
           type: string
           description: RLP encoded signed authorization
@@ -2081,7 +2156,7 @@ components:
           items:
             $ref: '#/components/schemas/NewInstructionRequest'
           description: Instructions
-    GetPaymentReqDetailsRequest:
+    GetOrchestrationDetailsRequest:
       type: object
       required:
         - requestId
@@ -2089,8 +2164,8 @@ components:
         requestId:
           type: string
           format: uuid
-          description: Payment request ID
-    GetPaymentReqDetailsResponse:
+          description: Orchestration ID
+    GetOrchestrationDetailsResponse:
       type: object
       required:
         - requestId
@@ -2098,11 +2173,12 @@ components:
         - ephemeralWalletId
         - status
         - metadata
+        - numRuns
       properties:
         requestId:
           type: string
           format: uuid
-          description: Payment request ID
+          description: Orchestration ID
         ephemeralWalletAddress:
           type: string
           format: address
@@ -2112,17 +2188,26 @@ components:
           format: uuid
           description: Ephemeral wallet ID
         status:
-          $ref: '#/components/schemas/PaymentRequestStatus'
+          $ref: '#/components/schemas/OrchestrationStatus'
         metadata:
           type: object
-          description: Payment request metadata
-    PaymentRequestsDirection:
+          description: Orchestration metadata
+        numRuns:
+          type: integer
+          format: uint64
+          description: Number of times the orchestration has been executed
+        maxRuns:
+          type: integer
+          format: uint64
+          description: Maximum number of times the orchestration can be executed
+          nullable: true
+    OrchestrationsDirection:
       type: string
       enum:
         - from
         - to
-      description: Direction to filter payment requests
-    PaymentRequestStatus:
+      description: Direction to filter orchestrations
+    OrchestrationStatus:
       type: string
       enum:
         - pending
@@ -2130,18 +2215,18 @@ components:
         - paid
         - cancelled
         - draft
-      description: Payment request status
-    GetPaymentReqsRequest:
+      description: Orchestration status
+    GetOrchestrationsRequest:
       type: object
       required:
         - direction
       properties:
         direction:
-          $ref: '#/components/schemas/PaymentRequestsDirection'
+          $ref: '#/components/schemas/OrchestrationsDirection'
         statuses:
           type: array
           items:
-            $ref: '#/components/schemas/PaymentRequestStatus'
+            $ref: '#/components/schemas/OrchestrationStatus'
           description: Optional statuses to filter by
           nullable: true
         perPage:
@@ -2156,7 +2241,7 @@ components:
           description: Page number
           example: 0
           nullable: true
-    PaymentRequest:
+    Orchestration:
       type: object
       required:
         - id
@@ -2171,15 +2256,15 @@ components:
         id:
           type: string
           format: uuid
-          description: Unique identifier for the payment request
+          description: Unique identifier for the orchestration
         fromUserId:
           type: string
           format: uuid
-          description: Unique identifier for the user creating the payment request
+          description: Unique identifier for the user creating the orchestration
         toUserId:
           type: string
           format: uuid
-          description: Optional user id of the payee to connect the payment request to
+          description: Optional user id of the payee to connect the orchestration to
           nullable: true
         payerAddress:
           type: string
@@ -2192,7 +2277,7 @@ components:
           description: Address of the ephemeral wallet that will sweep the funds
         instructions:
           type: object
-          description: Instructions associated with the payment request
+          description: Instructions associated with the orchestration
           properties:
             ids:
               type: array
@@ -2205,24 +2290,24 @@ components:
               items:
                 type: string
                 format: uuid
-              description: Unique identifiers of the instructions that can complete the payment request
+              description: Unique identifiers of the instructions that can complete the orchestration
         metadata:
           type: object
-          description: Payment request metadata as arbitrary JSON
+          description: Orchestration metadata as arbitrary JSON
         status:
-          $ref: '#/components/schemas/PaymentRequestStatus'
+          $ref: '#/components/schemas/OrchestrationStatus'
         createdAt:
           type: string
           format: date-time
-          description: Timestamp when the payment request was created
+          description: Timestamp when the orchestration was created
         updatedAt:
           type: string
           format: date-time
-          description: Timestamp when the payment request was last updated
+          description: Timestamp when the orchestration was last updated
         dueDate:
           type: string
           format: date-time
-          description: Due date of the payment request
+          description: Due date of the orchestration
           nullable: true
   securitySchemes:
     bearerAuth:
