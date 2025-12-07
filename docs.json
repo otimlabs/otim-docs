@@ -148,7 +148,7 @@
               {
                 "group": "Guides",
                 "pages": [
-                  "sdk/typescript-server-side/guides/create-a-payment-request"
+                  "sdk/typescript-server-side/guides/create-settlement-orchestration"
                 ]
               }
             ]

@@ -1,0 +1,53 @@
+---
+title: "Create a Settlement Orchestration"
+sidebarTitle: "Create a Settlement Orchestration"
+---
+
+Settlement orchestrations are created by specifying the final settlement chain and token the recipient will receive for the payment. Here's all it takes:
+
+```typescript
+  // Prepare the settlement orchestration
+  const settlement = prepareSettlement({
+    amount: 10,
+    chainId: chains.base.id,
+    token: "USDC",
+    recipient: recipientAddress,
+    note: "Settlement orchestration from Otim SDK example",
+    maxRuns: 1, // Optional: limit the number of times this orchestration can be executed
+  });
+
+  // Create the settlement orchestration
+  const result = await client.orchestration.create(settlement);
+
+  console.log("✓ Settlement orchestration created successfully!\n");
+  console.log("Request ID:", result.requestId);
+  console.log("Ephemeral Wallet Address:", result.ephemeralWalletAddress);
+```
+
+A couple notes:
+- You can check the list of available chains by importing `chains` from the SDK.
+- `amount` is denominated in dollars
+- The only 2 acceptable tokens for `token` are `'USDC'` and `'USDT'`, as settlement is only made available to stables.
+
+Once created, you should receive a `requestId` and `ephemeralWalletAddress`. The `ephemeralWalletAddress` is the payment address that you will send to whoever is paying.
+
+## **Tracking an Orchestration**
+
+Want to get a specific orchestration? Just fetch the details using its `requestId`:
+```typescript
+  const orchestrationDetails = await client.orchestration.getDetails({
+    requestId: result.requestId,
+  });
+  console.log('Orchestration details results:', JSON.stringify(orchestrationDetails, null, 2));
+```
+
+Want to get all of the orchestrations created with details? Fetch with this:
+```typescript
+ const requests = await client.orchestration.list({
+    direction: 'from',
+    statuses: ['pending', 'inProgress', 'paid'],
+    perPage: 10,
+    page: 0
+  });
+  console.log('All orchestrations:', JSON.stringify(incomingRequests, null, 2));
+```
