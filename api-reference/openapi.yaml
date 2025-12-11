@@ -69,7 +69,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
+            format: uint64
             description: Chain ID
       responses:
         '200':
@@ -87,7 +87,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64
+            format: uint64
             description: Chain ID
       responses:
         '200':
@@ -1223,6 +1223,7 @@ components:
         - maxExecutions
         - action
         - arguments
+        - actionName
       properties:
         address:
           type: string
@@ -1254,6 +1255,27 @@ components:
           format: bytes
           description: Arguments to execute on the action contract
           example: '0x0000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c72380000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000a0Ee7A142d267C1f36714E4a8F75612F20a79720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+        actionName:
+          type: string
+          description: Name of the action
+          enum:
+            - refuel
+            - transfer
+            - refuelERC20
+            - transferERC20
+            - uniswapV3ExactInput
+            - deactivateInstruction
+            - sweepCCTP
+            - transferCCTP
+            - sweep
+            - sweepERC20
+            - sweepUniswapV3
+            - depositERC4626
+            - sweepDepositERC4626
+            - withdrawERC4626
+            - sweepWithdrawERC4626
+            - callOnce
+          example: sweepDepositERC4626
     NewInstructionRequest:
       type: object
       required:
@@ -2252,6 +2274,7 @@ components:
         - status
         - createdAt
         - updatedAt
+        - numRuns
       properties:
         id:
           type: string
@@ -2309,6 +2332,17 @@ components:
           format: date-time
           description: Due date of the orchestration
           nullable: true
+        numRuns:
+          type: integer
+          format: uint64
+          description: Number of times the orchestration has been executed
+          example: 0
+        maxRuns:
+          type: integer
+          format: uint64
+          description: Maximum number of times the orchestration can be executed
+          nullable: true
+          example: 10
   securitySchemes:
     bearerAuth:
       type: http
