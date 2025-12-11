@@ -3,17 +3,35 @@ title: "Create a Settlement Orchestration"
 sidebarTitle: "Create a Settlement Orchestration"
 ---
 
-Settlement orchestrations are created by specifying the final settlement chain and token the recipient will receive for the payment. Here's all it takes:
+Settlement orchestrations are created by specifying the:
+- final settlement chain and token the recipient will receive after settlement
+- mapping of chain+token combinations that are acceptable input tokens for the sender to send
+
+Now, let's create a simple settlement orchestration that accepts USDC, USDT, or ETH on either Base or Ethereum mainnet, and settles to USDC on Base. 
+
+Here's all it takes:
 
 ```typescript
   // Prepare the settlement orchestration
   const settlement = prepareSettlement({
-    amount: 10,
+    amount: 1,
     chainId: chains.base.id,
-    token: "USDC",
-    recipient: recipientAddress,
-    note: "Settlement orchestration from Otim SDK example",
-    maxRuns: 1, // Optional: limit the number of times this orchestration can be executed
+    token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // usdc on base
+    recipient: process.env.RECIPIENT_ADDRESS! as `0x${string}`,
+    acceptedTokens: {
+      [chains.mainnet.id]: [
+        '0x0000000000000000000000000000000000000000', // eth on ethereum
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // usdc
+        '0xdAC17F958D2ee523a2206206994597C13D831ec7'  // usdt
+      ],
+      [chains.base.id]: [
+        '0x0000000000000000000000000000000000000000', // eth on base
+        '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // usdc
+        '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2'  // usdt
+      ]
+    },
+    note: "Settlement orchestration example",
+    maxRuns: 1
   });
 
   // Create the settlement orchestration
@@ -25,11 +43,12 @@ Settlement orchestrations are created by specifying the final settlement chain a
 ```
 
 A couple notes:
-- You can check the list of available chains by importing `chains` from the SDK.
-- `amount` is denominated in dollars
-- The only 2 acceptable tokens for `token` are `'USDC'` and `'USDT'`, as settlement is only made available to stables.
+- You can check the list of available chains by importing `chains` from the SDK
+- `amount` is denominated in the decimal amount of the token
+- `token` must also be in the `acceptedTokens` mapping
+- setting `maxRuns` to null would mean that you can have infinite orchestration runs with this Orchestrator
 
-Once created, you should receive a `requestId` and `ephemeralWalletAddress`. The `ephemeralWalletAddress` is the payment address that you will send to whoever is paying.
+Once created, you should receive a `requestId` and `ephemeralWalletAddress`. The `ephemeralWalletAddress` is the payment address that you will send to whoever is sending assets.
 
 ## **Tracking an Orchestration**
 
