@@ -206,3 +206,25 @@
   background-color: #8DF107 !important;
   background: #8DF107 !important;
 }
+
+/* Link underline colors - green in dark mode, primary color in light mode */
+[data-theme="dark"] a,
+.dark a {
+  text-decoration-color: #8DF107 !important;
+}
+
+[data-theme="dark"] a:hover,
+.dark a:hover {
+  text-decoration-color: #8DF107 !important;
+}
+
+/* Light mode - use primary purple color */
+:not([data-theme="dark"]) a:not(.dark),
+:not(.dark) a {
+  text-decoration-color: #6B21A8 !important;
+}
+
+:not([data-theme="dark"]) a:hover:not(.dark),
+:not(.dark) a:hover {
+  text-decoration-color: #6B21A8 !important;
+}
