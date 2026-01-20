@@ -208,23 +208,81 @@
 }
 
 /* Link underline colors - green in dark mode, primary color in light mode */
+html[data-theme="dark"] a,
+html.dark a,
 [data-theme="dark"] a,
-.dark a {
+.dark a,
+body[data-theme="dark"] a,
+body.dark a,
+[data-theme="dark"] #content-area a,
+.dark #content-area a,
+[data-theme="dark"] main a,
+.dark main a,
+[data-theme="dark"] article a,
+.dark article a,
+[data-theme="dark"] p a,
+.dark p a,
+[data-theme="dark"] * a,
+.dark * a {
+  text-decoration: underline !important;
   text-decoration-color: #8DF107 !important;
+  -webkit-text-decoration-color: #8DF107 !important;
+  text-underline-color: #8DF107 !important;
+  border-bottom-color: #8DF107 !important;
 }
 
+html[data-theme="dark"] a:hover,
+html.dark a:hover,
 [data-theme="dark"] a:hover,
-.dark a:hover {
+.dark a:hover,
+body[data-theme="dark"] a:hover,
+body.dark a:hover,
+[data-theme="dark"] #content-area a:hover,
+.dark #content-area a:hover,
+[data-theme="dark"] main a:hover,
+.dark main a:hover,
+[data-theme="dark"] article a:hover,
+.dark article a:hover,
+[data-theme="dark"] p a:hover,
+.dark p a:hover,
+[data-theme="dark"] * a:hover,
+.dark * a:hover {
+  text-decoration: underline !important;
   text-decoration-color: #8DF107 !important;
+  -webkit-text-decoration-color: #8DF107 !important;
+  text-underline-color: #8DF107 !important;
+  border-bottom-color: #8DF107 !important;
 }
 
 /* Light mode - use primary purple color */
-:not([data-theme="dark"]) a:not(.dark),
-:not(.dark) a {
+html:not([data-theme="dark"]) a:not(.dark),
+html:not(.dark) a,
+body:not([data-theme="dark"]) a:not(.dark),
+body:not(.dark) a,
+:not([data-theme="dark"]) #content-area a:not(.dark),
+:not(.dark) #content-area a,
+:not([data-theme="dark"]) main a:not(.dark),
+:not(.dark) main a,
+:not([data-theme="dark"]) article a:not(.dark),
+:not(.dark) article a,
+:not([data-theme="dark"]) p a:not(.dark),
+:not(.dark) p a {
   text-decoration-color: #6B21A8 !important;
+  -webkit-text-decoration-color: #6B21A8 !important;
 }
 
-:not([data-theme="dark"]) a:hover:not(.dark),
-:not(.dark) a:hover {
+html:not([data-theme="dark"]) a:hover:not(.dark),
+html:not(.dark) a:hover,
+body:not([data-theme="dark"]) a:hover:not(.dark),
+body:not(.dark) a:hover,
+:not([data-theme="dark"]) #content-area a:hover:not(.dark),
+:not(.dark) #content-area a:hover,
+:not([data-theme="dark"]) main a:hover:not(.dark),
+:not(.dark) main a:hover,
+:not([data-theme="dark"]) article a:hover:not(.dark),
+:not(.dark) article a:hover,
+:not([data-theme="dark"]) p a:hover:not(.dark),
+:not(.dark) p a:hover {
   text-decoration-color: #6B21A8 !important;
+  -webkit-text-decoration-color: #6B21A8 !important;
 }
