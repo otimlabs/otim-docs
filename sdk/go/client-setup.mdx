@@ -1,0 +1,60 @@
+---
+title: "Client Setup"
+sidebarTitle: "Client Setup"
+---
+
+Add the following environment variables to your `.env` file:
+
+```bash
+OTIM_API_URL=https://api.otim.com
+OTIM_API_KEY=
+OTIM_PRIVATE_KEY=
+OTIM_DELEGATE_ADDRESS=
+```
+
+Now, set up and initialize your Otim Go client:
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+	"os"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/otimlabs/otim-go-sdk/client"
+	"github.com/otimlabs/otim-go-sdk/signer"
+)
+
+func main() {
+	ctx := context.Background()
+
+	// Load environment variables
+	apiURL := os.Getenv("OTIM_API_URL")
+	apiKey := os.Getenv("OTIM_API_KEY")
+	otimPrivateKey := os.Getenv("OTIM_PRIVATE_KEY")
+	otimDelegateAddr := os.Getenv("OTIM_DELEGATE_ADDRESS")
+
+	// Validate required environment variables
+	if apiURL == "" || apiKey == "" || otimPrivateKey == "" || otimDelegateAddr == "" {
+		log.Fatal("Missing required environment variables")
+	}
+
+	// Initialize the signer with your Otim private key
+	ethSigner, err := signer.NewEthSigner(otimPrivateKey)
+	if err != nil {
+		log.Fatal("Failed to create signer:", err)
+	}
+
+	// Create the client
+	otimClient := client.NewClient(
+		ethSigner,
+		apiURL,
+		apiKey,
+		common.HexToAddress(otimDelegateAddr),
+	)
+
+	log.Println("Otim Go client initialized successfully")
+}
+```
