@@ -141,6 +141,19 @@
             ]
           },
           {
+            "group": "Go",
+            "pages": [
+              "sdk/go/installation",
+              "sdk/go/client-setup",
+              {
+                "group": "Guides",
+                "pages": [
+                  "sdk/go/guides/create-settlement-orchestration"
+                ]
+              }
+            ]
+          },
+          {
             "group": "TypeScript Server-Side",
             "pages": [
               "sdk/typescript-server-side/installation",
