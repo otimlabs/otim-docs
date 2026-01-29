@@ -15,10 +15,13 @@ jobs:
           node-version: '20'
 
       - name: Install Mintlify CLI
-        run: npm install -g mintlify
+        run: npm install -g mint
+
+      - name: Validate build
+        run: mint validate
 
       - name: Check for broken links
-        run: mintlify broken-links
+        run: mint broken-links
 
       - name: Validate OpenAPI spec
-        run: mintlify openapi-check api-reference/openapi.yaml 
+        run: mint openapi-check api-reference/openapi.yaml 

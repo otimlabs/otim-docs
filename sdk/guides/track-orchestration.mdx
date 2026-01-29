@@ -1,0 +1,86 @@
+---
+title: "Track an Orchestration"
+sidebarTitle: "Track an Orchestration"
+---
+
+After creating an orchestration, you can track its status using the request ID returned from the creation response.
+
+## Get Orchestration Details
+
+<CodeGroup dropdown>
+
+```go main.go
+details, err := otimClient.GetOrchestrationDetails(ctx, &client.GetOrchestrationDetailsRequest{
+	RequestID: requestID,
+})
+if err != nil {
+	log.Fatal("Failed to get details:", err)
+}
+fmt.Printf("Status: %+v\n", details)
+```
+
+```typescript index.ts
+const details = await client.orchestration.getDetails({
+  requestId: requestId,
+});
+console.log("Status:", details);
+```
+
+</CodeGroup>
+
+## Understanding the Response
+
+The orchestration details include:
+- **Status**: Current state of the orchestration (pending, inProgress, paid, completed, failed)
+- **Request ID**: The unique identifier for this orchestration
+- **Payment Address**: The ephemeral wallet address for receiving payments
+- **Settlement Details**: Information about the target chain, token, and amount
+
+## Polling for Updates
+
+For long-running orchestrations, you can poll periodically to check for status changes:
+
+<CodeGroup dropdown>
+
+```go main.go
+for {
+	details, _ := otimClient.GetOrchestrationDetails(ctx, &client.GetOrchestrationDetailsRequest{
+		RequestID: requestID,
+	})
+	
+	fmt.Println("Current status:", details.Status)
+	
+	if details.Status == "paid" || details.Status == "completed" || details.Status == "failed" {
+		break
+	}
+	
+	time.Sleep(5 * time.Second)
+}
+```
+
+```typescript index.ts
+const pollInterval = 5000; // 5 seconds
+
+const checkStatus = async () => {
+  const details = await client.orchestration.getDetails({
+    requestId: requestId,
+  });
+  
+  console.log("Current status:", details.status);
+  
+  if (details.status === "paid" || details.status === "completed" || details.status === "failed") {
+    return details;
+  }
+  
+  await new Promise(resolve => setTimeout(resolve, pollInterval));
+  return checkStatus();
+};
+
+const finalDetails = await checkStatus();
+```
+
+</CodeGroup>
+
+## Next Steps
+
+For complete working examples, check out the [Otim Playground](https://github.com/otimlabs/otim-playground).

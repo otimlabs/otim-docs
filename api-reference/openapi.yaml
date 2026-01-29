@@ -1677,6 +1677,27 @@ components:
           format: address
           description: Address of the user
           example: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+        actionName:
+          type: string
+          enum:
+            - refuel
+            - transfer
+            - refuelERC20
+            - transferERC20
+            - uniswapV3ExactInput
+            - deactivateInstruction
+            - sweepCCTP
+            - transferCCTP
+            - sweep
+            - sweepERC20
+            - sweepUniswapV3
+            - depositERC4626
+            - sweepDepositERC4626
+            - withdrawERC4626
+            - sweepWithdrawERC4626
+            - callOnce
+          description: Optional action name to filter by
+          nullable: true
         perPage:
           type: integer
           format: int8
@@ -2037,7 +2058,6 @@ components:
       required:
         - completionInstructions
         - instructions
-        - metadata
       properties:
         payerAddress:
           type: string
@@ -2070,45 +2090,19 @@ components:
     BuildSettlementOrchestrationRequest:
       type: object
       required:
-        - acceptedTokens
-        - settlementChain
-        - settlementToken
-        - settlementAmount
-        - recipientAddress
-        - metadata
+        - params
       properties:
-        acceptedTokens:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-              format: address
-          description: Accepted tokens grouped by chain ID (chain_id -> list of token addresses)
-        settlementChain:
-          type: integer
-          format: uint64
-          description: Chain ID of the settlement chain
-        settlementToken:
-          type: string
-          format: address
-          description: Token address of the settlement token
-        settlementAmount:
-          type: integer
-          format: uint256
-          description: Settlement amount denominated in the settlement token
+        params:
+          $ref: '#/components/schemas/OrchestrationParams'
         payerAddress:
           type: string
           format: address
           description: Address of the payer
           nullable: true
-        recipientAddress:
-          type: string
-          format: address
-          description: Address of the recipient
         metadata:
           type: object
           description: Orchestration metadata as arbitrary JSON
+          nullable: true
         dueDate:
           type: string
           format: date-time
@@ -2119,6 +2113,143 @@ components:
           format: uint64
           description: Maximum number of times the orchestration can be executed
           nullable: true
+    OrchestrationParams:
+      type: object
+      description: Settlement orchestration type and parameters (oneOf Settlement, VaultWithdrawSettlement, or SettlementVaultDeposit)
+      oneOf:
+        - $ref: '#/components/schemas/SettlementParamsWrapper'
+        - $ref: '#/components/schemas/VaultWithdrawSettlementParamsWrapper'
+        - $ref: '#/components/schemas/SettlementVaultDepositParamsWrapper'
+    SettlementParamsWrapper:
+      type: object
+      required:
+        - settlement
+      properties:
+        settlement:
+          type: object
+          required:
+            - acceptedTokens
+            - settlementChainId
+            - settlementToken
+            - settlementAmount
+            - recipientAddress
+          properties:
+            acceptedTokens:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+                  format: address
+              description: Accepted tokens grouped by chain ID (chain_id -> list of token addresses)
+            settlementChainId:
+              type: integer
+              format: uint64
+              description: Chain ID of the settlement chain
+            settlementToken:
+              type: string
+              format: address
+              description: Token address of the settlement token (must be USDC or USDT)
+            settlementAmount:
+              type: integer
+              format: uint256
+              description: Settlement amount denominated in the settlement token
+            recipientAddress:
+              type: string
+              format: address
+              description: Address of the recipient
+    VaultWithdrawSettlementParamsWrapper:
+      type: object
+      required:
+        - vaultWithdrawSettlement
+      properties:
+        vaultWithdrawSettlement:
+          type: object
+          required:
+            - vaultAddress
+            - vaultUnderlyingToken
+            - vaultChainId
+            - settlementChainId
+            - settlementToken
+            - recipientAddress
+            - withdrawAmount
+          properties:
+            vaultAddress:
+              type: string
+              format: address
+              description: ERC4626 vault contract address
+            vaultUnderlyingToken:
+              type: string
+              format: address
+              description: Token that the vault holds (underlying asset)
+            vaultChainId:
+              type: integer
+              format: uint64
+              description: Chain where the vault exists
+            settlementChainId:
+              type: integer
+              format: uint64
+              description: Chain ID of the settlement chain
+            settlementToken:
+              type: string
+              format: address
+              description: Token address of the settlement token
+            recipientAddress:
+              type: string
+              format: address
+              description: Address of the recipient
+            withdrawAmount:
+              type: integer
+              format: uint256
+              description: Threshold for SweepWithdrawERC4626 to trigger (also used as settlement amount)
+    SettlementVaultDepositParamsWrapper:
+      type: object
+      required:
+        - settlementVaultDeposit
+      properties:
+        settlementVaultDeposit:
+          type: object
+          required:
+            - acceptedTokens
+            - vaultChainId
+            - vaultAddress
+            - vaultUnderlyingToken
+            - depositAmount
+            - recipientAddress
+            - vaultMinTotalShares
+          properties:
+            acceptedTokens:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+                  format: address
+              description: Tokens accepted for payment, grouped by chain ID. Cross-chain tokens are bridged via CCTP.
+            vaultChainId:
+              type: integer
+              format: uint64
+              description: Chain where the vault is deployed and funds are settled
+            vaultAddress:
+              type: string
+              format: address
+              description: ERC4626 vault contract address
+            vaultUnderlyingToken:
+              type: string
+              format: address
+              description: Token the vault accepts for deposits (must be USDC or USDT)
+            depositAmount:
+              type: integer
+              format: uint256
+              description: Minimum balance that triggers the vault deposit
+            recipientAddress:
+              type: string
+              format: address
+              description: Address receiving the vault shares
+            vaultMinTotalShares:
+              type: integer
+              format: uint256
+              description: Minimum total vault shares required for deposit (slippage protection)
     BuildOrchestrationResponse:
       type: object
       required:
@@ -2238,6 +2369,12 @@ components:
         - cancelled
         - draft
       description: Orchestration status
+    OrchestrationType:
+      type: string
+      enum:
+        - PaymentRequest
+        - AutoEarn
+      description: Type of orchestration
     GetOrchestrationsRequest:
       type: object
       required:
@@ -2250,6 +2387,10 @@ components:
           items:
             $ref: '#/components/schemas/OrchestrationStatus'
           description: Optional statuses to filter by
+          nullable: true
+        orchestrationType:
+          $ref: '#/components/schemas/OrchestrationType'
+          description: Optional orchestration type to filter by
           nullable: true
         perPage:
           type: integer
