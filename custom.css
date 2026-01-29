@@ -1,3 +1,14 @@
+/* Content inline links - green underline in dark mode */
+.dark .prose a.link,
+.dark .mdx-content a.link {
+  border-bottom-color: #8DF107 !important;
+}
+
+.dark .prose a.link:hover,
+.dark .mdx-content a.link:hover {
+  border-bottom-color: #a8f53d !important;
+}
+
 /* Social media anchor buttons - target by specific href */
 [data-theme="dark"] a[href="https://github.com/otimlabs"] > div,
 [data-theme="dark"] a[href="https://t.me/otimlabs"] > div,
