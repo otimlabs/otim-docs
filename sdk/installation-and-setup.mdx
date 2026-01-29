@@ -1,0 +1,91 @@
+---
+title: "Installation & Setup"
+sidebarTitle: "Installation & Setup"
+---
+
+Learn how to install and use the Otim server-side SDKs. SDKs are available for [Go](https://github.com/otimlabs/otim-go-sdk) and [TypeScript](https://www.npmjs.com/package/@otim/sdk-server).
+
+## Installation
+
+<CodeGroup dropdown>
+
+```go Command Line
+# Make sure your project is using Go Modules
+go mod init
+
+# Install otim-go-sdk
+go get github.com/otimlabs/otim-go-sdk
+```
+
+```typescript Command Line
+# Initialize your project
+pnpm init
+
+# Install otim-sdk-server
+pnpm add @otim/sdk-server
+```
+
+</CodeGroup>
+
+## Initialize the Client
+
+<CodeGroup dropdown>
+
+```go main.go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"math/big"
+	"time"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/otimlabs/otim-go-sdk/client"
+	"github.com/otimlabs/otim-go-sdk/signer"
+)
+
+func main() {
+	ctx := context.Background()
+
+	// Initialize the signer with your private key
+	ethSigner, err := signer.NewEthSigner("<YOUR_OTIM_PRIVATE_KEY>")
+	if err != nil {
+		log.Fatal("Failed to create signer:", err)
+	}
+
+	// Create the client
+	otimClient, err := client.NewClient(
+		ethSigner,
+		"https://api.otim.com",
+		"<YOUR_OTIM_API_KEY>",
+	)
+	if err != nil {
+		log.Fatal("Failed to create client:", err)
+	}
+
+	fmt.Println("Otim client initialized successfully")
+}
+```
+
+```typescript index.ts
+import { chains, createOtimServerClient, prepareSettlement } from '@otim/sdk-server';
+
+async function main() {
+  const client = createOtimServerClient({
+    appId: "<YOUR_OTIM_APP_ID>",
+    privateKey: "<YOUR_OTIM_PRIVATE_KEY>",
+    publicKey: "<YOUR_OTIM_PUBLIC_KEY>",
+    apiKey: "<YOUR_OTIM_API_KEY>",
+    environment: "production", // or "sandbox" for testnets
+  });
+
+  await client.init();
+  console.log('Otim client initialized successfully');
+}
+
+main().catch(console.error);
+```
+
+</CodeGroup>

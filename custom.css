@@ -1,208 +1,55 @@
-/* Social media anchor buttons - dark gray when idle, #8DF107 on hover */
-[data-theme="dark"] a[href*="github.com"] > div,
-[data-theme="dark"] a[href*="github.com"] div,
-[data-theme="dark"] a[href*="github"] > div,
-[data-theme="dark"] a[href*="github"] div,
-[data-theme="dark"] a[href*="t.me"] > div,
-[data-theme="dark"] a[href*="t.me"] div,
-[data-theme="dark"] a[href*="telegram"] > div,
-[data-theme="dark"] a[href*="telegram"] div,
-[data-theme="dark"] a[href*="linkedin.com"] > div,
-[data-theme="dark"] a[href*="linkedin.com"] div,
-[data-theme="dark"] a[href*="linkedin"] > div,
-[data-theme="dark"] a[href*="linkedin"] div,
-[data-theme="dark"] a[href*="x.com"] > div,
-[data-theme="dark"] a[href*="x.com"] div,
-[data-theme="dark"] a[href*="otim.com/blog"] > div,
-[data-theme="dark"] a[href*="otim.com/blog"] div,
-[data-theme="dark"] a[href*="blog"] > div,
-[data-theme="dark"] a[href*="blog"] div,
-[data-theme="dark"] nav a[href*="github"] div,
-[data-theme="dark"] nav a[href*="t.me"] div,
-[data-theme="dark"] nav a[href*="telegram"] div,
-[data-theme="dark"] nav a[href*="linkedin"] div,
-[data-theme="dark"] nav a[href*="x.com"] div,
-[data-theme="dark"] nav a[href*="blog"] div,
-.dark a[href*="github.com"] > div,
-.dark a[href*="github.com"] div,
-.dark a[href*="github"] > div,
-.dark a[href*="github"] div,
-.dark a[href*="t.me"] > div,
-.dark a[href*="t.me"] div,
-.dark a[href*="telegram"] > div,
-.dark a[href*="telegram"] div,
-.dark a[href*="linkedin.com"] > div,
-.dark a[href*="linkedin.com"] div,
-.dark a[href*="linkedin"] > div,
-.dark a[href*="linkedin"] div,
-.dark a[href*="x.com"] > div,
-.dark a[href*="x.com"] div,
-.dark a[href*="otim.com/blog"] > div,
-.dark a[href*="otim.com/blog"] div,
-.dark a[href*="blog"] > div,
-.dark a[href*="blog"] div,
-.dark nav a[href*="github"] div,
-.dark nav a[href*="t.me"] div,
-.dark nav a[href*="telegram"] div,
-.dark nav a[href*="linkedin"] div,
-.dark nav a[href*="x.com"] div,
-.dark nav a[href*="blog"] div {
+/* Social media anchor buttons - target by specific href */
+[data-theme="dark"] a[href="https://github.com/otimlabs"] > div,
+[data-theme="dark"] a[href="https://t.me/otimlabs"] > div,
+[data-theme="dark"] a[href="https://otim.com/blog"] > div,
+[data-theme="dark"] a[href="https://linkedin.com/company/otim"] > div,
+[data-theme="dark"] a[href="https://x.com/otimlabs"] > div,
+.dark a[href="https://github.com/otimlabs"] > div,
+.dark a[href="https://t.me/otimlabs"] > div,
+.dark a[href="https://otim.com/blog"] > div,
+.dark a[href="https://linkedin.com/company/otim"] > div,
+.dark a[href="https://x.com/otimlabs"] > div {
   background-color: rgba(55, 65, 81, 0.5) !important;
 }
 
-[data-theme="dark"] a[href*="github.com"]:hover > div,
-[data-theme="dark"] a[href*="github.com"]:hover div,
-[data-theme="dark"] a[href*="github"]:hover > div,
-[data-theme="dark"] a[href*="github"]:hover div,
-[data-theme="dark"] a[href*="t.me"]:hover > div,
-[data-theme="dark"] a[href*="t.me"]:hover div,
-[data-theme="dark"] a[href*="telegram"]:hover > div,
-[data-theme="dark"] a[href*="telegram"]:hover div,
-[data-theme="dark"] a[href*="linkedin.com"]:hover > div,
-[data-theme="dark"] a[href*="linkedin.com"]:hover div,
-[data-theme="dark"] a[href*="linkedin"]:hover > div,
-[data-theme="dark"] a[href*="linkedin"]:hover div,
-[data-theme="dark"] a[href*="x.com"]:hover > div,
-[data-theme="dark"] a[href*="x.com"]:hover div,
-[data-theme="dark"] a[href*="otim.com/blog"]:hover > div,
-[data-theme="dark"] a[href*="otim.com/blog"]:hover div,
-[data-theme="dark"] a[href*="blog"]:hover > div,
-[data-theme="dark"] a[href*="blog"]:hover div,
-[data-theme="dark"] nav a[href*="github"]:hover div,
-[data-theme="dark"] nav a[href*="t.me"]:hover div,
-[data-theme="dark"] nav a[href*="telegram"]:hover div,
-[data-theme="dark"] nav a[href*="linkedin"]:hover div,
-[data-theme="dark"] nav a[href*="x.com"]:hover div,
-[data-theme="dark"] nav a[href*="blog"]:hover div,
-.dark a[href*="github.com"]:hover > div,
-.dark a[href*="github.com"]:hover div,
-.dark a[href*="github"]:hover > div,
-.dark a[href*="github"]:hover div,
-.dark a[href*="t.me"]:hover > div,
-.dark a[href*="t.me"]:hover div,
-.dark a[href*="telegram"]:hover > div,
-.dark a[href*="telegram"]:hover div,
-.dark a[href*="linkedin.com"]:hover > div,
-.dark a[href*="linkedin.com"]:hover div,
-.dark a[href*="linkedin"]:hover > div,
-.dark a[href*="linkedin"]:hover div,
-.dark a[href*="x.com"]:hover > div,
-.dark a[href*="x.com"]:hover div,
-.dark a[href*="otim.com/blog"]:hover > div,
-.dark a[href*="otim.com/blog"]:hover div,
-.dark a[href*="blog"]:hover > div,
-.dark a[href*="blog"]:hover div,
-.dark nav a[href*="github"]:hover div,
-.dark nav a[href*="t.me"]:hover div,
-.dark nav a[href*="telegram"]:hover div,
-.dark nav a[href*="linkedin"]:hover div,
-.dark nav a[href*="x.com"]:hover div,
-.dark nav a[href*="blog"]:hover div {
+[data-theme="dark"] a[href="https://github.com/otimlabs"]:hover > div,
+[data-theme="dark"] a[href="https://t.me/otimlabs"]:hover > div,
+[data-theme="dark"] a[href="https://otim.com/blog"]:hover > div,
+[data-theme="dark"] a[href="https://linkedin.com/company/otim"]:hover > div,
+[data-theme="dark"] a[href="https://x.com/otimlabs"]:hover > div,
+.dark a[href="https://github.com/otimlabs"]:hover > div,
+.dark a[href="https://t.me/otimlabs"]:hover > div,
+.dark a[href="https://otim.com/blog"]:hover > div,
+.dark a[href="https://linkedin.com/company/otim"]:hover > div,
+.dark a[href="https://x.com/otimlabs"]:hover > div {
   background-color: #8DF107 !important;
 }
 
-/* Social media button SVG icons */
-[data-theme="dark"] a[href*="github"]:not(:hover) svg,
-[data-theme="dark"] a[href*="t.me"]:not(:hover) svg,
-[data-theme="dark"] a[href*="telegram"]:not(:hover) svg,
-[data-theme="dark"] a[href*="linkedin"]:not(:hover) svg,
-[data-theme="dark"] a[href*="x.com"]:not(:hover) svg,
-[data-theme="dark"] a[href*="blog"]:not(:hover) svg,
-.dark a[href*="github"]:not(:hover) svg,
-.dark a[href*="t.me"]:not(:hover) svg,
-.dark a[href*="telegram"]:not(:hover) svg,
-.dark a[href*="linkedin"]:not(:hover) svg,
-.dark a[href*="x.com"]:not(:hover) svg,
-.dark a[href*="blog"]:not(:hover) svg {
+/* Social media anchor SVG icons */
+[data-theme="dark"] a[href="https://github.com/otimlabs"]:not(:hover) svg,
+[data-theme="dark"] a[href="https://t.me/otimlabs"]:not(:hover) svg,
+[data-theme="dark"] a[href="https://otim.com/blog"]:not(:hover) svg,
+[data-theme="dark"] a[href="https://linkedin.com/company/otim"]:not(:hover) svg,
+[data-theme="dark"] a[href="https://x.com/otimlabs"]:not(:hover) svg,
+.dark a[href="https://github.com/otimlabs"]:not(:hover) svg,
+.dark a[href="https://t.me/otimlabs"]:not(:hover) svg,
+.dark a[href="https://otim.com/blog"]:not(:hover) svg,
+.dark a[href="https://linkedin.com/company/otim"]:not(:hover) svg,
+.dark a[href="https://x.com/otimlabs"]:not(:hover) svg {
   fill: #e5e7eb !important;
   color: #e5e7eb !important;
 }
 
-[data-theme="dark"] a[href*="github"]:hover svg,
-[data-theme="dark"] a[href*="t.me"]:hover svg,
-[data-theme="dark"] a[href*="telegram"]:hover svg,
-[data-theme="dark"] a[href*="linkedin"]:hover svg,
-[data-theme="dark"] a[href*="x.com"]:hover svg,
-[data-theme="dark"] a[href*="blog"]:hover svg,
-.dark a[href*="github"]:hover svg,
-.dark a[href*="t.me"]:hover svg,
-.dark a[href*="telegram"]:hover svg,
-.dark a[href*="linkedin"]:hover svg,
-.dark a[href*="x.com"]:hover svg,
-.dark a[href*="blog"]:hover svg {
+[data-theme="dark"] a[href="https://github.com/otimlabs"]:hover svg,
+[data-theme="dark"] a[href="https://t.me/otimlabs"]:hover svg,
+[data-theme="dark"] a[href="https://otim.com/blog"]:hover svg,
+[data-theme="dark"] a[href="https://linkedin.com/company/otim"]:hover svg,
+[data-theme="dark"] a[href="https://x.com/otimlabs"]:hover svg,
+.dark a[href="https://github.com/otimlabs"]:hover svg,
+.dark a[href="https://t.me/otimlabs"]:hover svg,
+.dark a[href="https://otim.com/blog"]:hover svg,
+.dark a[href="https://linkedin.com/company/otim"]:hover svg,
+.dark a[href="https://x.com/otimlabs"]:hover svg {
   fill: #000000 !important;
   color: #000000 !important;
-}
-
-/* Search bar button - target specifically by XPath structure: #content-area/div[3]/div/div[1]/div/button */
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button,
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button[style*="#6B21A8"],
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button[style*="6B21A8"],
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button[style*="#6B21A8"],
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button[style*="6B21A8"] {
-  background-color: rgba(55, 65, 81, 0.5) !important;
-  background: rgba(55, 65, 81, 0.5) !important;
-  color: #e5e7eb !important;
-}
-
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button:hover,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button:hover {
-  background-color: #8DF107 !important;
-  background: #8DF107 !important;
-  color: #000000 !important;
-}
-
-/* Search button SVG - remove gray box, make transparent */
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button svg,
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button svg *,
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button > div,
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button > span,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button svg,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button svg *,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button > div,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button > span {
-  background-color: transparent !important;
-  background: transparent !important;
-}
-
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button svg,
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button svg path,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button svg,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button svg path {
-  fill: #e5e7eb !important;
-  color: #e5e7eb !important;
-}
-
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button:hover svg,
-[data-theme="dark"] #content-area > div:nth-child(3) > div > div:first-child > div > button:hover svg path,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button:hover svg,
-.dark #content-area > div:nth-child(3) > div > div:first-child > div > button:hover svg path {
-  fill: #000000 !important;
-  color: #000000 !important;
-}
-
-/* Override any purple background on elements with inline styles (but only for buttons and specific elements) */
-[data-theme="dark"] button[style*="#6B21A8"]:not(:hover),
-[data-theme="dark"] button[style*="6B21A8"]:not(:hover),
-[data-theme="dark"] [role="button"][style*="#6B21A8"]:not(:hover),
-[data-theme="dark"] [role="button"][style*="6B21A8"]:not(:hover),
-.dark button[style*="#6B21A8"]:not(:hover),
-.dark button[style*="6B21A8"]:not(:hover),
-.dark [role="button"][style*="#6B21A8"]:not(:hover),
-.dark [role="button"][style*="6B21A8"]:not(:hover) {
-  background-color: rgba(55, 65, 81, 0.5) !important;
-  background: rgba(55, 65, 81, 0.5) !important;
-}
-
-[data-theme="dark"] button[style*="#6B21A8"]:hover,
-[data-theme="dark"] button[style*="6B21A8"]:hover,
-[data-theme="dark"] [role="button"][style*="#6B21A8"]:hover,
-[data-theme="dark"] [role="button"][style*="6B21A8"]:hover,
-.dark button[style*="#6B21A8"]:hover,
-.dark button[style*="6B21A8"]:hover,
-.dark [role="button"][style*="#6B21A8"]:hover,
-.dark [role="button"][style*="6B21A8"]:hover {
-  background-color: #8DF107 !important;
-  background: #8DF107 !important;
 }

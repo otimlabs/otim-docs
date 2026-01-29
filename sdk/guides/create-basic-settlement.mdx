@@ -1,0 +1,107 @@
+---
+title: "Create a Basic Settlement Orchestration"
+sidebarTitle: "Create a Basic Settlement"
+---
+
+This guide shows you how to create a settlement orchestration that accepts tokens across multiple chains and settles to USDC on Base.
+
+<Note>
+Make sure you've completed the [Installation & Setup](/sdk/installation-and-setup) before continuing.
+</Note>
+
+## Define the Settlement
+
+A settlement orchestration specifies:
+- **Settlement token and chain**: What the recipient receives and where
+- **Accepted tokens**: Which tokens on which chains can be used as payment
+- **Recipient address**: Who receives the final settlement
+
+<CodeGroup dropdown>
+
+```go main.go
+const (
+	// Chain IDs
+	ethereumChainID = 1
+	baseChainID     = 8453
+
+	// Token addresses
+	usdcEth  = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+	usdcBase = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+)
+
+// Settlement amount: 1 USDC (6 decimals)
+amount := new(big.Int)
+amount.SetString("1000000", 10)
+
+// Build settlement request
+buildRequest := &client.BuildSettlementOrchestrationRequest{
+	Params: &client.SettlementParams{
+		AcceptedTokens: map[client.ChainID][]common.Address{
+			ethereumChainID: {common.HexToAddress(usdcEth)},
+			baseChainID:     {common.HexToAddress(usdcBase)},
+		},
+		SettlementChainId: baseChainID,
+		SettlementToken:   common.HexToAddress(usdcBase),
+		SettlementAmount:  hexutil.Big(*amount),
+		RecipientAddress:  common.HexToAddress("<RECIPIENT_ADDRESS>"),
+	},
+}
+
+// Build, sign, and submit
+buildResponse, _ := otimClient.BuildSettlementOrchestration(ctx, buildRequest)
+newRequest, _ := otimClient.NewOrchestrationFromBuild(ctx, buildResponse)
+otimClient.NewOrchestration(ctx, newRequest)
+
+fmt.Println("Request ID:", buildResponse.RequestID)
+fmt.Println("Payment Address:", buildResponse.EphemeralWalletAddress.Hex())
+```
+
+```typescript index.ts
+// Define settlement
+const settlement = prepareSettlement({
+  amount: BigInt(1000000), // 1 USDC (6 decimals)
+  chainId: chains.base.id,
+  token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC on Base
+  recipient: '<RECIPIENT_ADDRESS>',
+  acceptedTokens: {
+    [chains.mainnet.id]: ['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'], // USDC on Ethereum
+    [chains.base.id]: ['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],    // USDC on Base
+  },
+  maxRuns: 1
+});
+
+// Create orchestration
+const result = await client.orchestration.create(settlement);
+
+console.log("Request ID:", result.requestId);
+console.log("Payment Address:", result.ephemeralWalletAddress);
+```
+
+</CodeGroup>
+
+## Understanding the Response
+
+When created successfully, you'll receive:
+- **Request ID**: Unique identifier for tracking this orchestration
+- **Payment Address**: The ephemeral wallet address to share with whoever is sending payment
+
+The sender transfers their tokens to the payment address, and Otim handles the cross-chain settlement to deliver the specified amount to your recipient.
+
+## Run It
+
+<CodeGroup dropdown>
+
+```go Command Line
+go run main.go
+```
+
+```typescript Command Line
+npx tsx index.ts
+```
+
+</CodeGroup>
+
+## Next Steps
+
+- [Track your orchestration](/sdk/guides/track-orchestration) to monitor its status
+- Check out the [Otim Playground](https://github.com/otimlabs/otim-playground) for complete working examples
