@@ -17,6 +17,9 @@ jobs:
       - name: Install Mintlify CLI
         run: npm install -g mint
 
+      - name: Validate build
+        run: mint validate
+
       - name: Check for broken links
         run: mint broken-links
 
